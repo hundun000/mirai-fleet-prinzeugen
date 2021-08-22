@@ -6,7 +6,7 @@
 
 ### 2. 下载本项目制品
 
-- hundun.fleet.prinzeugen-XXX.mirai.jar
+- mirai-fleet-prinzeugen-XXX.mirai.jar
 
 插件本体，放入mirai-console的plugins文件夹。
 
