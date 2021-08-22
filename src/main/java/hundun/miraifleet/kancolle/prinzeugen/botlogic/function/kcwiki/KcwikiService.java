@@ -25,7 +25,7 @@ public class KcwikiService implements IFileOperationDelegator {
     
     KcwikiApiFeignClient apiFeignClient;
 
-    public static String kancolleGameDataSubFolder =  "game_data";
+    public static String kancolleGameDataSubFolder =  "GameData";
     
     FileOperationDelegate fileOperationDelegate;
     
