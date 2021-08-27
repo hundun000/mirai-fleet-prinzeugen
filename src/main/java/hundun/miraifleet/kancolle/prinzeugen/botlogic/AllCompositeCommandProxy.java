@@ -43,6 +43,21 @@ public class AllCompositeCommandProxy extends CompositeCommand {
         botLogic.kcwikiFunction.quickSerachFromCommand(sender, shipName);
     }
     
+    @SubCommand("删除舰娘别名")
+    public void deleteShipFuzzyName(CommandSender sender, String fuzzyName) {
+        botLogic.kcwikiFunction.deleteShipFuzzyName(sender, fuzzyName);
+    }
+    
+    @SubCommand("查询舰娘别名")
+    public void listShipFuzzyName(CommandSender sender, String name) {
+        botLogic.kcwikiFunction.listShipFuzzyName(sender, name);
+    }
+    
+    @SubCommand("添加舰娘别名")
+    public void addShipFuzzyName(CommandSender sender, String shipName, String fuzzyName) {
+        botLogic.kcwikiFunction.addShipFuzzyName(sender, shipName, fuzzyName);
+    }
+    
     @SubCommand("微博订阅")
     public void listListen(CommandSender sender) {
         botLogic.weiboFunction.listListen(sender);

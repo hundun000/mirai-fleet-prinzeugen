@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,12 @@ import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
 import hundun.miraifleet.framework.core.helper.feign.FeignClientFactory;
+import hundun.miraifleet.framework.core.helper.repository.PluginConfigRepository;
+import hundun.miraifleet.framework.core.helper.repository.PluginDataRepository;
+import hundun.miraifleet.framework.starter.botlogic.function.reminder.config.HourlyChatConfig;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.PrinzEugenBotLogic;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.config.ShipFuzzyNameConfig;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiShipDetail;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipUpgradeLink;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.feign.KcwikiApiFeignClient;
@@ -38,8 +44,9 @@ public class KcwikiFunction extends BaseFunction<Void> {
 
     final KcwikiService kcwikiService;
     
+    private final PluginConfigRepository<ShipFuzzyNameConfig> shipFuzzyNameConfigRepository;
     
-    public KcwikiFunction(
+        public KcwikiFunction(
             BaseBotLogic botLogic,
             JvmPlugin plugin, 
             String characterName
@@ -51,8 +58,17 @@ public class KcwikiFunction extends BaseFunction<Void> {
                 "KcwikiFunction", 
                 null
                 );
-        this.kcwikiService = new KcwikiService(FeignClientFactory.get(KcwikiApiFeignClient.class, "http://api.kcwiki.moe", plugin.getLogger()));
-    }
+            this.kcwikiService = new KcwikiService(FeignClientFactory.get(KcwikiApiFeignClient.class, "http://api.kcwiki.moe", plugin.getLogger()));
+            this.shipFuzzyNameConfigRepository = new PluginConfigRepository<>(plugin, resolveFunctionConfigFile("ShipFuzzyNameConfig.json"), ShipFuzzyNameConfig.class);
+
+            // check config
+            ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+            if (config == null) {
+                config = new ShipFuzzyNameConfig();
+                config.setMap(new HashMap<>());
+            }
+            shipFuzzyNameConfigRepository.saveSingleton(config);
+        }
     
     
     
@@ -62,6 +78,61 @@ public class KcwikiFunction extends BaseFunction<Void> {
             return;
         }
         quickSerach(new FunctionReplyReceiver(sender, plugin.getLogger()), shipName);
+    }
+    
+    @SubCommand("查询舰娘别名")
+    public void listShipFuzzyName(CommandSender sender, String name) {
+        if (!checkCosPermission(sender)) {
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+        config.getMap().entrySet().forEach(entry -> {
+            if (entry.getKey().equals(name) || entry.getValue().equals(name)) {
+                builder.append(entry.getKey()).append("-->").append(entry.getValue()).append("\n");
+            }
+        });
+        if (builder.length() > 0) {
+            sender.sendMessage(builder.toString());
+        } else {
+            sender.sendMessage("“" +name + "”没有相关别名");
+        }
+    }
+    
+    @SubCommand("删除舰娘别名")
+    public void deleteShipFuzzyName(CommandSender sender, String fuzzyName) {
+        if (!checkCosPermission(sender)) {
+            return;
+        }
+        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+        config.getMap().entrySet().removeIf(entry -> entry.getKey().equals(fuzzyName));
+    }
+    
+   
+    @SubCommand("添加舰娘别名")
+    public void addShipFuzzyName(CommandSender sender, String shipName, String fuzzyName) {
+        if (!checkCosPermission(sender)) {
+            return;
+        }
+        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+        
+        boolean isValidShipName = false;
+        if (config.getMap().values().contains(shipName)) {
+            isValidShipName = true;
+        } else {
+            KcwikiShipDetail shipDetail = kcwikiService.getShipDetail(shipName);
+            if (shipDetail != null && shipDetail.getChinese_name() != null) {
+                isValidShipName = true;
+            }
+        }
+        
+        if (isValidShipName) {
+            config.getMap().put(fuzzyName, shipName);
+            shipFuzzyNameConfigRepository.saveSingleton(config);
+            sender.sendMessage("已添加");
+        } else {
+            sender.sendMessage("“" +shipName + "”不是标准的舰娘名，无法添加别名");
+        }
     }
     
     
@@ -78,6 +149,10 @@ public class KcwikiFunction extends BaseFunction<Void> {
     }
     
     private void quickSerach(FunctionReplyReceiver subject, String shipName) {
+        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+
+        shipName = config.getMap().getOrDefault(shipName, shipName);
+        log.info("shipName = " + shipName);
         MessageChainBuilder chainBuilder = new MessageChainBuilder();
         ShipUpgradeLink upgradeLink = kcwikiService.getShipUpgradeLine(shipName);
         if (upgradeLink != null && !upgradeLink.getUpgradeLinkIds().isEmpty()) {
