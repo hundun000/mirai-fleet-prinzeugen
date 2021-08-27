@@ -38,9 +38,19 @@ public class AllCompositeCommandProxy extends CompositeCommand {
         botLogic.reminderFunction.listHourlyChatConfig(sender);
     }
     
-    @SubCommand("舰娘百科")
-    public void quickSerachFromCommand(CommandSender sender, String shipName) {
-        botLogic.kcwikiFunction.quickSerachFromCommand(sender, shipName);
+    @SubCommand("任务详情")
+    public void detailQuest(CommandSender sender, String id) {
+        botLogic.kcwikiFunction.detailQuest(sender, id);
+    }
+    
+    @SubCommand("搜任务")
+    public void searchQuest(CommandSender sender, String questKeyword) {
+        botLogic.kcwikiFunction.searchQuest(sender, questKeyword);
+    }
+    
+    @SubCommand("舰娘详情")
+    public void quickSearchShipFromCommand(CommandSender sender, String shipName) {
+        botLogic.kcwikiFunction.quickSearchShipFromCommand(sender, shipName);
     }
     
     @SubCommand("删除舰娘别名")
