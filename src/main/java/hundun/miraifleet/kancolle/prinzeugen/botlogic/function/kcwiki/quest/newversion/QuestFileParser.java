@@ -1,4 +1,4 @@
-package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest;
+package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,12 @@ import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.TranslatorDictionary.Req;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestDocument;
 
 
 
@@ -20,26 +25,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class QuestFileParser {
     
-    ObjectMapper objectMapper;
+    static ObjectMapper objectMapper;
     
-    public QuestFileParser() {
-        objectMapper = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     
     public static void main(String[] args) {
-        QuestFileParser parser = new QuestFileParser();
         File file = new File("101.json");
         try {
-            KcwikiQuestData document = parser.parse(file);
+            KcwikiQuestData document = parseKcwikiQuestData(file);
             System.out.println(document.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
+    public static TranslatorDictionary parseTranslatorDictionary(File file) throws IOException {
+        ObjectNode root = (ObjectNode) objectMapper.readTree(file);
+        ObjectNode reqNode = (ObjectNode) root.remove("req");
+        Req req = objectMapper.treeToValue(reqNode, Req.class);
+        TranslatorDictionary dictionary = new TranslatorDictionary(root, req);
+        return dictionary;
+    }
     
-    public KcwikiQuestData parse(File file) throws IOException {
+    public static KcwikiQuestData parseKcwikiQuestData(File file) throws IOException {
         KcwikiQuestData document = objectMapper.readValue(file, KcwikiQuestData.class);
         return document;
     }

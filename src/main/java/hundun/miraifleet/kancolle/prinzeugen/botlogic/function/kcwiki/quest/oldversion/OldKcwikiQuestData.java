@@ -1,4 +1,4 @@
-package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest;
+package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion;
 
 import java.util.List;
 

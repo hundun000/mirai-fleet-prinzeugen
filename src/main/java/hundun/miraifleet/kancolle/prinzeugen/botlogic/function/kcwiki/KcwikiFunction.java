@@ -26,9 +26,9 @@ import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipUpgradeLink;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.feign.KcwikiApiFeignClient;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.OldKcwikiQuestData;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.OldKcwikiQuestDocument;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.QuestFileParser;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.QuestFileParser;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestData;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestDocument;
 import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.event.EventHandler;
