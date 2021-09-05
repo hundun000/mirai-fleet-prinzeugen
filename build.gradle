@@ -28,7 +28,7 @@ apply plugin: 'java-library'
 
 
 group = 'PrinzEugenPlugin'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
@@ -59,7 +59,7 @@ dependencies {
     implementation 'io.github.openfeign:feign-jackson:11.1'
     implementation 'io.github.openfeign:feign-core:11.1'
     
-    implementation 'com.github.hundun000:mirai-fleet-framework:2797cc13be'
+    implementation 'com.github.hundun000:mirai-fleet-framework:f8c7d68059'
     //implementation("net.mamoe.yamlkt:yamlkt:0.9.0")
     implementation 'org.yaml:snakeyaml:1.8'
     //implementation 'commons-io:commons-io:2.6'

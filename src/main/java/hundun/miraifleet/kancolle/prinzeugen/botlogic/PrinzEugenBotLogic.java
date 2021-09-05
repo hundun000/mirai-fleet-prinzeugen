@@ -6,6 +6,7 @@ import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenChatFunction;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame.GameFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.KcwikiFunction;
 import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
@@ -18,6 +19,7 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
 
     PrinzEugenChatFunction prinzEugenChatFunction;
     KcwikiFunction kcwikiFunction;
+    GameFunction gameFunction;
     
     RepeatFunction repeatFunction;
     
@@ -43,6 +45,9 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
         
         reminderFunction = new ReminderFunction(this, plugin, characterName);
         functions.add(reminderFunction);
+        
+        gameFunction = new GameFunction(this, plugin, characterName);
+        functions.add(gameFunction);
         
         allCompositeCommandProxy = new AllCompositeCommandProxy(this, plugin, characterName);
     }

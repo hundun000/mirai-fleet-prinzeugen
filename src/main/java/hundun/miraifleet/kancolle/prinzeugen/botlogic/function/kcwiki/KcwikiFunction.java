@@ -281,7 +281,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
                 if (image != null) {
                     chainBuilder.add(image);
                 } else {
-                    chainBuilder.add("[该终端不支持图片]");
+                    chainBuilder.add(NOT_SUPPORT_RESOURCE_PLACEHOLDER);
                 }
             } else {
                 plugin.getLogger().info("shipDetail no imageFile");
