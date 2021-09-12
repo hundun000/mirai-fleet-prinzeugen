@@ -1,15 +1,8 @@
 package hundun.idlegame.kancolle.container;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import hundun.idlegame.kancolle.expedition.ExpeditionModel;
 import hundun.idlegame.kancolle.expedition.ExpeditionSaveData;
-import hundun.idlegame.kancolle.resource.Resource;
-import hundun.idlegame.kancolle.resource.ResourceBoard;
-import hundun.idlegame.kancolle.ship.ShipFactory;
-import hundun.idlegame.kancolle.ship.ShipModel;
+import hundun.idlegame.kancolle.resource.ResourceSaveData;
 import hundun.idlegame.kancolle.ship.ShipSaveData;
 import lombok.Data;
 
@@ -31,5 +24,5 @@ public class GameSaveData {
     List<ExpeditionSaveData> expeditionSaveDatas;
     List<ShipSaveData> idleShipSaveDatas;
     List<ShipSaveData> busyShipSaveDatas;
-    ResourceBoard resourceBoard;
+    List<ResourceSaveData> resourceSaveDatas;
 }

@@ -1,7 +1,6 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
-import hundun.miraifleet.framework.starter.botlogic.function.MiraiCodeFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;

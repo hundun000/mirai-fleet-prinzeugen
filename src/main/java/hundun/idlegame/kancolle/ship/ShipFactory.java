@@ -1,52 +1,32 @@
 package hundun.idlegame.kancolle.ship;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
-import hundun.idlegame.kancolle.expedition.ExpeditionModel;
-import hundun.idlegame.kancolle.expedition.ExpeditionSaveData;
+import hundun.idlegame.kancolle.base.BaseFactory;
+import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 
 /**
  * @author hundun
  * Created on 2021/09/02
  */
-public class ShipFactory {
+public class ShipFactory extends BaseFactory<ShipPrototype, ShipModel, ShipSaveData> {
     
-    private static Map<String, ShipPrototype> shipPrototypes = new HashMap<>();
-    static {
-        ShipPrototype prototype;
-        prototype = new ShipPrototype();
-        prototype.setId("吹雪");
-        shipPrototypes.put(prototype.getId(), prototype);
-        
-        prototype = new ShipPrototype();
-        prototype.setId("欧根");
-        shipPrototypes.put(prototype.getId(), prototype);
-    }
     
-    public static ShipPrototype getPrototype(String id) {
-        return shipPrototypes.get(id);
-    }
+    public static final ShipFactory INSTANCE = new ShipFactory();
 
+    public ShipFactory() {
+        super(ShipPrototype.class);
+    }
     
-    public static List<ShipModel> listSaveDataToModel(List<ShipSaveData> saveDatas) {
-        List<ShipModel> shipModels = saveDatas.stream().map(saveData -> saveDataToModel(saveData)).collect(Collectors.toList());
-        return shipModels;
-    }
-
-    public static List<ShipSaveData> listModelToSaveData(List<ShipModel> models) {
-        List<ShipSaveData> expeditionSaveDatas = models.stream().map(model -> modelToSaveData(model)).collect(Collectors.toList());
-        return expeditionSaveDatas;
-    }
-    public static ShipModel saveDataToModel(ShipSaveData saveData) {
+    @Override
+    public ShipModel saveDataToModel(ShipSaveData saveData) throws PrototypeNotFoundException {
         ShipPrototype prototype = getPrototype(saveData.getPrototypeId());
-        ShipModel model = new ShipModel(prototype, saveData.getLevel(), saveData.getExp());
+        ShipModel model = new ShipModel();
+        model.setPrototype(prototype);
+        model.setLevel(saveData.getLevel());
+        model.setLevel(saveData.getExp());
         return model;
     }
-    public static ShipSaveData modelToSaveData(ShipModel model) {
+    @Override
+    public ShipSaveData modelToSaveData(ShipModel model) {
         ShipSaveData saveData = new ShipSaveData(model.getPrototype().getId(), model.getLevel(), model.getExp());
         return saveData;
     }

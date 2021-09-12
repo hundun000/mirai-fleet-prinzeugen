@@ -1,14 +1,11 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Supplier;
-
 import org.jetbrains.annotations.NotNull;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
@@ -19,8 +16,6 @@ import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
 import hundun.miraifleet.framework.core.helper.feign.FeignClientFactory;
 import hundun.miraifleet.framework.core.helper.repository.MapDocumentRepository;
 import hundun.miraifleet.framework.core.helper.repository.SingletonDocumentRepository;
-import hundun.miraifleet.framework.starter.botlogic.function.reminder.config.HourlyChatConfig;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.PrinzEugenBotLogic;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.config.ShipFuzzyNameConfig;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiShipDetail;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
@@ -36,7 +31,6 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.PlainText;
-import net.mamoe.mirai.message.data.Voice;
 import net.mamoe.mirai.utils.ExternalResource;
 
 /**

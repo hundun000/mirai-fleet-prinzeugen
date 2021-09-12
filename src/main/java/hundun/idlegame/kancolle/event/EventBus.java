@@ -1,17 +1,15 @@
 package hundun.idlegame.kancolle.event;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.container.IGameContainer;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
-import hundun.idlegame.kancolle.resource.Resource;
-import hundun.idlegame.kancolle.resource.ResourceBoard;
+import hundun.idlegame.kancolle.resource.ResourceModel;
+import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.world.SessionData;
-import lombok.extern.slf4j.Slf4j;
 
 
 
@@ -57,7 +55,7 @@ public class EventBus {
         }
     }
     
-    public void sendExpeditionTaskEvent(SessionData sessionData, List<ExpeditionModel> completedTasks) {
+    public void sendExpeditionCompletedEvent(SessionData sessionData, List<ExpeditionModel> completedTasks) {
         String info = completedTasks.stream().map(task -> task.getPrototype().getId()).collect(Collectors.joining("\n"));
         log(sessionData.getId(), LogTag.EVENT, "ExpeditionTask.completed: " + info);
         for (IExpeditionEventListener listener : expeditionTaskEventListeners) {
@@ -72,12 +70,27 @@ public class EventBus {
         }
     }
 
-    public void sendResourceChangeEvent(SessionData sessionData, Map<Resource, Integer> delta,
-            ResourceBoard resourceBoard) {
-        log(sessionData.getId(), LogTag.EVENT, "ResourceEvent.amountChanged: +" + delta + " -> " + resourceBoard);
+    public void sendResourceChangedEvent(SessionData sessionData, Map<String, Integer> delta,
+            Map<String, ResourceModel> resources) {
+        log(sessionData.getId(), LogTag.EVENT, "ResourceEvent.amountChanged: +" + delta + " -> " + sessionData.getResources());
         for (IResourceEventListener listener : resourceEventListeners) {
-            listener.amountChanged(sessionData, delta, resourceBoard);
+            //listener.amountChanged(sessionData, delta);
         }
+    }
+
+
+    public void sendExportEvent(String sessionId, String data) {
+        container.handleExportEvent(sessionId, data);
+    }
+
+
+    public void sendShipAddNewEvent(SessionData sessionData, ShipModel ship) {
+        log(sessionData.getId(), LogTag.SHIP, "ShipEvent.AddNew: " + ship.getPrototype().getId());
+    }
+
+
+    public void sendShipLevelUpEvent(SessionData sessionData, ShipModel ship) {
+        log(sessionData.getId(), LogTag.SHIP, "ShipEvent.LevelUp: " + ship.getPrototype().getId() + " lv." + ship.getLevel());
     }
 
 }

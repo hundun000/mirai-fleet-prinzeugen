@@ -10,16 +10,15 @@ import hundun.idlegame.kancolle.event.EventBus;
  * @author hundun
  * Created on 2021/09/01
  */
-public class TimerManager {
+public class TimerManager extends BaseManager {
     
     public static final int TICK_PER_DAY = 6;
     public static final double HOUR_PER_TICK = 24.0 / TICK_PER_DAY;
     
-    EventBus eventBus;
+
     
-    public TimerManager(EventBus eventBus) {
-        this.eventBus = eventBus;
-        eventBus.register(this);
+    public TimerManager(EventBus eventBus, DataBus dataBus) {
+        super(eventBus, dataBus);
     }
     
     public static int tickToHour(int tick) {

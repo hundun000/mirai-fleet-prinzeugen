@@ -2,12 +2,13 @@ package hundun.idlegame.kancolle.world;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
-import hundun.idlegame.kancolle.resource.Resource;
-import hundun.idlegame.kancolle.resource.ResourceBoard;
+import hundun.idlegame.kancolle.resource.ResourceModel;
 import hundun.idlegame.kancolle.ship.ShipModel;
 import lombok.Data;
 
@@ -20,9 +21,11 @@ public class SessionData {
     
     String id;
     List<ExpeditionModel> expeditions;
+    Set<ExpeditionModel> completedExpeditions;
     List<ShipModel> idleShips;
     List<ShipModel> busyShips;
-    ResourceBoard resourceBoard;
+    Map<String, ResourceModel> resources;
+
     
     //int sumTickCount;
     int year;
@@ -35,13 +38,15 @@ public class SessionData {
         sessionData.id = sessionId;
         
         sessionData.expeditions = new ArrayList<>();
+        sessionData.completedExpeditions = new HashSet<>();
         sessionData.idleShips = new ArrayList<>();
         sessionData.busyShips = new ArrayList<>();
-        sessionData.resourceBoard = new ResourceBoard();
-        sessionData.resourceBoard.setFuel(0);
-        sessionData.resourceBoard.setAmmo(0);
-        sessionData.resourceBoard.setSteel(0);
-        sessionData.resourceBoard.setBauxite(0);
+        sessionData.resources = new HashMap<>();
+//        sessionData.resourceBoard = new ResourceBoard();
+//        sessionData.resourceBoard.setFuel(0);
+//        sessionData.resourceBoard.setAmmo(0);
+//        sessionData.resourceBoard.setSteel(0);
+//        sessionData.resourceBoard.setBauxite(0);
         
         //sessionData.sumTickCount = 0;
         sessionData.year = 1;

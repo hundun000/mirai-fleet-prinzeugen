@@ -7,37 +7,43 @@ package hundun.idlegame.kancolle.world;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import hundun.idlegame.kancolle.container.CommandResult;
 import hundun.idlegame.kancolle.container.ExportEventManager;
 import hundun.idlegame.kancolle.container.GameSaveData;
 import hundun.idlegame.kancolle.container.IGameContainer;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.LogTag;
+import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
+import hundun.idlegame.kancolle.exception.IdleGameException;
+import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
 import hundun.idlegame.kancolle.expedition.ExpeditionManager;
 import hundun.idlegame.kancolle.expedition.ExpeditionPrototype;
-import hundun.idlegame.kancolle.expedition.ExpeditionSaveData;
+import hundun.idlegame.kancolle.resource.ResourceFactory;
 import hundun.idlegame.kancolle.resource.ResourceManager;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipManager;
 import hundun.idlegame.kancolle.ship.ShipModel;
-import hundun.idlegame.kancolle.ship.ShipPrototype;
-import hundun.idlegame.kancolle.ship.ShipSaveData;
+import lombok.Getter;
 
 public class GameWorld {
     
     EventBus eventBus;
+    DataBus dataBus;
+    WorldConfig worldConfig;
     
-    ExpeditionManager expeditionManager;
-    TimerManager timerManager;
-    ResourceManager resourceManager;
-    ShipManager shipManager;
-    ExportEventManager exportEventManager;
-    IGameContainer container;
+    @Getter
+    private ExpeditionManager expeditionManager;
+    @Getter
+    private TimerManager timerManager;
+    @Getter
+    private ResourceManager resourceManager;
+    @Getter
+    private ShipManager shipManager;
+    @Getter
+    private ExportEventManager exportEventManager;
+    
+    private IGameContainer container;
     
     protected Map<String, SessionData> sessionDataMap; 
     
@@ -54,47 +60,52 @@ public class GameWorld {
     public GameWorld(IGameContainer container) {
         this.container = container;
         this.eventBus = new EventBus(container);
-        this.expeditionManager = new ExpeditionManager(eventBus);
-        this.timerManager = new TimerManager(eventBus);
-        this.resourceManager = new ResourceManager(eventBus);
-        this.shipManager = new ShipManager(eventBus);
-        this.exportEventManager = new ExportEventManager(eventBus, container);
+        this.dataBus = new DataBus(this);
+        this.expeditionManager = new ExpeditionManager(eventBus, dataBus);
+        this.timerManager = new TimerManager(eventBus, dataBus);
+        this.resourceManager = new ResourceManager(eventBus, dataBus);
+        this.shipManager = new ShipManager(eventBus, dataBus);
+        this.exportEventManager = new ExportEventManager(eventBus, dataBus);
+        
+        
         
         this.sessionDataMap = new HashMap<>();
+        this.worldConfig = new WorldConfig();
     }
     
 
     
-    public CommandResult<String> commandShowData(String sessionId) {
+    public String commandShowData(String sessionId) {
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
         StringBuilder builder = new StringBuilder();
         builder.append(timerManager.overviewTime(sessionData)).append("\n");
         builder.append(resourceManager.overviewResourceAmount(sessionData)).append("\n");
         builder.append(shipManager.overviewShips(sessionData)).append("\n");
         builder.append(expeditionManager.overviewExpeditions(sessionData)).append("\n");
-        return CommandResult.success(builder.toString());
+        return builder.toString();
     }
     
     /**
      * 即把GameSaveData转为SessionData
+     * @throws IdleGameException 
      */
-    public void commandLoadGame(String sessionId, GameSaveData gameSaveData) {
+    public void commandLoadGame(String sessionId, GameSaveData gameSaveData) throws IdleGameException {
         SessionData sessionData = new SessionData();
         sessionData.setId(sessionId);
         sessionData.setDay(gameSaveData.getDay());
         sessionData.setMonth(gameSaveData.getMonth());
         sessionData.setYear(gameSaveData.getYear());
-        sessionData.setExpeditions(ExpeditionFactory.listSaveDataToModel(gameSaveData.getExpeditionSaveDatas()));
-        sessionData.setIdleShips(ShipFactory.listSaveDataToModel(gameSaveData.getIdleShipSaveDatas()));
-        sessionData.setBusyShips(ShipFactory.listSaveDataToModel(gameSaveData.getBusyShipSaveDatas()));
-        sessionData.setResourceBoard(gameSaveData.getResourceBoard());
+        sessionData.setExpeditions(ExpeditionFactory.INSTANCE.listSaveDataToModel(gameSaveData.getExpeditionSaveDatas()));
+        sessionData.setIdleShips(ShipFactory.INSTANCE.listSaveDataToModel(gameSaveData.getIdleShipSaveDatas()));
+        sessionData.setBusyShips(ShipFactory.INSTANCE.listSaveDataToModel(gameSaveData.getBusyShipSaveDatas()));
+        sessionData.setResources(ResourceFactory.INSTANCE.listSaveDataToModelMap(gameSaveData.getResourceSaveDatas()));
         sessionDataMap.put(sessionId, sessionData);
     }
     
     /**
      * 即把SessionData转为GameSaveData
      */
-    public CommandResult<GameSaveData> commandSaveGame(String sessionId) {
+    public GameSaveData commandSaveGame(String sessionId) {
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
         GameSaveData gameSaveData = new GameSaveData();
         gameSaveData.setId(sessionId);
@@ -102,11 +113,11 @@ public class GameWorld {
         gameSaveData.setDay(sessionData.getDay());
         gameSaveData.setMonth(sessionData.getMonth());
         gameSaveData.setYear(sessionData.getYear());
-        gameSaveData.setExpeditionSaveDatas(ExpeditionFactory.listModelToSaveData(sessionData.getExpeditions()));
-        gameSaveData.setIdleShipSaveDatas(ShipFactory.listModelToSaveData(sessionData.getIdleShips()));
-        gameSaveData.setBusyShipSaveDatas(ShipFactory.listModelToSaveData(sessionData.getBusyShips()));
-        gameSaveData.setResourceBoard(sessionData.getResourceBoard());
-        return CommandResult.success(gameSaveData);
+        gameSaveData.setExpeditionSaveDatas(ExpeditionFactory.INSTANCE.listModelToSaveData(sessionData.getExpeditions()));
+        gameSaveData.setIdleShipSaveDatas(ShipFactory.INSTANCE.listModelToSaveData(sessionData.getIdleShips()));
+        gameSaveData.setBusyShipSaveDatas(ShipFactory.INSTANCE.listModelToSaveData(sessionData.getBusyShips()));
+        gameSaveData.setResourceSaveDatas(ResourceFactory.INSTANCE.listModelToSaveData(sessionData.getResources().values()));
+        return gameSaveData;
     }
     
     
@@ -115,7 +126,7 @@ public class GameWorld {
         this.timerManager.generateTick(sessionData);
     }
     
-    public CommandResult<GameSaveData> commandStartGame(String sessionId) {
+    public GameSaveData commandStartGame(String sessionId) throws IdleGameException {
         sessionDataMap.remove(sessionId);
         commandAddNewShip(sessionId, "吹雪");
         commandAddNewShip(sessionId, "欧根");
@@ -123,30 +134,22 @@ public class GameWorld {
         return commandSaveGame(sessionId);
     }
     
-    public void commandAddNewShip(String sessionId, String shipId) {
+    public void commandAddNewShip(String sessionId, String shipId) throws PrototypeNotFoundException {
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
-        ShipPrototype prototype = ShipFactory.getPrototype(shipId);
-        shipManager.addNewShip(sessionData, prototype);
+        dataBus.addNewShip(sessionData, shipId);
     }
     
-    public CommandResult<Void> commandCreateExpedition(String sessionId, String expeditionId, String shipId) {
+    public void commandCreateExpedition(String sessionId, String expeditionId, String shipId) throws IdleGameException {
         eventBus.log(sessionId, LogTag.COMMAND, "CreateExpedition: {}", expeditionId);
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
 
-        ExpeditionPrototype prototype = ExpeditionFactory.getPrototype(expeditionId);
-        if (prototype == null) {
-            return CommandResult.fail("未找到【远征】：id = " + shipId);
-        }
+        ExpeditionPrototype prototype = ExpeditionFactory.INSTANCE.getPrototype(expeditionId);
         ShipModel ship = shipManager.findFreeShip(sessionData, shipId);
         if (ship == null) {
-            return CommandResult.fail("未找到可用的【舰娘】：id = " + shipId);
+            throw BadCreateExpeditionCommandException.shipBusy(Arrays.asList(shipId));
         }
-        boolean success = expeditionManager.createExpedition(sessionData, prototype, Arrays.asList(shipId));
-        if (!success) {
-            return CommandResult.fail("【远征】已在进行中：id = " + shipId);
-        }
+        expeditionManager.createExpedition(sessionData, prototype, Arrays.asList(ship));
         shipManager.moveShipToWork(sessionData, ship);
-        return CommandResult.success(null);
     }
 
 }

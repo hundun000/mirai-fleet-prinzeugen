@@ -4,8 +4,10 @@ package hundun.idlegame.kancolle.event;
  * Created on 2021/09/02
  */
 public enum LogTag {
+    ERROR,
     EVENT,
     EXPEDITION, 
-    COMMAND,
+    COMMAND, 
+    SHIP,
     ;
 }

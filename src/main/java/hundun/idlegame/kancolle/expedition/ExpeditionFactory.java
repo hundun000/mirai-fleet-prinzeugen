@@ -5,58 +5,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import hundun.idlegame.kancolle.resource.Resource;
+import hundun.idlegame.kancolle.base.BaseFactory;
+import hundun.idlegame.kancolle.exception.IdleGameException;
+import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.ship.ShipFactory;
-import hundun.idlegame.kancolle.ship.ShipModel;
-import hundun.idlegame.kancolle.ship.ShipPrototype;
 
 /**
  * @author hundun
  * Created on 2021/09/02
  */
-public class ExpeditionFactory {
+public class ExpeditionFactory extends BaseFactory<ExpeditionPrototype, ExpeditionModel, ExpeditionSaveData> {
     
-    private static Map<String, ExpeditionPrototype> prototypes = new HashMap<>();
-    static {
-        ExpeditionPrototype prototype;
-        Map<Resource, Integer> resourceRewards;
-        
-        prototype = new ExpeditionPrototype();
-        resourceRewards = new HashMap<>();
-        resourceRewards.put(Resource.FUEL, 200);
-        prototype.setResourceRewards(resourceRewards);
-        prototype.setId("A1");
-        prototype.setTick(4);
-        prototype.setRewardExp(10);
-        prototypes.put(prototype.getId(), prototype);
-        
+    public ExpeditionFactory() {
+        super(ExpeditionPrototype.class);
     }
+
+    public static final ExpeditionFactory INSTANCE = new ExpeditionFactory();
+
     
-    public static ExpeditionPrototype getPrototype(String id) {
-        return prototypes.get(id);
-    }
     
-    public static List<ExpeditionModel> listSaveDataToModel(List<ExpeditionSaveData> saveDatas) {
-        List<ExpeditionModel> models = saveDatas.stream().map(saveData -> ExpeditionFactory.saveDataToModel(saveData)).collect(Collectors.toList());
-        return models;
-    }
     
-    public static List<ExpeditionSaveData> listModelToSaveData(List<ExpeditionModel> models) {
-        List<ExpeditionSaveData> expeditionSaveDatas = models.stream().map(model -> ExpeditionFactory.modelToSaveData(model)).collect(Collectors.toList());
-        return expeditionSaveDatas;
-    }
-    
-    public static ExpeditionModel saveDataToModel(ExpeditionSaveData saveData) {
-        ExpeditionPrototype prototype = getPrototype(saveData.getExpeditionId());
-        ExpeditionModel model = new ExpeditionModel(saveData.getShipIds(), prototype, saveData.getRemainTick());
+    @Override
+    public ExpeditionModel saveDataToModel(ExpeditionSaveData saveData) throws IdleGameException {
+        ExpeditionPrototype prototype = getPrototype(saveData.getId());
+        ExpeditionModel model = new ExpeditionModel();
+        model.setPrototype(prototype);
+        model.setShipIds(saveData.getShipIds());
+        model.setRemainTick(saveData.getRemainTick());
         return model;
     }
     
-    public static ExpeditionSaveData modelToSaveData(ExpeditionModel model) {
+    @Override
+    public ExpeditionSaveData modelToSaveData(ExpeditionModel model) {
         List<String> shipIds = model.getShipIds();
         String expeditionId = model.getPrototype().getId();
-        ExpeditionSaveData saveData = new ExpeditionSaveData(shipIds, expeditionId, model.getRemainTick());
+        ExpeditionSaveData saveData = new ExpeditionSaveData(expeditionId, shipIds, model.getRemainTick());
         return saveData;
     }
+
 
 }

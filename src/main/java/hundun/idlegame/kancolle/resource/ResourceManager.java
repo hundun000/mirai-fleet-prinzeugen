@@ -4,81 +4,85 @@ package hundun.idlegame.kancolle.resource;
  * Created on 2021/09/01
  */
 
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
+import hundun.idlegame.kancolle.DescriptionHelper;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
-import hundun.idlegame.kancolle.event.IExpeditionEventListener;
-import hundun.idlegame.kancolle.expedition.ExpeditionModel;
+import hundun.idlegame.kancolle.event.LogTag;
+import hundun.idlegame.kancolle.exception.IdleGameException;
+import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
+import hundun.idlegame.kancolle.exception.SimpleExceptionAdvice;
 import hundun.idlegame.kancolle.world.BaseManager;
+import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
-public class ResourceManager extends BaseManager implements IExpeditionEventListener, IClockEventListener {
+public class ResourceManager extends BaseManager implements IClockEventListener {
     
-    Map<Resource, Integer> minuteAwardResources;
+    Map<String, Integer> minuteAwardResources;
     
     
-    public ResourceManager(EventBus eventBus) {
-        super(eventBus);
+    public ResourceManager(EventBus eventBus, DataBus dataBus) {
+        super(eventBus, dataBus);
 
         minuteAwardResources = new HashMap<>();
-        minuteAwardResources.put(Resource.FUEL, 3);
-        minuteAwardResources.put(Resource.AMMO, 3);
-        minuteAwardResources.put(Resource.STEEL, 3);
-        minuteAwardResources.put(Resource.BAUXITE, 1);
+        minuteAwardResources.put("FUEL", 3);
+        minuteAwardResources.put("AMMO", 3);
+        minuteAwardResources.put("STEEL", 3);
+        minuteAwardResources.put("BAUXITE", 1);
     }
     
-    public void merge(ResourceBoard resourceBoard, Map<Resource, Integer> delta) {
-        resourceBoard.setFuel(resourceBoard.getFuel() + delta.getOrDefault(Resource.FUEL, 0));
-        resourceBoard.setAmmo(resourceBoard.getAmmo() + delta.getOrDefault(Resource.AMMO, 0));
-        resourceBoard.setSteel(resourceBoard.getSteel() + delta.getOrDefault(Resource.STEEL, 0));
-        resourceBoard.setBauxite(resourceBoard.getBauxite() + delta.getOrDefault(Resource.BAUXITE, 0));
-    }
-
-    @Override
-    public void onExpeditionCompleted(SessionData sessionData, List<ExpeditionModel> completedTasks) {
+    public void merge(SessionData sessionData, Map<String, Integer> delta) throws IdleGameException {
+        Map<String, ResourceModel> resources = sessionData.getResources();
         
-        for (ExpeditionModel completedTask : completedTasks) {
-            
-            merge(sessionData.getResourceBoard(), completedTask.getPrototype().getResourceRewards());
-            eventBus.sendResourceChangeEvent(sessionData, completedTask.getPrototype().getResourceRewards(), sessionData.getResourceBoard());
+        for (Entry<String, Integer> deltaEntry : delta.entrySet()) {
+            String resourceId = deltaEntry.getKey();
+            Integer deltaAmount = deltaEntry.getValue();
+            if (resources.containsKey(resourceId)) {
+                BigDecimal newValue = resources.get(resourceId).getAmount().add(BigDecimal.valueOf(deltaAmount));
+                resources.get(resourceId).setAmount(newValue);
+            } else {
+                ResourcePrototype prototype = ResourceFactory.INSTANCE.getPrototype(resourceId);
+                ResourceModel newModel = new ResourceModel();
+                newModel.setPrototype(prototype);
+                newModel.setAmount(BigDecimal.valueOf(deltaAmount));
+                resources.put(resourceId, newModel);
+            }
         }
-        
+        eventBus.sendResourceChangedEvent(sessionData, delta, resources);
     }
+//
+//    @Override
+//    public void onExpeditionCompleted(SessionData sessionData, List<ExpeditionModel> completedTasks) {
+//        
+//        for (ExpeditionModel completedTask : completedTasks) {
+//            
+//            merge(sessionData.getResourceBoard(), completedTask.getPrototype().getResourceRewards());
+//            eventBus.sendResourceChangeEvent(sessionData, completedTask.getPrototype().getResourceRewards(), sessionData.getResourceBoard());
+//        }
+//        
+//    }
     
-    public static String des(Map<Resource, Integer> resourceMap) {
-        return new StringBuilder()
-                .append("资源:")
-                .append("油").append(resourceMap.getOrDefault(Resource.FUEL, 0)).append(" ")
-                .append("弹").append(resourceMap.getOrDefault(Resource.AMMO, 0)).append(" ")
-                .append("钢").append(resourceMap.getOrDefault(Resource.STEEL, 0)).append(" ")
-                .append("铝").append(resourceMap.getOrDefault(Resource.BAUXITE, 0)).append(" ")
-                .toString();
-    }
 
-    public static String des(ResourceBoard resourceBoard) {
-        return new StringBuilder()
-                .append("资源:")
-                .append("油").append(resourceBoard.getFuel()).append(" ")
-                .append("弹").append(resourceBoard.getAmmo()).append(" ")
-                .append("钢").append(resourceBoard.getSteel()).append(" ")
-                .append("铝").append(resourceBoard.getBauxite()).append(" ")
-                .toString();
-        
-    }
+
+
             
 
     public String overviewResourceAmount(SessionData sessionData) {
-        return des(sessionData.getResourceBoard());
+        return DescriptionHelper.desResource(sessionData.getResources());
     }
 
 
     @Override
     public void tick(SessionData sessionData) {
-        merge(sessionData.getResourceBoard(), minuteAwardResources);
-        eventBus.sendResourceChangeEvent(sessionData, minuteAwardResources, sessionData.getResourceBoard());
+        try {
+            dataBus.resourceMerge(sessionData, minuteAwardResources);
+        } catch (IdleGameException e) {
+            eventBus.log(sessionData.getId(), LogTag.ERROR, "minuteAwardResources error:" + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
+        }
+        //eventBus.sendResourceChangeEvent(sessionData, minuteAwardResources, sessionData.getResourceBoard());
     }
 }

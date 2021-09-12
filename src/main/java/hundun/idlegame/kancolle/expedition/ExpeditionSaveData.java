@@ -2,7 +2,6 @@ package hundun.idlegame.kancolle.expedition;
 
 import java.util.List;
 
-import hundun.idlegame.kancolle.ship.ShipPrototype;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ExpeditionSaveData {
+    String id;
     List<String> shipIds;
-    String expeditionId;
     int remainTick;
-    
-    
 }

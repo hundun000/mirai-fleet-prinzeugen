@@ -5,8 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.Data;
-
 /**
  * @author hundun
  * Created on 2021/08/28

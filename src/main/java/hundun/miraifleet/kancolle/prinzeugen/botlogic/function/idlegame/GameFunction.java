@@ -1,26 +1,22 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import hundun.idlegame.kancolle.container.CommandResult;
+
 import hundun.idlegame.kancolle.container.GameSaveData;
 import hundun.idlegame.kancolle.container.IGameContainer;
+import hundun.idlegame.kancolle.exception.IdleGameException;
+import hundun.idlegame.kancolle.exception.SimpleExceptionAdvice;
 import hundun.idlegame.kancolle.world.GameWorld;
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.core.function.AsCommand;
 import hundun.miraifleet.framework.core.function.BaseFunction;
-import hundun.miraifleet.framework.core.helper.repository.MapDocumentRepository;
-import hundun.miraifleet.framework.starter.botlogic.function.reminder.domain.ReminderList;
-import lombok.Data;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.command.CommandSender;
-import net.mamoe.mirai.console.command.MemberCommandSender;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.contact.Group;
 
@@ -75,13 +71,15 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         for (GameFunctionSaveData gameFunctionSaveData : gameFunctionSaveDatas) {
             String gameSessionId = gameFunctionSaveData.getData().getId();
             
-            CommandResult<GameSaveData> result = gameWorld.commandSaveGame(gameSessionId);
-            if (!result.isSuccess()) {
-                log.warning("失败: " + result.getFailReason());
-                return;
-            }
+            GameSaveData result;
+//            try {
+                result = gameWorld.commandSaveGame(gameSessionId);
+//            } catch (IdleGameException e) {
+//                log.warning("IdleGameException: " + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
+//                return;
+//            }
             
-            gameFunctionSaveData.setData(result.getData());
+            gameFunctionSaveData.setData(result);
         }
         gameFunctionSaveDataRepository.saveAll(gameFunctionSaveDatas);
     }
@@ -112,16 +110,19 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         GameFunctionSaveData functionSaveData = gameFunctionSaveDataRepository.findById(functionSessionId);
         if (functionSaveData == null) {
             String gameSessionId = UUID.randomUUID().toString();
-            CommandResult<GameSaveData> result = gameWorld.commandStartGame(gameSessionId);
-            if (!result.isSuccess()) {
-                sender.sendMessage("失败: " + result.getFailReason());
+
+            GameSaveData result;
+            try {
+                result = gameWorld.commandStartGame(gameSessionId);
+            } catch (IdleGameException e) {
+                log.warning("IdleGameException: " + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
                 return;
             }
             
             functionSaveData = new GameFunctionSaveData();
             functionSaveData.setId(functionSessionId);
             functionSaveData.setPlayer(new Player(sender));
-            functionSaveData.setData(result.getData());
+            functionSaveData.setData(result);
             gameFunctionSaveDataRepository.save(functionSaveData);
             
             sender.sendMessage("创建成功");
@@ -142,13 +143,10 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             return;
         }
         
-        CommandResult<GameSaveData> result = gameWorld.commandSaveGame(functionSaveData.getData().getId());
-        if (!result.isSuccess()) {
-            sender.sendMessage("失败: " + result.getFailReason());
-            return;
-        }
+        GameSaveData result = gameWorld.commandSaveGame(functionSaveData.getData().getId());
+
         
-        functionSaveData.setData(result.getData());
+        functionSaveData.setData(result);
         gameFunctionSaveDataRepository.save(functionSaveData);
         
         sender.sendMessage("存档成功");
@@ -165,8 +163,13 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             sender.sendMessage(NO_GAME_DATA_REPLY);
             return;
         }
-        gameWorld.commandLoadGame(functionSaveData.getData().getId(), functionSaveData.getData());
-        
+
+        try {
+            gameWorld.commandLoadGame(functionSaveData.getData().getId(), functionSaveData.getData());
+        } catch (IdleGameException e) {
+            log.warning("IdleGameException: " + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
+            return;
+        }
 //        GameSenderRelation gameData = getOrCreateSessionData(sender);
 //        gameData.setGameSessionId(functionSaveData.getData().getId());
 //        gameData.setSender(sender);
@@ -203,13 +206,10 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             return;
         }
         
-        CommandResult<String> result = gameWorld.commandShowData(functionSaveData.getData().getId());
-        if (!result.isSuccess()) {
-            sender.sendMessage("失败！" + result.getFailReason());
-            return;
-        }
+        String result = gameWorld.commandShowData(functionSaveData.getData().getId());
+
         
-        sender.sendMessage(result.getData());
+        sender.sendMessage(result);
 
     }
     
@@ -239,11 +239,13 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             sender.sendMessage(NO_GAME_DATA_REPLY);
             return;
         }
-        CommandResult<Void> result = gameWorld.commandCreateExpedition(functionSaveData.getData().getId(), expeditionId, shipId);
-        if (!result.isSuccess()) {
-            sender.sendMessage("失败！" + result.getFailReason());
+        try {
+            gameWorld.commandCreateExpedition(functionSaveData.getData().getId(), expeditionId, shipId);
+        } catch (IdleGameException e) {
+            log.warning("IdleGameException: " + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
             return;
         }
+
         sender.sendMessage("执行成功");
     }
 

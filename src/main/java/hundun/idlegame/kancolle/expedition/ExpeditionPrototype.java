@@ -4,20 +4,16 @@ package hundun.idlegame.kancolle.expedition;
  * Created on 2021/09/01
  */
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ser.std.RawSerializer;
-
-import hundun.idlegame.kancolle.resource.Resource;
+import hundun.idlegame.kancolle.base.BaseProtoype;
+import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 @Data
-public class ExpeditionPrototype {
-    
-    
-    String id;
-    Map<Resource, Integer> resourceRewards;
-    int rewardExp;
+public class ExpeditionPrototype extends BaseProtoype {
+    Requirement requirement;
+    Reward normalReward;
+    Reward firstTimeReward;
     int tick;
 }

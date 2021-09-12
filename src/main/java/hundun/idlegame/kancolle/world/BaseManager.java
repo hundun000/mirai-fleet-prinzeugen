@@ -1,6 +1,5 @@
 package hundun.idlegame.kancolle.world;
 
-import hundun.idlegame.kancolle.container.GameSaveData;
 import hundun.idlegame.kancolle.event.EventBus;
 
 /**
@@ -9,9 +8,11 @@ import hundun.idlegame.kancolle.event.EventBus;
  */
 public abstract class BaseManager {
     protected EventBus eventBus;
+    protected DataBus dataBus;
     
-    public BaseManager(EventBus eventBus) {
+    public BaseManager(EventBus eventBus, DataBus dataBus) {
         this.eventBus = eventBus;
+        this.dataBus = dataBus;
         eventBus.register(this);
     }
     

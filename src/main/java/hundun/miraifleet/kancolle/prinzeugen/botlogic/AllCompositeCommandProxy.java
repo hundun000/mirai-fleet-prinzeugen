@@ -1,15 +1,8 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
-import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
-import hundun.miraifleet.framework.starter.botlogic.function.weibo.config.WeiboViewFormat;
-import net.mamoe.mirai.console.command.CommandOwner;
 import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.command.CompositeCommand;
 import net.mamoe.mirai.console.command.descriptor.CommandArgumentContext;
-import net.mamoe.mirai.console.permission.Permission;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 
 /**

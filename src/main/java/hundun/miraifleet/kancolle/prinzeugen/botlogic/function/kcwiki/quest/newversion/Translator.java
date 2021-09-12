@@ -3,25 +3,20 @@ package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.new
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.KcwikiQuestData.Requirements;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.KcwikiQuestData.RequirementsGroup;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.KcwikiQuestData.RequirementsObject;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.TranslatorDictionary.Equipexchange;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.TranslatorDictionary.Expedition;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.TranslatorDictionary.Fleet;
