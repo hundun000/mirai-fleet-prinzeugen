@@ -5,6 +5,7 @@ import java.util.Map;
 
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
+import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipPrototype;
 
@@ -22,7 +23,6 @@ public class DataBus {
 
     
     public void addNewShip(SessionData sessionData, String shipId) throws PrototypeNotFoundException {
-        
         ShipPrototype prototype = ShipFactory.INSTANCE.getPrototype(shipId);
         gameWorld.getShipManager().addNewShip(sessionData, prototype);
     }
@@ -40,6 +40,11 @@ public class DataBus {
 
     public void releaseShip(SessionData sessionData, List<String> shipIds) {
         gameWorld.getShipManager().releaseShip(sessionData, shipIds);
+    }
+
+
+    public SimpleExceptionFormatter getExceptionAdvice() {
+        return gameWorld.getExceptionAdvice();
     }
     
 

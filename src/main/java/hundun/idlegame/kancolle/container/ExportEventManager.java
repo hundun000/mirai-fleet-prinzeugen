@@ -1,10 +1,13 @@
 package hundun.idlegame.kancolle.container;
 
 import java.util.List;
-import hundun.idlegame.kancolle.DescriptionHelper;
+
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IExpeditionEventListener;
+import hundun.idlegame.kancolle.exception.IdleGameException;
+import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
+import hundun.idlegame.kancolle.format.DescriptionFormatter;
 import hundun.idlegame.kancolle.world.BaseManager;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
@@ -21,9 +24,9 @@ public class ExportEventManager extends BaseManager implements IExpeditionEventL
     }
 
     @Override
-    public void onExpeditionCompleted(SessionData sessionData, List<ExpeditionModel> completedTasks) {
+    public void onExpeditionCompleted(SessionData sessionData, List<ExpeditionModel> completedTasks) throws IdleGameException {
         for (ExpeditionModel model : completedTasks) {
-            String desExpeditionCompleted = DescriptionHelper.desExpeditionCompleted(model);
+            String desExpeditionCompleted = DescriptionFormatter.desExpeditionCompleted(model);
             eventBus.sendExportEvent(sessionData.getId(), desExpeditionCompleted);
         }
     }

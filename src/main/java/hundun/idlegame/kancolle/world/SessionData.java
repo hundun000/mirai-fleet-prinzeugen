@@ -10,6 +10,7 @@ import java.util.Set;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
 import hundun.idlegame.kancolle.resource.ResourceModel;
 import hundun.idlegame.kancolle.ship.ShipModel;
+import hundun.idlegame.kancolle.time.GameCalendar;
 import lombok.Data;
 
 /**
@@ -21,26 +22,21 @@ public class SessionData {
     
     String id;
     List<ExpeditionModel> expeditions;
-    Set<ExpeditionModel> completedExpeditions;
-    List<ShipModel> idleShips;
-    List<ShipModel> busyShips;
+    //Set<ExpeditionModel> completedExpeditions;
+    List<ShipModel> ships;
     Map<String, ResourceModel> resources;
 
     
     //int sumTickCount;
-    int year;
-    int month;
-    int day;
-    int tick;
+    GameCalendar calendar;
     
     public static SessionData newSession(String sessionId) {
         SessionData sessionData = new SessionData();
         sessionData.id = sessionId;
         
         sessionData.expeditions = new ArrayList<>();
-        sessionData.completedExpeditions = new HashSet<>();
-        sessionData.idleShips = new ArrayList<>();
-        sessionData.busyShips = new ArrayList<>();
+//        sessionData.completedExpeditions = new HashSet<>();
+        sessionData.ships = new ArrayList<>();
         sessionData.resources = new HashMap<>();
 //        sessionData.resourceBoard = new ResourceBoard();
 //        sessionData.resourceBoard.setFuel(0);
@@ -49,10 +45,12 @@ public class SessionData {
 //        sessionData.resourceBoard.setBauxite(0);
         
         //sessionData.sumTickCount = 0;
-        sessionData.year = 1;
-        sessionData.month = 1;
-        sessionData.day = 1;
-        sessionData.tick = 0;
+        GameCalendar calendar = new GameCalendar();
+        calendar.setYear(1);
+        calendar.setMonth(1);
+        calendar.setDay(1);
+        calendar.setTick(0);
+        sessionData.calendar = calendar;
         
         return sessionData;
     }

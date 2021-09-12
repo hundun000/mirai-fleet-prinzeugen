@@ -10,5 +10,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class Requirement {
-    Integer sumLevel;
+    Integer shipPower;
+    Integer shipLevel;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import hundun.idlegame.kancolle.expedition.ExpeditionSaveData;
 import hundun.idlegame.kancolle.resource.ResourceSaveData;
 import hundun.idlegame.kancolle.ship.ShipSaveData;
+import hundun.idlegame.kancolle.time.GameCalendar;
 import lombok.Data;
 
 /**
@@ -15,14 +16,9 @@ public class GameSaveData {
     
     String id;
     
-    //int sumTickCount;
-    int year;
-    int month;
-    int day;
-    int tick;
+    GameCalendar calendar;
     
     List<ExpeditionSaveData> expeditionSaveDatas;
-    List<ShipSaveData> idleShipSaveDatas;
-    List<ShipSaveData> busyShipSaveDatas;
+    List<ShipSaveData> shipSaveDatas;
     List<ResourceSaveData> resourceSaveDatas;
 }

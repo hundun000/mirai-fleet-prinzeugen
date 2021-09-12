@@ -15,17 +15,17 @@ public class Player {
     
     Long botId;
     Long groupId;
-    boolean groupType;
+    boolean usingConsole;
     
     public Player(CommandSender sender) {
         if (sender instanceof MemberCommandSender) {
             this.groupId = ((MemberCommandSender)sender).getGroup().getId();
             this.botId = ((MemberCommandSender)sender).getBot().getId();
-            this.groupType = true;
+            this.usingConsole = false;
         } else {
             this.groupId = null;
             this.botId = null;
-            this.groupType = false;
+            this.usingConsole = true;
         }
     }
 }

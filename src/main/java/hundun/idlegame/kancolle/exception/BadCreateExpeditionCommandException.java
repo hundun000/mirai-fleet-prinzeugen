@@ -14,7 +14,8 @@ import lombok.Getter;
  */
 @SuppressWarnings("serial")
 public class BadCreateExpeditionCommandException extends IdleGameException {
-    boolean expeditionIsPresent;
+    @Getter
+    boolean expeditionPresent;
     @Getter
     Requirement requirement;
     @Getter
@@ -37,7 +38,7 @@ public class BadCreateExpeditionCommandException extends IdleGameException {
 
     public static BadCreateExpeditionCommandException expeditionIsPresent() {
         BadCreateExpeditionCommandException exception = new BadCreateExpeditionCommandException();
-        exception.expeditionIsPresent = true;
+        exception.expeditionPresent = true;
         return exception;
     }
 }

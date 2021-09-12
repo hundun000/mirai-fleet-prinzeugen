@@ -10,13 +10,14 @@ import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.exception.SimpleExceptionAdvice;
+import hundun.idlegame.kancolle.format.DescriptionFormatter;
+import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipModel;
+import hundun.idlegame.kancolle.time.TimerManager;
 import hundun.idlegame.kancolle.world.BaseManager;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
-import hundun.idlegame.kancolle.world.TimerManager;
 
 /**
  * @author hundun
@@ -29,26 +30,18 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
     public ExpeditionManager(EventBus eventBus, DataBus dataBus) {
         super(eventBus, dataBus);
     }
+
     
-    public String overviewExpeditions(SessionData sessionData) {
-        String info = "远征列表:\n" + sessionData.getExpeditions().stream().map(model -> describeExpedition(model)).collect(Collectors.joining("\n"));
-        return info;
-    }
     
-    public String describeExpedition(ExpeditionModel model) {
-        int remainHour = TimerManager.tickToHour(model.remainTick);
-        StringBuilder builder = new StringBuilder()
-            .append(model.getPrototype().getId()).append(" ")
-            .append("剩余时间: ").append(remainHour).append("时 ")
-            .append("成员: ").append(model.getShipIds().stream().collect(Collectors.joining(","))).append(" ")
-            ;
-        return builder.toString();
-    }
     
     private boolean checkRequirement(Requirement requirement, List<ShipModel> ships) {
         if (requirement != null) {
-            boolean checkSumLevel = requirement.getSumLevel() != null ? ships.stream().mapToInt(ship -> ship.getLevel()).sum() > requirement.getSumLevel() : true;
+            boolean checkSumLevel = requirement.getShipLevel() != null ? ships.stream().mapToInt(ship -> ship.getLevel()).sum() >= requirement.getShipLevel() : true;
             if (!checkSumLevel) {
+                return false;
+            }
+            boolean checkSumPower = requirement.getShipPower() != null ? ships.stream().mapToInt(ship -> ship.calculatePower()).sum() >= requirement.getShipPower() : true;
+            if (!checkSumPower) {
                 return false;
             }
         }
@@ -62,7 +55,8 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
         if (isPresent) {
             throw BadCreateExpeditionCommandException.expeditionIsPresent();
         }
-        if (checkRequirement(prototype.getRequirement(), ships)) {
+        boolean requirementMatch = checkRequirement(prototype.getRequirement(), ships);
+        if (!requirementMatch) {
             throw BadCreateExpeditionCommandException.requirementNotMatch(prototype.getRequirement());
         }
         List<String> shipIds = ShipFactory.INSTANCE.listModelToId(ships);
@@ -89,22 +83,23 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
         }
         
         if (!completedTasks.isEmpty()) {
-            
-            for (ExpeditionModel task : completedTasks) {
-                try {
+            try {
+                for (ExpeditionModel task : completedTasks) {
+                    eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle completedTask: {}", task.getPrototype().getId());
                     handleReward(sessionData, task.getShipIds(), task.getPrototype().getNormalReward());
-                    boolean isFirstTime = !sessionData.getCompletedExpeditions().contains(task);
-                    if (isFirstTime) {
-                        handleReward(sessionData, task.getShipIds(), task.getPrototype().getFirstTimeReward());
-                    }
-                } catch (IdleGameException e) {
-                    eventBus.log(sessionData.getId(), LogTag.ERROR, "ExpeditionModel handleReward error:" + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
+//                    boolean isFirstTime = !sessionData.getCompletedExpeditions().contains(task);
+//                    if (isFirstTime) {
+//                        handleReward(sessionData, task.getShipIds(), task.getPrototype().getFirstTimeReward());
+//                    }
+                    dataBus.releaseShip(sessionData, task.getShipIds());
                 }
-                dataBus.releaseShip(sessionData, task.getShipIds());
+                eventBus.sendExpeditionCompletedEvent(sessionData, completedTasks);
+                
+                sessionData.getExpeditions().removeAll(completedTasks);
+                eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle all completedTask done");
+            } catch (IdleGameException e) {
+                eventBus.log(sessionData.getId(), LogTag.ERROR, "ExpeditionModel handleReward error:" + dataBus.getExceptionAdvice().exceptionToMessage(e));
             }
-            eventBus.sendExpeditionCompletedEvent(sessionData, completedTasks);
-            
-            sessionData.getExpeditions().removeAll(completedTasks);
 //            for (ExpeditionModel task : completedTasks) {
 //                if (task.getRepeat() == INFINITE_REPEAT || task.getRepeat() > 0) {
 //                    createExpedition(sessionData, task.getPrototype(), task.getShipIds(), task.getRepeat());
@@ -114,6 +109,10 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
     }
     
     private void handleReward(SessionData sessionData, List<String> shipIds, Reward reward) throws IdleGameException {
+        if (reward == null) {
+           return; 
+        }
+        
         if (reward.getResources() != null) {
             dataBus.resourceMerge(sessionData, reward.getResources());
         }

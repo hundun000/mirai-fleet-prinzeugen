@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import hundun.idlegame.kancolle.DescriptionHelper;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
-import hundun.idlegame.kancolle.exception.SimpleExceptionAdvice;
+import hundun.idlegame.kancolle.format.DescriptionFormatter;
+import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
 import hundun.idlegame.kancolle.world.BaseManager;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
@@ -69,19 +69,12 @@ public class ResourceManager extends BaseManager implements IClockEventListener 
 
 
 
-            
-
-    public String overviewResourceAmount(SessionData sessionData) {
-        return DescriptionHelper.desResource(sessionData.getResources());
-    }
-
-
     @Override
     public void tick(SessionData sessionData) {
         try {
             dataBus.resourceMerge(sessionData, minuteAwardResources);
         } catch (IdleGameException e) {
-            eventBus.log(sessionData.getId(), LogTag.ERROR, "minuteAwardResources error:" + SimpleExceptionAdvice.INSTANCE.exceptionToMessage(e));
+            eventBus.log(sessionData.getId(), LogTag.ERROR, "minuteAwardResources error: {}", dataBus.getExceptionAdvice().exceptionToMessage(e));
         }
         //eventBus.sendResourceChangeEvent(sessionData, minuteAwardResources, sessionData.getResourceBoard());
     }

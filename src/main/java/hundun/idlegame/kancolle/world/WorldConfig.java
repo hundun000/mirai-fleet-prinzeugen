@@ -1,5 +1,7 @@
 package hundun.idlegame.kancolle.world;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
@@ -9,7 +11,9 @@ import hundun.idlegame.kancolle.expedition.Reward;
 import hundun.idlegame.kancolle.resource.ResourceFactory;
 import hundun.idlegame.kancolle.resource.ResourcePrototype;
 import hundun.idlegame.kancolle.ship.ShipFactory;
+import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.ship.ShipPrototype;
+import lombok.Getter;
 
 /**
  * @author hundun
@@ -17,54 +21,76 @@ import hundun.idlegame.kancolle.ship.ShipPrototype;
  */
 public class WorldConfig {
     
+    @Getter
+    protected List<String> startShips = new ArrayList<>();
     
-    
+    public final static String RESOURCE_FUEL_ID = "FUEL";
+    public final static String RESOURCE_AMMO_ID = "AMMO";
+    public final static String RESOURCE_STEEL_ID = "STEEL";
+    public final static String RESOURCE_BAUXITE_ID = "BAUXITE";
     
     public WorldConfig() {
+        startShips.add("吹雪");
+        startShips.add("欧根");
+    }
+    
+    public void registerAll() {
         registerResources();
         registerShips();
         registerExpeditions();
     }
     
-    private void registerResources() {
+    protected void registerResources() {
         ResourcePrototype prototype;
         
-        prototype = ResourcePrototype.builder().id("FUEL").name("油").build();
+        prototype = ResourcePrototype.builder().id(RESOURCE_FUEL_ID).name("油").build();
         ResourceFactory.INSTANCE.register(prototype);
         
-        prototype = ResourcePrototype.builder().id("AMMO").name("弹").build();
+        prototype = ResourcePrototype.builder().id(RESOURCE_AMMO_ID).name("弹").build();
         ResourceFactory.INSTANCE.register(prototype);
         
-        prototype = ResourcePrototype.builder().id("STEEL").name("钢").build();
+        prototype = ResourcePrototype.builder().id(RESOURCE_STEEL_ID).name("钢").build();
         ResourceFactory.INSTANCE.register(prototype);
         
-        prototype = ResourcePrototype.builder().id("BAUXITE").name("铝").build();
+        prototype = ResourcePrototype.builder().id(RESOURCE_BAUXITE_ID).name("铝").build();
         ResourceFactory.INSTANCE.register(prototype);
     }
 
-    private void registerShips() {
+    protected void registerShips() {
         ShipPrototype prototype;
         
-        prototype = ShipPrototype.builder().id("吹雪").build();
+        prototype = ShipPrototype.builder()
+                .id("吹雪")
+                .basePower(10)
+                .build();
         ShipFactory.INSTANCE.register(prototype);
         
-        prototype = ShipPrototype.builder().id("睦月").build();
+        prototype = ShipPrototype.builder()
+                .id("睦月")
+                .basePower(10)
+                .build();
         ShipFactory.INSTANCE.register(prototype);
         
-        prototype = ShipPrototype.builder().id("如月").build();
+        prototype = ShipPrototype.builder()
+                .id("如月")
+                .basePower(10)
+                .build();
         ShipFactory.INSTANCE.register(prototype);
         
-        prototype = ShipPrototype.builder().id("欧根").build();
+        prototype = ShipPrototype.builder()
+                .id("欧根")
+                .basePower(30)
+                .build();
         ShipFactory.INSTANCE.register(prototype);
     }
     
-    private void registerExpeditions() {
+    protected void registerExpeditions() {
         ExpeditionPrototype prototype;
         
         prototype = ExpeditionPrototype.builder()
                 .id("A0")
                 .tick(4)
-                .requirement(new Requirement(1))
+                .requirement(new Requirement(1, 1))
                 .normalReward(new Reward(null, null, 30))
                 .build();
         ExpeditionFactory.INSTANCE.register(prototype);
@@ -72,18 +98,16 @@ public class WorldConfig {
         prototype = ExpeditionPrototype.builder()
                 .id("A1")
                 .tick(4)
-                .requirement(new Requirement(3))
-                .normalReward(new Reward(Map.of("FUEL", 200), null, 10))
-                .firstTimeReward(new Reward(null, "睦月", 0))
+                .requirement(new Requirement(30, 1))
+                .normalReward(new Reward(Map.of(RESOURCE_FUEL_ID, 200), null, 10))
                 .build();
         ExpeditionFactory.INSTANCE.register(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id("A2")
                 .tick(4)
-                .requirement(new Requirement(5))
-                .normalReward(new Reward(Map.of("AMMO", 200), null, 10))
-                .firstTimeReward(new Reward(null, "如月", 0))
+                .requirement(new Requirement(1, 3))
+                .normalReward(new Reward(Map.of(RESOURCE_AMMO_ID, 200), null, 10))
                 .build();
         ExpeditionFactory.INSTANCE.register(prototype);
     }

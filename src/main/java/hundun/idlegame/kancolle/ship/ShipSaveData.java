@@ -15,4 +15,5 @@ public class ShipSaveData {
     String prototypeId;
     int level;
     int exp;
+    ShipWorkStatus workStatus;
 }

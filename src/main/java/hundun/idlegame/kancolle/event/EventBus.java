@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.container.IGameContainer;
+import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
 import hundun.idlegame.kancolle.resource.ResourceModel;
 import hundun.idlegame.kancolle.ship.ShipModel;
@@ -55,7 +56,7 @@ public class EventBus {
         }
     }
     
-    public void sendExpeditionCompletedEvent(SessionData sessionData, List<ExpeditionModel> completedTasks) {
+    public void sendExpeditionCompletedEvent(SessionData sessionData, List<ExpeditionModel> completedTasks) throws IdleGameException {
         String info = completedTasks.stream().map(task -> task.getPrototype().getId()).collect(Collectors.joining("\n"));
         log(sessionData.getId(), LogTag.EVENT, "ExpeditionTask.completed: " + info);
         for (IExpeditionEventListener listener : expeditionTaskEventListeners) {
@@ -85,12 +86,12 @@ public class EventBus {
 
 
     public void sendShipAddNewEvent(SessionData sessionData, ShipModel ship) {
-        log(sessionData.getId(), LogTag.SHIP, "ShipEvent.AddNew: " + ship.getPrototype().getId());
+        log(sessionData.getId(), LogTag.EVENT, "ShipEvent.AddNew: " + ship.getPrototype().getId());
     }
 
 
     public void sendShipLevelUpEvent(SessionData sessionData, ShipModel ship) {
-        log(sessionData.getId(), LogTag.SHIP, "ShipEvent.LevelUp: " + ship.getPrototype().getId() + " lv." + ship.getLevel());
+        log(sessionData.getId(), LogTag.EVENT, "ShipEvent.LevelUp: " + ship.getPrototype().getId() + " lv." + ship.getLevel());
     }
 
 }

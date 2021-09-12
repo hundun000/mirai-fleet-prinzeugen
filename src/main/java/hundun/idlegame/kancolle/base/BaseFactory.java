@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
+import lombok.Getter;
 
 /**
  * @author hundun
@@ -18,6 +19,7 @@ import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL extends BaseModel<?>, T_SAVE> {
     
     private Map<String, T_PROTOTYPE> prototypes = new HashMap<>();
+    @Getter
     private List<String> sortOrders = new ArrayList<>();
     
     Class<T_PROTOTYPE> prototypeClass;
@@ -56,19 +58,15 @@ public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL exte
     }
 
     public List<T_SAVE> listModelToSaveData(Collection<T_MODEL> models) {
-        List<T_SAVE> saveDatas = sortOrders.stream()
-                .map(id -> {
-                    Optional<T_MODEL> targetModelOptional = models.stream()
-                            .filter(model -> model.getPrototype().getId().equals(id))
-                            .findFirst();
-                    if (targetModelOptional.isPresent()) {
-                        return modelToSaveData(targetModelOptional.get());
-                    } else {
-                        return null;
-                    }
-                })
-                .collect(Collectors.toList()
-        );
+        List<T_SAVE> saveDatas = new ArrayList<>();
+        for (String id : sortOrders) {
+            Optional<T_MODEL> targetModelOptional = models.stream()
+                    .filter(model -> model.getPrototype().getId().equals(id))
+                    .findFirst();
+            if (targetModelOptional.isPresent()) {
+                saveDatas.add(modelToSaveData(targetModelOptional.get()));
+            }
+        }
         return saveDatas;
     }
     

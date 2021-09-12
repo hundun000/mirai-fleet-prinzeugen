@@ -5,15 +5,15 @@ package hundun.idlegame.kancolle.expedition;
  */
 
 import hundun.idlegame.kancolle.base.BaseProtoype;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ExpeditionPrototype extends BaseProtoype {
     Requirement requirement;
     Reward normalReward;
-    Reward firstTimeReward;
     int tick;
 }
