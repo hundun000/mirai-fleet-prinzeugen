@@ -16,8 +16,6 @@ import hundun.idlegame.kancolle.ship.ShipSaveData;
  * Created on 2021/09/10
  */
 public class ResourceFactory extends BaseFactory<ResourcePrototype, ResourceModel, ResourceSaveData>{
-   
-    public static final ResourceFactory INSTANCE = new ResourceFactory();
     
     public ResourceFactory() {
         super(ResourcePrototype.class);

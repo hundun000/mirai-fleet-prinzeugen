@@ -2,6 +2,8 @@ package hundun.idlegame.kancolle.ship;
 
 import hundun.idlegame.kancolle.base.BaseProtoype;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -10,8 +12,11 @@ import lombok.experimental.SuperBuilder;
  */
 @SuperBuilder
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class ShipPrototype extends BaseProtoype {
 
     int basePower;
-    
+    int gachaRarity;
+    int[] standardGachaResources;
 }

@@ -1,9 +1,6 @@
 package hundun.idlegame.kancolle;
 
 import hundun.idlegame.kancolle.container.IGameContainer;
-import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
-import hundun.idlegame.kancolle.world.GameWorld;
 
 /**
  * @author hundun

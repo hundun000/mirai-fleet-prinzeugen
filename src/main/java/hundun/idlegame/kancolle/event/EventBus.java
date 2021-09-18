@@ -10,6 +10,7 @@ import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
 import hundun.idlegame.kancolle.resource.ResourceModel;
 import hundun.idlegame.kancolle.ship.ShipModel;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.SessionData;
 
 
@@ -24,9 +25,11 @@ public class EventBus {
     List<IClockEventListener> clockEventListeners = new ArrayList<>();
 
     IGameContainer container;
+    ComponentContext context;
     
-    public EventBus(IGameContainer container) {
+    public EventBus(IGameContainer container, ComponentContext context) {
         this.container = container;
+        this.context = context;
     }
 
 
@@ -61,6 +64,10 @@ public class EventBus {
         log(sessionData.getId(), LogTag.EVENT, "ExpeditionTask.completed: " + info);
         for (IExpeditionEventListener listener : expeditionTaskEventListeners) {
             listener.onExpeditionCompleted(sessionData, completedTasks);
+            for (ExpeditionModel model : completedTasks) {
+                String desExpeditionCompleted = context.getDescriptionFormatter().desExpeditionCompleted(model);
+                sendExportEvent(sessionData.getId(), desExpeditionCompleted);
+            }
         }
     }
 

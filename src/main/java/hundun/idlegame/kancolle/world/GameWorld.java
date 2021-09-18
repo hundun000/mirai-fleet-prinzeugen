@@ -10,10 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import hundun.idlegame.kancolle.building.BaseBuilding;
-import hundun.idlegame.kancolle.building.BuildingLocator;
 import hundun.idlegame.kancolle.building.ExpeditionBuilding;
 import hundun.idlegame.kancolle.container.CommandResult;
-import hundun.idlegame.kancolle.container.ExportEventManager;
 import hundun.idlegame.kancolle.container.GameSaveData;
 import hundun.idlegame.kancolle.container.IGameContainer;
 import hundun.idlegame.kancolle.event.EventBus;
@@ -38,13 +36,12 @@ import lombok.Getter;
 
 public class GameWorld {
     
-    EventBus eventBus;
-    DataBus dataBus;
+
     @Getter
     SimpleExceptionFormatter exceptionAdvice;
     //WorldConfig worldConfig;
-    
-    
+    @Getter
+    private ComponentContext context;
     
     private IGameContainer container;
     
@@ -64,40 +61,22 @@ public class GameWorld {
     
     public GameWorld(IGameContainer container, WorldConfig worldConfig) {
         this.container = container;
-        
-        this.eventBus = new EventBus(container);
-        this.dataBus = new DataBus();
-        
-        dataBus.setBuildingLocator(new BuildingLocator(eventBus, dataBus));
-        dataBus.setExpeditionManager(new ExpeditionManager(eventBus, dataBus));
-        dataBus.setTimerManager(new TimerManager(eventBus, dataBus));
-        dataBus.setResourceManager(new ResourceManager(eventBus, dataBus));
-        dataBus.setShipManager(new ShipManager(eventBus, dataBus));
-        dataBus.setExportEventManager(new ExportEventManager(eventBus, dataBus));
-        
-        
+        this.context = new ComponentContext(worldConfig, container);
+
         
         this.sessionDataMap = new HashMap<>();
         this.exceptionAdvice = new SimpleExceptionFormatter();
         this.worldConfig = worldConfig;
         
-        this.registerAll();
     }
     
 
     
-    private void registerAll() {
-        ShipFactory.INSTANCE.clear();
-        worldConfig.registerShips(ShipFactory.INSTANCE);
-        ExpeditionFactory.INSTANCE.clear();
-        worldConfig.registerExpeditions(ExpeditionFactory.INSTANCE);
-        ResourceFactory.INSTANCE.clear();
-        worldConfig.registerResources(ResourceFactory.INSTANCE);
-    }
+
 
     public CommandResult<Void> commandShowData(String sessionId) {
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
-        return CommandResult.success(DescriptionFormatter.desWorld(sessionData, this));
+        return CommandResult.success(context.getDescriptionFormatter().desWorld(sessionData, this));
     }
     
     /**
@@ -109,9 +88,9 @@ public class GameWorld {
         SessionData sessionData = new SessionData();
         sessionData.setId(sessionId);
         sessionData.setCalendar(gameSaveData.getCalendar());
-        sessionData.setExpeditions(ExpeditionFactory.INSTANCE.listSaveDataToModel(gameSaveData.getExpeditionSaveDatas()));
-        sessionData.setShips(ShipFactory.INSTANCE.listSaveDataToModel(gameSaveData.getShipSaveDatas()));
-        sessionData.setResources(ResourceFactory.INSTANCE.listSaveDataToModelMap(gameSaveData.getResourceSaveDatas()));
+        sessionData.setExpeditions(context.getExpeditionFactory().listSaveDataToModel(gameSaveData.getExpeditionSaveDatas()));
+        sessionData.setShips(context.getShipFactory().listSaveDataToModel(gameSaveData.getShipSaveDatas()));
+        sessionData.setResources(context.getResourceFactory().listSaveDataToModelMap(gameSaveData.getResourceSaveDatas()));
         sessionDataMap.put(sessionId, sessionData);
         return CommandResult.success("读档成功");
     }
@@ -124,23 +103,23 @@ public class GameWorld {
         GameSaveData gameSaveData = new GameSaveData();
         gameSaveData.setId(sessionId);
         gameSaveData.setCalendar(sessionData.getCalendar());
-        gameSaveData.setExpeditionSaveDatas(ExpeditionFactory.INSTANCE.listModelToSaveData(sessionData.getExpeditions()));
-        gameSaveData.setShipSaveDatas(ShipFactory.INSTANCE.listModelToSaveData(sessionData.getShips()));
-        gameSaveData.setResourceSaveDatas(ResourceFactory.INSTANCE.listModelToSaveData(sessionData.getResources().values()));
+        gameSaveData.setExpeditionSaveDatas(context.getExpeditionFactory().listModelToSaveData(sessionData.getExpeditions()));
+        gameSaveData.setShipSaveDatas(context.getShipFactory().listModelToSaveData(sessionData.getShips()));
+        gameSaveData.setResourceSaveDatas(context.getResourceFactory().listModelToSaveData(sessionData.getResources().values()));
         return CommandResult.success(gameSaveData, "读档成功");
     }
     
     
     public void commandTick(String sessionId) {
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
-        dataBus.generateTick(sessionData);
+        context.getDataBus().generateTick(sessionData);
     }
     
     public CommandResult<GameSaveData> commandStartGame(String sessionId) throws IdleGameException {
         sessionDataMap.remove(sessionId);
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
         for (String startShipId : worldConfig.getStartShips()) {
-            dataBus.addNewShip(sessionData, startShipId);
+            context.getDataBus().addNewShip(sessionData, startShipId);
         }
         
         //commandCreateExpedition(sessionId, "A1", "吹雪");
@@ -150,19 +129,19 @@ public class GameWorld {
 
     
     public CommandResult<Void> commandCreateExpedition(String sessionId, String expeditionId, String shipId) throws IdleGameException {
-        eventBus.log(sessionId, LogTag.COMMAND, "CreateExpedition: {}", expeditionId);
+        context.getEventBus().log(sessionId, LogTag.COMMAND, "CreateExpedition: {}", expeditionId);
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
 
-        dataBus.createExpedition(sessionData, expeditionId, shipId);
+        context.getDataBus().createExpedition(sessionData, expeditionId, shipId);
         
         return CommandResult.success("远征创建成功");
     }
     
     public CommandResult<Void> commandShipMoveToBuilding(String sessionId, String buildingId, String shipId) throws IdleGameException {
-        eventBus.log(sessionId, LogTag.COMMAND, "ShipMoveToBuilding: {} -> {}", shipId, buildingId);
+        context.getEventBus().log(sessionId, LogTag.COMMAND, "ShipMoveToBuilding: {} -> {}", shipId, buildingId);
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
 
-        dataBus.shipChangeWork(sessionData, buildingId, shipId);
+        context.getDataBus().shipChangeWork(sessionData, buildingId, shipId);
         
         return CommandResult.success("工作状态修改成功");
     }

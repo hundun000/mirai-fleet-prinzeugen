@@ -10,5 +10,5 @@ public class Functions {
     
     
     public static final Function<Integer, Integer> shipLevelUpNeedExpFuction = lv -> lv > 1 ? 100 * lv : 10;
-
+    
 }

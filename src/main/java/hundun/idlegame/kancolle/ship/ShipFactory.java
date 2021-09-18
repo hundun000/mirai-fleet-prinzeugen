@@ -1,5 +1,8 @@
 package hundun.idlegame.kancolle.ship;
 
+import java.util.Collection;
+import java.util.List;
+
 import hundun.idlegame.kancolle.base.BaseFactory;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 
@@ -9,8 +12,7 @@ import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
  */
 public class ShipFactory extends BaseFactory<ShipPrototype, ShipModel, ShipSaveData> {
     
-    
-    public static final ShipFactory INSTANCE = new ShipFactory();
+
 
     public ShipFactory() {
         super(ShipPrototype.class);
@@ -30,6 +32,10 @@ public class ShipFactory extends BaseFactory<ShipPrototype, ShipModel, ShipSaveD
     public ShipSaveData modelToSaveData(ShipModel model) {
         ShipSaveData saveData = new ShipSaveData(model.getPrototype().getId(), model.getLevel(), model.getExp(), model.getWorkStatus());
         return saveData;
+    }
+    
+    public Collection<ShipPrototype> getPrototypes() {
+        return prototypes.values();
     }
 
 }

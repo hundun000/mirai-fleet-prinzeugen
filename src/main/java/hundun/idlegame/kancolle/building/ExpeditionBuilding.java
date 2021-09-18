@@ -5,14 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import hundun.idlegame.kancolle.base.BaseManager;
-import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.expedition.ExpeditionPrototype;
 import hundun.idlegame.kancolle.ship.ShipModel;
-import hundun.idlegame.kancolle.world.DataBus;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.SessionData;
 import hundun.idlegame.kancolle.world.WorldConfig;
 
@@ -27,8 +24,8 @@ public class ExpeditionBuilding extends BaseBuilding implements IClockEventListe
     private Map<String, Integer> oneWorkerAwardResources;
     
     
-    public ExpeditionBuilding(EventBus eventBus, DataBus dataBus) {
-        super(ID, eventBus, dataBus);
+    public ExpeditionBuilding(ComponentContext context) {
+        super(ID, context);
         
         oneWorkerAwardResources = new HashMap<>();
         oneWorkerAwardResources.put(WorldConfig.RESOURCE_FUEL_ID, 3);

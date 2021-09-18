@@ -16,6 +16,7 @@ import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.time.TimerManager;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
@@ -27,8 +28,8 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
 
     
 
-    public ExpeditionManager(EventBus eventBus, DataBus dataBus) {
-        super(eventBus, dataBus);
+    public ExpeditionManager(ComponentContext context) {
+        super(context);
     }
 
     
@@ -59,7 +60,7 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
         if (!requirementMatch) {
             throw BadCreateExpeditionCommandException.requirementNotMatch(prototype.getRequirement());
         }
-        List<String> shipIds = ShipFactory.INSTANCE.listModelToId(ships);
+        List<String> shipIds = context.getShipFactory().listModelToId(ships);
         ExpeditionModel task = new ExpeditionModel();
         task.setPrototype(prototype);
         task.setRemainTick(prototype.tick);

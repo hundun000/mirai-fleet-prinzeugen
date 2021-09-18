@@ -1,6 +1,7 @@
 package hundun.idlegame.kancolle.building;
 
 import hundun.idlegame.kancolle.event.EventBus;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
 import lombok.Getter;
 
@@ -16,11 +17,13 @@ public abstract class BaseBuilding {
     protected String id;
     protected EventBus eventBus;
     protected DataBus dataBus;
-    
-    public BaseBuilding(String id, EventBus eventBus, DataBus dataBus) {
+    protected ComponentContext context;
+
+    public BaseBuilding(String id, ComponentContext context) {
         this.id = id;
-        this.eventBus = eventBus;
-        this.dataBus = dataBus;
+        this.context = context;
+        this.eventBus = context.getEventBus();
+        this.dataBus = context.getDataBus();
         eventBus.register(this);
     }
     

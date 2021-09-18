@@ -26,8 +26,14 @@ import hundun.idlegame.kancolle.world.SessionData;
  */
 public class DescriptionFormatter {
 
+    ResourceFactory resourceFactory;
     
-    public static String desExpedition(ExpeditionModel model) {
+    public DescriptionFormatter(ResourceFactory resourceFactory) {
+        this.resourceFactory = resourceFactory;
+    }
+    
+    
+    public String desExpedition(ExpeditionModel model) {
         int remainHour = TimerManager.tickToHour(model.getRemainTick());
         StringBuilder builder = new StringBuilder()
             .append(model.getPrototype().getId()).append(" ")
@@ -37,7 +43,7 @@ public class DescriptionFormatter {
         return builder.toString();
     }
     
-    public static String desExpeditionCompleted(ExpeditionModel model) throws PrototypeNotFoundException {
+    public String desExpeditionCompleted(ExpeditionModel model) throws PrototypeNotFoundException {
         StringBuilder builder = new StringBuilder();
         builder.append(model.getPrototype().getId()).append("远征归来").append("\n");
         builder.append("成员--").append(model.getShipIds().stream().collect(Collectors.joining(","))).append("\n");
@@ -47,7 +53,7 @@ public class DescriptionFormatter {
         return builder.toString();
     }
 
-    private static String desReward(Reward reward) throws PrototypeNotFoundException {
+    private String desReward(Reward reward) throws PrototypeNotFoundException {
         StringBuilder builder = new StringBuilder();
         if (reward.getResources() != null) {
             builder.append("资源:").append(desResourceInteger(reward.getResources())).append(" ");
@@ -65,13 +71,13 @@ public class DescriptionFormatter {
     }
 
     
-    public static String desResourceInteger(Map<String, Integer> resourceMap) throws PrototypeNotFoundException {
+    public String desResourceInteger(Map<String, Integer> resourceMap) throws PrototypeNotFoundException {
         StringBuilder builder = new StringBuilder();
-        List<String> sortOrders = ResourceFactory.INSTANCE.getSortOrders();   
+        List<String> sortOrders = resourceFactory.getSortOrders();   
         for (String id : sortOrders) {
             Integer amount = resourceMap.get(id);
             if (amount != null) {
-                ResourcePrototype prototype = ResourceFactory.INSTANCE.getPrototype(id);
+                ResourcePrototype prototype = resourceFactory.getPrototype(id);
                 builder.append(prototype.getName()).append(amount.toString()).append(",");
             }
         }
@@ -83,20 +89,20 @@ public class DescriptionFormatter {
         return builder.toString();
     }
     
-    public static String desShipModel(ShipModel shipModel) {
+    public String desShipModel(ShipModel shipModel) {
         return shipModel.getId() + "(lv" + shipModel.getLevel() + ")";
     }
     
-    public static String desCalendar(GameCalendar calendar) {
+    public String desCalendar(GameCalendar calendar) {
         int hour = TimerManager.tickToHour(calendar.getTick());
         String desTime = String.format("第%s年 %s月%s日%s时\n", calendar.getYear(), calendar.getMonth(), calendar.getDay(), hour);
         return desTime;
     }
     
-    public static String desResourceModel(Map<String, ResourceModel> resources) {
+    public String desResourceModel(Map<String, ResourceModel> resources) {
         
         StringBuilder builder = new StringBuilder();
-        List<String> sortOrders = ResourceFactory.INSTANCE.getSortOrders();   
+        List<String> sortOrders = resourceFactory.getSortOrders();   
         for (String id : sortOrders) {
             ResourceModel model = resources.get(id);
             if (model != null) {
@@ -111,14 +117,14 @@ public class DescriptionFormatter {
         return builder.toString();
     }
 
-    public static String desWorld(SessionData sessionData, GameWorld world) {
+    public String desWorld(SessionData sessionData, GameWorld world) {
         StringBuilder builder = new StringBuilder();
         
         
         builder.append(desCalendar(sessionData.getCalendar()));
         
         String desResources = "资源:\n";
-        desResources += DescriptionFormatter.desResourceModel(sessionData.getResources()) + "\n";
+        desResources += desResourceModel(sessionData.getResources()) + "\n";
         builder.append(desResources);
         
         String desShips;
@@ -138,7 +144,7 @@ public class DescriptionFormatter {
         builder.append(desShips);
         
         builder.append("进行中远征:\n");
-        String desExpeditions = sessionData.getExpeditions().stream().map(model -> DescriptionFormatter.desExpedition(model)).collect(Collectors.joining("\n"));
+        String desExpeditions = sessionData.getExpeditions().stream().map(model -> desExpedition(model)).collect(Collectors.joining("\n"));
         if (desExpeditions.length() == 0) {
             desExpeditions = "无";
         }

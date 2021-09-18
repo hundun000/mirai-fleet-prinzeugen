@@ -17,22 +17,24 @@ import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.format.DescriptionFormatter;
 import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
+import hundun.idlegame.kancolle.world.WorldConfig;
 
 public class ResourceManager extends BaseManager implements IClockEventListener {
     
     Map<String, Integer> minuteAwardResources;
     
     
-    public ResourceManager(EventBus eventBus, DataBus dataBus) {
-        super(eventBus, dataBus);
+    public ResourceManager(ComponentContext context) {
+        super(context);
 
         minuteAwardResources = new HashMap<>();
-        minuteAwardResources.put("FUEL", 3);
-        minuteAwardResources.put("AMMO", 3);
-        minuteAwardResources.put("STEEL", 3);
-        minuteAwardResources.put("BAUXITE", 1);
+        minuteAwardResources.put(WorldConfig.RESOURCE_FUEL_ID, 3);
+        minuteAwardResources.put(WorldConfig.RESOURCE_AMMO_ID, 3);
+        minuteAwardResources.put(WorldConfig.RESOURCE_STEEL_ID, 3);
+        minuteAwardResources.put(WorldConfig.RESOURCE_BAUXITE_ID, 1);
     }
     
     public void merge(SessionData sessionData, Map<String, Integer> delta, int rate) throws IdleGameException {
@@ -52,7 +54,7 @@ public class ResourceManager extends BaseManager implements IClockEventListener 
                 BigDecimal newValue = resources.get(resourceId).getAmount().add(BigDecimal.valueOf(deltaAmount));
                 resources.get(resourceId).setAmount(newValue);
             } else {
-                ResourcePrototype prototype = ResourceFactory.INSTANCE.getPrototype(resourceId);
+                ResourcePrototype prototype = context.getResourceFactory().getPrototype(resourceId);
                 ResourceModel newModel = new ResourceModel();
                 newModel.setPrototype(prototype);
                 newModel.setAmount(BigDecimal.valueOf(deltaAmount));

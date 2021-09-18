@@ -1,9 +1,6 @@
 package hundun.idlegame.kancolle.base;
 
-import java.util.List;
-
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 /**
  * @author hundun

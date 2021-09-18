@@ -1,6 +1,7 @@
 package hundun.idlegame.kancolle.base;
 
 import hundun.idlegame.kancolle.event.EventBus;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
 
 /**
@@ -10,11 +11,13 @@ import hundun.idlegame.kancolle.world.DataBus;
 public abstract class BaseManager {
     protected EventBus eventBus;
     protected DataBus dataBus;
-    
-    public BaseManager(EventBus eventBus, DataBus dataBus) {
-        this.eventBus = eventBus;
-        this.dataBus = dataBus;
+    protected ComponentContext context;
+    public BaseManager(ComponentContext context) {
+        this.context = context;
+        this.eventBus = context.getEventBus();
+        this.dataBus = context.getDataBus();
         eventBus.register(this);
     }
+
     
 }

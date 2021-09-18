@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
-
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import lombok.Getter;
@@ -20,7 +18,7 @@ import lombok.Getter;
  */
 public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL extends BaseModel<?>, T_SAVE> {
     
-    private Map<String, T_PROTOTYPE> prototypes = new HashMap<>();
+    protected Map<String, T_PROTOTYPE> prototypes = new HashMap<>();
     @Getter
     private List<String> sortOrders = new ArrayList<>();
     

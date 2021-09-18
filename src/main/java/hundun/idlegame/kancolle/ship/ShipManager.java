@@ -9,6 +9,7 @@ import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.ModelNotFoundException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
@@ -16,13 +17,14 @@ import hundun.idlegame.kancolle.world.SessionData;
  * @author hundun
  * Created on 2021/09/01
  */
-public class ShipManager extends BaseManager{
+public class ShipManager extends BaseManager {
 
-    public ShipManager(EventBus eventBus, DataBus dataBus) {
-        super(eventBus, dataBus);
+    public ShipManager(ComponentContext context) {
+        super(context);
     }
-    
-    
+
+
+
     public void shipGotoExpedition(SessionData sessionData, ShipModel ship) {
         ship.workStatus = ShipWorkStatus.IN_EXPETITION;
     }
@@ -37,12 +39,12 @@ public class ShipManager extends BaseManager{
 //        });
 //    }
     
-    
+
     
     
 
     public ShipModel findShip(SessionData sessionData, String shipId) throws IdleGameException {
-        ShipFactory.INSTANCE.checkPrototypeExist(shipId);
+        context.getShipFactory().checkPrototypeExist(shipId);
         ShipModel target = null;
         for (ShipModel ship : sessionData.getShips()) {
             if (ship.getPrototype().getId().equals(shipId)) {

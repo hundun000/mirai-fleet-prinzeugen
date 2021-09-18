@@ -6,8 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.building.BaseBuilding;
-import hundun.idlegame.kancolle.building.BuildingLocator;
-import hundun.idlegame.kancolle.container.ExportEventManager;
+import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
 import hundun.idlegame.kancolle.exception.BadMoveToBuildingCommandException;
 import hundun.idlegame.kancolle.exception.BuildingNotFoundException;
@@ -17,6 +16,7 @@ import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
 import hundun.idlegame.kancolle.expedition.ExpeditionManager;
 import hundun.idlegame.kancolle.expedition.ExpeditionPrototype;
 import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
+import hundun.idlegame.kancolle.resource.ResourceFactory;
 import hundun.idlegame.kancolle.resource.ResourceManager;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipManager;
@@ -34,45 +34,35 @@ import lombok.Setter;
  * Created on 2021/09/09
  */
 public class DataBus {
-    @Setter
-    private ExpeditionManager expeditionManager;
-    @Setter
-    private TimerManager timerManager;
-    @Setter
-    private ResourceManager resourceManager;
-    @Setter
-    private ShipManager shipManager;
-    @Setter
-    private ExportEventManager exportEventManager;
-    @Setter
-    private BuildingLocator buildingLocator;
 
-
+    private ComponentContext context;
     
-    public DataBus() {
-
+    public DataBus(ComponentContext context) {
+        this.context = context;
     }
+
+
 
     
     public void addNewShip(SessionData sessionData, String shipId) throws PrototypeNotFoundException {
-        ShipPrototype prototype = ShipFactory.INSTANCE.getPrototype(shipId);
-        shipManager.addNewShip(sessionData, prototype);
+        ShipPrototype prototype = context.getShipFactory().getPrototype(shipId);
+        context.getShipManager().addNewShip(sessionData, prototype);
     }
 
 
     public void resourceMerge(SessionData sessionData, Map<String, Integer> delta, int rate) throws IdleGameException {
-        resourceManager.merge(sessionData, delta, rate);
+        context.getResourceManager().merge(sessionData, delta, rate);
     }
 
 
     public void shipAddExp(SessionData sessionData, List<String> shipIds, int exp) {
-        shipManager.shipAddExp(sessionData, shipIds, exp);
+        context.getShipManager().shipAddExp(sessionData, shipIds, exp);
     }
 
 
     public void shipBackToBuilding(SessionData sessionData, List<String> shipIds) {
         List<ShipModel> ships = sessionData.getShips().stream().filter(shipModel -> shipIds.contains(shipModel.getPrototype().getId())).collect(Collectors.toList());
-        shipManager.shipBackToBuilding(sessionData, ships);
+        context.getShipManager().shipBackToBuilding(sessionData, ships);
     }
 
 
@@ -82,33 +72,33 @@ public class DataBus {
 
 
     public void createExpedition(SessionData sessionData, String expeditionId, String shipId) throws IdleGameException {
-        ExpeditionPrototype prototype = ExpeditionFactory.INSTANCE.getPrototype(expeditionId);
-        ShipModel ship = shipManager.findShip(sessionData, shipId);
+        ExpeditionPrototype prototype = context.getExpeditionFactory().getPrototype(expeditionId);
+        ShipModel ship = context.getShipManager().findShip(sessionData, shipId);
         if (ship.getWorkStatus() != ShipWorkStatus.IN_BUILDING) {
             throw BadCreateExpeditionCommandException.shipBusy(Arrays.asList(shipId));
         }
-        String targetBuildingId = buildingLocator.getExpeditionBuilding().getId();
+        String targetBuildingId = context.getExpeditionBuilding().getId();
         boolean inExpeditionBuilding = targetBuildingId.equals(ship.getWorkInBuildingId());
         if (!inExpeditionBuilding) {
             throw BadCreateExpeditionCommandException.needShipInBuilding(targetBuildingId);
         }
-        expeditionManager.createExpedition(sessionData, prototype, Arrays.asList(ship));
-        shipManager.shipGotoExpedition(sessionData, ship);
+        context.getExpeditionManager().createExpedition(sessionData, prototype, Arrays.asList(ship));
+        context.getShipManager().shipGotoExpedition(sessionData, ship);
     }
 
 
     public void shipChangeWork(SessionData sessionData, String buildingId, String shipId) throws IdleGameException {
-        BaseBuilding building = buildingLocator.getBuilding(buildingId);
-        ShipModel ship = shipManager.findShip(sessionData, shipId);
+        BaseBuilding building = context.getBuilding(buildingId);
+        ShipModel ship = context.getShipManager().findShip(sessionData, shipId);
         if (!ship.canChangeWork(buildingId)) {
             throw BadMoveToBuildingCommandException.shipBusy(shipId);
         }
-        shipManager.shipSetWork(sessionData, ship, building);
+        context.getShipManager().shipSetWork(sessionData, ship, building);
     }
 
 
     public void generateTick(SessionData sessionData) {
-        timerManager.generateTick(sessionData);
+        context.getTimerManager().generateTick(sessionData);
     }
     
 

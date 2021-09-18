@@ -6,6 +6,7 @@ import java.util.Set;
 
 import hundun.idlegame.kancolle.base.BaseManager;
 import hundun.idlegame.kancolle.event.EventBus;
+import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
@@ -20,10 +21,10 @@ public class TimerManager extends BaseManager {
     
 
     
-    public TimerManager(EventBus eventBus, DataBus dataBus) {
-        super(eventBus, dataBus);
+    public TimerManager(ComponentContext context) {
+        super(context);
     }
-    
+
     public static int tickToHour(int tick) {
         return (int) Math.round(tick * HOUR_PER_TICK);
     }

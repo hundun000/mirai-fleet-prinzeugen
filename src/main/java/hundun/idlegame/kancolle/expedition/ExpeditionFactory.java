@@ -20,11 +20,6 @@ public class ExpeditionFactory extends BaseFactory<ExpeditionPrototype, Expediti
         super(ExpeditionPrototype.class);
     }
 
-    public static final ExpeditionFactory INSTANCE = new ExpeditionFactory();
-
-    
-    
-    
     @Override
     public ExpeditionModel saveDataToModel(ExpeditionSaveData saveData) throws IdleGameException {
         ExpeditionPrototype prototype = getPrototype(saveData.getId());

@@ -28,6 +28,8 @@ public class WorldConfig {
     public final static String RESOURCE_AMMO_ID = "AMMO";
     public final static String RESOURCE_STEEL_ID = "STEEL";
     public final static String RESOURCE_BAUXITE_ID = "BAUXITE";
+    public final static String RESOURCE_MODERNIZATION_POINT_ID = "MODERNIZATION_POINT";
+    
     
     public WorldConfig() {
         startShips.add("吹雪");
@@ -50,6 +52,9 @@ public class WorldConfig {
         
         prototype = ResourcePrototype.builder().id(RESOURCE_BAUXITE_ID).name("铝").build();
         resourceFactory.register(prototype);
+        
+        prototype = ResourcePrototype.builder().id(RESOURCE_MODERNIZATION_POINT_ID).name("近代化改修点数").build();
+        resourceFactory.register(prototype);
     }
 
     protected void registerShips(ShipFactory shipFactory) {
@@ -58,24 +63,32 @@ public class WorldConfig {
         prototype = ShipPrototype.builder()
                 .id("吹雪")
                 .basePower(10)
+                .gachaRarity(1)
+                .standardGachaResources(new int[]{30, 30, 30, 30})
                 .build();
         shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id("睦月")
                 .basePower(10)
+                .gachaRarity(1)
+                .standardGachaResources(new int[]{30, 30, 30, 30})
                 .build();
         shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id("如月")
                 .basePower(10)
+                .gachaRarity(1)
+                .standardGachaResources(new int[]{30, 30, 30, 30})
                 .build();
         shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id("欧根")
                 .basePower(30)
+                .gachaRarity(10)
+                .standardGachaResources(new int[]{300, 300, 300, 300})
                 .build();
         shipFactory.register(prototype);
     }
