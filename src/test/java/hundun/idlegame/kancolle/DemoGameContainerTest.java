@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hundun.idlegame.kancolle.building.ExpeditionBuilding;
 import hundun.idlegame.kancolle.container.CommandResult;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
@@ -20,26 +21,45 @@ import hundun.idlegame.kancolle.world.GameWorld;
  */
 public class DemoGameContainerTest {
 
-    DemoGameContainer gameContainer = new DemoGameContainer(false);
+    DemoGameContainer gameContainer = new DemoGameContainer(true);
     GameWorld world;
     String sessionId;
     CommandResult<Void> voidResult;
     
     @Before
     public void before() {
+        System.out.println("====== new @test start ======");
         world = new GameWorld(gameContainer, new TestWorldConfig());
         sessionId = "123";
     }
     
     private void printIdleGameExceptionAdvice(IdleGameException e) {
-        System.out.println("Container: " + world.getExceptionAdvice().exceptionToMessage(e));
+        System.out.println("ContainerShowException: " + world.getExceptionAdvice().exceptionToMessage(e));
     }
 
+    @Test
+    public void testExpeditionTargetBuildingException() throws IdleGameException {
+        world.commandStartGame(sessionId);
+        
+        try {
+            world.commandCreateExpedition(sessionId, 
+                    TestWorldConfig.EASY_EXPEDITION_ID, 
+                    TestWorldConfig.WEAK_SHIP_ID);
+            Assert.fail();
+        } catch (IdleGameException e) {
+            BadCreateExpeditionCommandException childException = (BadCreateExpeditionCommandException)e;
+            assertEquals(ExpeditionBuilding.ID, childException.getTargetBuildingId());
+            printIdleGameExceptionAdvice(e);
+        }
+    }
     
     @Test
     public void testException() throws IdleGameException {
 
         world.commandStartGame(sessionId);
+        
+        world.commandShipMoveToBuilding(sessionId, ExpeditionBuilding.ID, TestWorldConfig.WEAK_SHIP_ID);
+        world.commandShipMoveToBuilding(sessionId, ExpeditionBuilding.ID, TestWorldConfig.HIGH_POWER_SHIP_ID);
         
         // Assert check wrong shipId
         try {
@@ -69,6 +89,18 @@ public class DemoGameContainerTest {
         try {
             world.commandCreateExpedition(sessionId,
                     TestWorldConfig.HIGH_LEVEL_REQUIREMENT_EXPEDITION_ID, 
+                    TestWorldConfig.WEAK_SHIP_ID);
+            Assert.fail();
+        } catch (IdleGameException e) {
+            BadCreateExpeditionCommandException childException = (BadCreateExpeditionCommandException)e;
+            assertEquals(true, childException.getRequirement() != null);
+            printIdleGameExceptionAdvice(e);
+        }
+        
+     // Assert not match expedition-power-Requirement
+        try {
+            world.commandCreateExpedition(sessionId,
+                    TestWorldConfig.HIGH_POWER_REQUIREMENT_EXPEDITION_ID, 
                     TestWorldConfig.WEAK_SHIP_ID);
             Assert.fail();
         } catch (IdleGameException e) {
@@ -114,6 +146,7 @@ public class DemoGameContainerTest {
 
         world.commandStartGame(sessionId);
         
+        world.commandShipMoveToBuilding(sessionId, ExpeditionBuilding.ID, TestWorldConfig.WEAK_SHIP_ID);
         
         voidResult = world.commandCreateExpedition(sessionId,
                 TestWorldConfig.EASY_EXPEDITION_ID, 

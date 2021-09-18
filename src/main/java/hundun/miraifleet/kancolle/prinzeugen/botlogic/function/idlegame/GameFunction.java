@@ -129,7 +129,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     }
     
     @SubCommand("创建存档")
-    public void createFunctionSaveData(CommandSender sender) {
+    public void commandCreateGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
         }
@@ -161,7 +161,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     }
     
     @SubCommand("保存存档")
-    public void save(CommandSender sender) {
+    public void commandSaveGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
         }
@@ -182,7 +182,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     }
     
     @SubCommand("读取存档")
-    public void load(CommandSender sender) {
+    public void commandLoadGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
         }
@@ -209,7 +209,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     }
     
     @SubCommand("删除存档")
-    public void delete(CommandSender sender) {
+    public void commandDeleteGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
         }
@@ -243,8 +243,8 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
 
     }
     
-    @SubCommand("跳过tick")
-    public void commandTick(CommandSender sender) {
+    @SubCommand("debug跳过tick")
+    public void debugCommandTick(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
         }
@@ -258,6 +258,27 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage("执行成功");
     }
     
+    @SubCommand("入驻设施")
+    public void commandShipMoveToBuilding(CommandSender sender, String buildingId, String shipId) {
+        if (!checkCosPermission(sender)) {
+            return;
+        }
+        String functionSessionId = getSessionId(sender);
+        GameFunctionSaveData functionSaveData = gameFunctionSaveDataRepository.findById(functionSessionId);
+        if (functionSaveData == null) {
+            sender.sendMessage(NO_GAME_DATA_REPLY);
+            return;
+        }
+        CommandResult<Void> result;
+        try {
+            result = gameWorld.commandShipMoveToBuilding(functionSaveData.getData().getId(), buildingId, shipId);
+        } catch (IdleGameException e) {
+            printIdleGameExceptionAdvice(functionSaveData.getPlayer(), e);
+            return;
+        }
+        sender.sendMessage(result.getAdviceMessage());
+    }
+    
     @SubCommand("派出远征")
     public void commandCreateExpedition(CommandSender sender, String expeditionId, String shipId) {
         if (!checkCosPermission(sender)) {
@@ -269,14 +290,15 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             sender.sendMessage(NO_GAME_DATA_REPLY);
             return;
         }
+        CommandResult<Void> result;
         try {
-            gameWorld.commandCreateExpedition(functionSaveData.getData().getId(), expeditionId, shipId);
+            result = gameWorld.commandCreateExpedition(functionSaveData.getData().getId(), expeditionId, shipId);
         } catch (IdleGameException e) {
             printIdleGameExceptionAdvice(functionSaveData.getPlayer(), e);
             return;
         }
 
-        sender.sendMessage("执行成功");
+        sender.sendMessage(result.getAdviceMessage());
     }
 
     @Override

@@ -37,6 +37,9 @@ public class SimpleExceptionFormatter {
             if (childException.getRequirement() != null) {
                 return String.format("远征需求不满足:" + childException.getRequirement());
             }
+            if (childException.getTargetBuildingId() != null) {
+                return String.format("只有入驻“%s”的船可以进行远征", childException.getTargetBuildingId());
+            }
         }
         return "[" + this.getClass().getSimpleName() + ":" + exception.getClass().getSimpleName() + "]";
     }

@@ -3,11 +3,12 @@ package hundun.idlegame.kancolle.ship;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import hundun.idlegame.kancolle.base.BaseManager;
+import hundun.idlegame.kancolle.building.BaseBuilding;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.ModelNotFoundException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
-import hundun.idlegame.kancolle.world.BaseManager;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
@@ -22,7 +23,7 @@ public class ShipManager extends BaseManager{
     }
     
     
-    public void moveShipToWork(SessionData sessionData, ShipModel ship) {
+    public void shipGotoExpedition(SessionData sessionData, ShipModel ship) {
         ship.workStatus = ShipWorkStatus.IN_EXPETITION;
     }
 
@@ -40,27 +41,20 @@ public class ShipManager extends BaseManager{
     
     
 
-    public ShipModel findFreeShip(SessionData sessionData, String shipId, ShipWorkStatus workStatusFilter, boolean exceptionIfModelNotFound) throws IdleGameException {
-        ShipFactory.INSTANCE.getPrototype(shipId);
-        boolean workStatusFilterMatched = false;
+    public ShipModel findShip(SessionData sessionData, String shipId) throws IdleGameException {
+        ShipFactory.INSTANCE.checkPrototypeExist(shipId);
         ShipModel target = null;
         for (ShipModel ship : sessionData.getShips()) {
             if (ship.getPrototype().getId().equals(shipId)) {
-                workStatusFilterMatched = workStatusFilter != null && ship.getWorkStatus() == workStatusFilter;
                 target = ship;
                 break;
             }
         }
         
-        if (exceptionIfModelNotFound && target == null) {
+        if (target == null) {
             throw new ModelNotFoundException(shipId, ShipPrototype.class);
         }
-        if (workStatusFilterMatched) {
-            return target;
-        } else {
-            return null;
-        }
-        
+        return target;
     }
 
     public void addNewShip(SessionData sessionData, ShipPrototype prototype) {
@@ -68,7 +62,8 @@ public class ShipManager extends BaseManager{
         shipModel.setPrototype(prototype);
         shipModel.setLevel(1);
         shipModel.setExpAndCheckLevelUp(0);
-        shipModel.setWorkStatus(ShipWorkStatus.IDLE);
+        shipModel.setWorkStatus(ShipWorkStatus.IN_BUILDING);
+        shipModel.setWorkInBuildingId(BaseBuilding.NONE_ID);
         sessionData.getShips().add(shipModel);
         eventBus.sendShipAddNewEvent(sessionData, shipModel);
     }
@@ -85,8 +80,15 @@ public class ShipManager extends BaseManager{
     }
 
 
-    public void releaseShip(SessionData sessionData, List<String> shipIds) {
-        List<ShipModel> ships = sessionData.getShips().stream().filter(shipModel -> shipIds.contains(shipModel.getPrototype().getId())).collect(Collectors.toList());
-        ships.forEach(ship -> ship.setWorkStatus(ShipWorkStatus.IDLE));
+    public void shipBackToBuilding(SessionData sessionData, List<ShipModel> ships) {
+        ships.forEach(ship -> {
+            ship.setWorkStatus(ShipWorkStatus.IN_BUILDING);
+        });
     }
+
+
+    public void shipSetWork(SessionData sessionData, ShipModel ship, BaseBuilding building) {
+        ship.workInBuildingId = building.getId();
+    }
+
 }

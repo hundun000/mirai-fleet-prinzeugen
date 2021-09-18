@@ -20,12 +20,12 @@ public class DemoGameContainer implements IGameContainer {
     @Override
     public void handleLog(String sessionId, String msg) {
         if (printGameLog) {
-            System.out.println(msg);
+            System.out.println("ContainerGameLog: " + msg);
         }
     }
 
     @Override
     public void handleExportEvent(String sessionId, String data) {
-        System.out.println("Container: " + data);
+        System.out.println("ContainerExportEvent: " + data);
     }
 }

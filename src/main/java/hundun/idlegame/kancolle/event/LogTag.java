@@ -8,6 +8,7 @@ public enum LogTag {
     EVENT,
     EXPEDITION, 
     COMMAND, 
-    SHIP,
+    SHIP, 
+    BUILDING,
     ;
 }

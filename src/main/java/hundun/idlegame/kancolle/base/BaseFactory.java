@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.management.RuntimeErrorException;
+
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import lombok.Getter;
@@ -26,6 +28,13 @@ public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL exte
     
     public BaseFactory(Class<T_PROTOTYPE> prototypeClass) {
         this.prototypeClass = prototypeClass;
+    }
+    
+    public void checkPrototypeExist(String id) throws PrototypeNotFoundException {
+        T_PROTOTYPE prototype = prototypes.get(id);
+        if (prototype == null) {
+            throw new PrototypeNotFoundException(id, prototypeClass);
+        }
     }
     
     public T_PROTOTYPE getPrototype(String id) throws PrototypeNotFoundException {
@@ -75,8 +84,17 @@ public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL exte
     public abstract T_SAVE modelToSaveData(T_MODEL model);
 
     public void register(T_PROTOTYPE prototype) {
+        if (prototypes.containsKey(prototype.getId())) {
+            throw new RuntimeException("duplicated prototype register: " + prototype.getId());
+        }
+        
         prototypes.put(prototype.getId(), prototype);
         sortOrders.add(prototype.getId());
+    }
+    
+    public void clear() {
+        prototypes.clear();
+        sortOrders.clear();
     }
 
 }

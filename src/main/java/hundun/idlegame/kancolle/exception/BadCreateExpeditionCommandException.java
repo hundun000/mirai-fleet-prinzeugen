@@ -15,6 +15,8 @@ import lombok.Getter;
 @SuppressWarnings("serial")
 public class BadCreateExpeditionCommandException extends IdleGameException {
     @Getter
+    String targetBuildingId;
+    @Getter
     boolean expeditionPresent;
     @Getter
     Requirement requirement;
@@ -39,6 +41,12 @@ public class BadCreateExpeditionCommandException extends IdleGameException {
     public static BadCreateExpeditionCommandException expeditionIsPresent() {
         BadCreateExpeditionCommandException exception = new BadCreateExpeditionCommandException();
         exception.expeditionPresent = true;
+        return exception;
+    }
+    
+    public static BadCreateExpeditionCommandException needShipInBuilding(String targetBuildingId) {
+        BadCreateExpeditionCommandException exception = new BadCreateExpeditionCommandException();
+        exception.targetBuildingId = targetBuildingId;
         return exception;
     }
 }

@@ -4,6 +4,6 @@ package hundun.idlegame.kancolle.ship;
  * Created on 2021/09/14
  */
 public enum ShipWorkStatus {
-    IDLE,
+    IN_BUILDING,
     IN_EXPETITION
 }

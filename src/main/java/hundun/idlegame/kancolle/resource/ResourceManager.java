@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import hundun.idlegame.kancolle.base.BaseManager;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
@@ -16,7 +17,6 @@ import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.format.DescriptionFormatter;
 import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
-import hundun.idlegame.kancolle.world.BaseManager;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
@@ -35,12 +35,19 @@ public class ResourceManager extends BaseManager implements IClockEventListener 
         minuteAwardResources.put("BAUXITE", 1);
     }
     
-    public void merge(SessionData sessionData, Map<String, Integer> delta) throws IdleGameException {
+    public void merge(SessionData sessionData, Map<String, Integer> delta, int rate) throws IdleGameException {
         Map<String, ResourceModel> resources = sessionData.getResources();
         
+        Map<String, Integer> updatedDelta = new HashMap<>();
         for (Entry<String, Integer> deltaEntry : delta.entrySet()) {
-            String resourceId = deltaEntry.getKey();
-            Integer deltaAmount = deltaEntry.getValue();
+            Integer deltaAmount = deltaEntry.getValue() * rate;
+            updatedDelta.put(deltaEntry.getKey(), deltaAmount);
+        }
+        
+        
+        for (Entry<String, Integer> entry : updatedDelta.entrySet()) {
+            String resourceId = entry.getKey();
+            Integer deltaAmount = entry.getValue();
             if (resources.containsKey(resourceId)) {
                 BigDecimal newValue = resources.get(resourceId).getAmount().add(BigDecimal.valueOf(deltaAmount));
                 resources.get(resourceId).setAmount(newValue);
@@ -52,7 +59,7 @@ public class ResourceManager extends BaseManager implements IClockEventListener 
                 resources.put(resourceId, newModel);
             }
         }
-        eventBus.sendResourceChangedEvent(sessionData, delta, resources);
+        eventBus.sendResourceChangedEvent(sessionData, updatedDelta, resources);
     }
 //
 //    @Override
@@ -71,11 +78,11 @@ public class ResourceManager extends BaseManager implements IClockEventListener 
 
     @Override
     public void tick(SessionData sessionData) {
-        try {
-            dataBus.resourceMerge(sessionData, minuteAwardResources);
-        } catch (IdleGameException e) {
-            eventBus.log(sessionData.getId(), LogTag.ERROR, "minuteAwardResources error: {}", dataBus.getExceptionAdvice().exceptionToMessage(e));
-        }
+//        try {
+//            dataBus.resourceMerge(sessionData, minuteAwardResources);
+//        } catch (IdleGameException e) {
+//            eventBus.log(sessionData.getId(), LogTag.ERROR, "minuteAwardResources error: {}", dataBus.getExceptionAdvice().exceptionToMessage(e));
+//        }
         //eventBus.sendResourceChangeEvent(sessionData, minuteAwardResources, sessionData.getResourceBoard());
     }
 }

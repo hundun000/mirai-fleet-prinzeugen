@@ -124,7 +124,7 @@ public class DescriptionFormatter {
         String desShips;
         builder.append("舰娘:\n");
         builder.append("空闲--");
-        desShips = sessionData.getShips().stream().filter(ship -> ship.getWorkStatus() == ShipWorkStatus.IDLE).map(ship -> desShipModel(ship)).collect(Collectors.joining(",")) + "\n";
+        desShips = sessionData.getShips().stream().filter(ship -> ship.getWorkStatus() == ShipWorkStatus.IN_BUILDING).map(ship -> desShipModel(ship)).collect(Collectors.joining(",")) + "\n";
         if (desShips.length() == 0) {
             desShips = "无";
         }

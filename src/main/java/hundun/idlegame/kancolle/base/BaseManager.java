@@ -1,6 +1,7 @@
-package hundun.idlegame.kancolle.world;
+package hundun.idlegame.kancolle.base;
 
 import hundun.idlegame.kancolle.event.EventBus;
+import hundun.idlegame.kancolle.world.DataBus;
 
 /**
  * @author hundun

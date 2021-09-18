@@ -1,6 +1,7 @@
 package hundun.idlegame.kancolle.ship;
 
 import hundun.idlegame.kancolle.base.BaseModel;
+import hundun.idlegame.kancolle.building.BaseBuilding;
 import hundun.idlegame.kancolle.helper.Functions;
 import lombok.Data;
 import lombok.Getter;
@@ -23,6 +24,10 @@ public class ShipModel extends BaseModel<ShipPrototype>{
     @Setter
     ShipWorkStatus workStatus;
     
+    @Getter
+    @Setter
+    String workInBuildingId;
+    
     public boolean setExpAndCheckLevelUp(int add) {
         exp += add;
         int needExp = Functions.shipLevelUpNeedExpFuction.apply(level);
@@ -41,5 +46,12 @@ public class ShipModel extends BaseModel<ShipPrototype>{
         return prototype.getBasePower()
                 + (int) Math.round(prototype.getBasePower() * 0.5 * (level / 100.0))
                 + 5 * (level - 1);
+    }
+
+
+    public boolean canChangeWork(String buildingId) {
+        boolean inOtherBuilding = (!workInBuildingId.equals(BaseBuilding.NONE_ID) && workStatus == ShipWorkStatus.IN_BUILDING);
+        boolean noWork = workInBuildingId.equals(BaseBuilding.NONE_ID);
+        return noWork || inOtherBuilding;
     }
 }

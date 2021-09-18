@@ -40,8 +40,8 @@ public class TestWorldConfig extends WorldConfig {
     }
     
     @Override
-    protected void registerShips() {
-        super.registerShips();
+    protected void registerShips(ShipFactory shipFactory) {
+        super.registerShips(shipFactory);
         
         ShipPrototype prototype;
         
@@ -49,18 +49,18 @@ public class TestWorldConfig extends WorldConfig {
                 .id(WEAK_SHIP_ID)
                 .basePower(1)
                 .build();
-        ShipFactory.INSTANCE.register(prototype);
+        shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id(HIGH_POWER_SHIP_ID)
                 .basePower(20000)
                 .build();
-        ShipFactory.INSTANCE.register(prototype);
+        shipFactory.register(prototype);
     }
     
     @Override
-    protected void registerExpeditions() {
-        super.registerExpeditions();
+    protected void registerExpeditions(ExpeditionFactory expeditionFactory) {
+        super.registerExpeditions(expeditionFactory);
         
         ExpeditionPrototype prototype;
         
@@ -70,27 +70,27 @@ public class TestWorldConfig extends WorldConfig {
                 .requirement(null)
                 .normalReward(new Reward(Map.of(RESOURCE_FUEL_ID, 200), null, 30))
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id(EASY_EXPEDITION_ID_2)
                 .tick(2)
                 .requirement(null)
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id(HIGH_LEVEL_REQUIREMENT_EXPEDITION_ID)
                 .tick(2)
                 .requirement(new Requirement(1, 10000))
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id(HIGH_POWER_REQUIREMENT_EXPEDITION_ID)
                 .tick(2)
                 .requirement(new Requirement(10000, 0))
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
     }
 }

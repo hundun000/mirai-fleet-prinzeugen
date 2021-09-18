@@ -34,57 +34,53 @@ public class WorldConfig {
         startShips.add("欧根");
     }
     
-    public void registerAll() {
-        registerResources();
-        registerShips();
-        registerExpeditions();
-    }
+
     
-    protected void registerResources() {
+    protected void registerResources(ResourceFactory resourceFactory) {
         ResourcePrototype prototype;
         
         prototype = ResourcePrototype.builder().id(RESOURCE_FUEL_ID).name("油").build();
-        ResourceFactory.INSTANCE.register(prototype);
+        resourceFactory.register(prototype);
         
         prototype = ResourcePrototype.builder().id(RESOURCE_AMMO_ID).name("弹").build();
-        ResourceFactory.INSTANCE.register(prototype);
+        resourceFactory.register(prototype);
         
         prototype = ResourcePrototype.builder().id(RESOURCE_STEEL_ID).name("钢").build();
-        ResourceFactory.INSTANCE.register(prototype);
+        resourceFactory.register(prototype);
         
         prototype = ResourcePrototype.builder().id(RESOURCE_BAUXITE_ID).name("铝").build();
-        ResourceFactory.INSTANCE.register(prototype);
+        resourceFactory.register(prototype);
     }
 
-    protected void registerShips() {
+    protected void registerShips(ShipFactory shipFactory) {
         ShipPrototype prototype;
         
         prototype = ShipPrototype.builder()
                 .id("吹雪")
                 .basePower(10)
                 .build();
-        ShipFactory.INSTANCE.register(prototype);
+        shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id("睦月")
                 .basePower(10)
                 .build();
-        ShipFactory.INSTANCE.register(prototype);
+        shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id("如月")
                 .basePower(10)
                 .build();
-        ShipFactory.INSTANCE.register(prototype);
+        shipFactory.register(prototype);
         
         prototype = ShipPrototype.builder()
                 .id("欧根")
                 .basePower(30)
                 .build();
-        ShipFactory.INSTANCE.register(prototype);
+        shipFactory.register(prototype);
     }
     
-    protected void registerExpeditions() {
+    protected void registerExpeditions(ExpeditionFactory expeditionFactory) {
         ExpeditionPrototype prototype;
         
         prototype = ExpeditionPrototype.builder()
@@ -93,7 +89,7 @@ public class WorldConfig {
                 .requirement(new Requirement(1, 1))
                 .normalReward(new Reward(null, null, 30))
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id("A1")
@@ -101,7 +97,7 @@ public class WorldConfig {
                 .requirement(new Requirement(30, 1))
                 .normalReward(new Reward(Map.of(RESOURCE_FUEL_ID, 200), null, 10))
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id("A2")
@@ -109,6 +105,6 @@ public class WorldConfig {
                 .requirement(new Requirement(1, 3))
                 .normalReward(new Reward(Map.of(RESOURCE_AMMO_ID, 200), null, 10))
                 .build();
-        ExpeditionFactory.INSTANCE.register(prototype);
+        expeditionFactory.register(prototype);
     }
 }

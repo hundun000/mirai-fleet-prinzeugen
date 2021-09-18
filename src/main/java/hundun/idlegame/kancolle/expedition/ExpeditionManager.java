@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import hundun.idlegame.kancolle.base.BaseManager;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
@@ -15,7 +16,6 @@ import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.time.TimerManager;
-import hundun.idlegame.kancolle.world.BaseManager;
 import hundun.idlegame.kancolle.world.DataBus;
 import hundun.idlegame.kancolle.world.SessionData;
 
@@ -81,31 +81,28 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
                 completedTasks.add(runningTask);
             }
         }
-        
         if (!completedTasks.isEmpty()) {
-            try {
-                for (ExpeditionModel task : completedTasks) {
-                    eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle completedTask: {}", task.getPrototype().getId());
-                    handleReward(sessionData, task.getShipIds(), task.getPrototype().getNormalReward());
-//                    boolean isFirstTime = !sessionData.getCompletedExpeditions().contains(task);
-//                    if (isFirstTime) {
-//                        handleReward(sessionData, task.getShipIds(), task.getPrototype().getFirstTimeReward());
-//                    }
-                    dataBus.releaseShip(sessionData, task.getShipIds());
-                }
-                eventBus.sendExpeditionCompletedEvent(sessionData, completedTasks);
-                
-                sessionData.getExpeditions().removeAll(completedTasks);
-                eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle all completedTask done");
-            } catch (IdleGameException e) {
-                eventBus.log(sessionData.getId(), LogTag.ERROR, "ExpeditionModel handleReward error:" + dataBus.getExceptionAdvice().exceptionToMessage(e));
-            }
-//            for (ExpeditionModel task : completedTasks) {
-//                if (task.getRepeat() == INFINITE_REPEAT || task.getRepeat() > 0) {
-//                    createExpedition(sessionData, task.getPrototype(), task.getShipIds(), task.getRepeat());
-//                }
-//            }
+            handleComplete(sessionData, completedTasks);
         }
+    }
+    
+    private void handleComplete(SessionData sessionData, List<ExpeditionModel> completedTasks)   {
+
+        try {
+            for (ExpeditionModel task : completedTasks) {
+                eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle completedTask: {}", task.getPrototype().getId());
+                handleReward(sessionData, task.getShipIds(), task.getPrototype().getNormalReward());
+                dataBus.shipBackToBuilding(sessionData, task.getShipIds());
+            }
+            eventBus.sendExpeditionCompletedEvent(sessionData, completedTasks);
+            
+            sessionData.getExpeditions().removeAll(completedTasks);
+            eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle all completedTask done");
+        } catch (IdleGameException e) {
+            eventBus.log(sessionData.getId(), LogTag.ERROR, "ExpeditionModel handleReward error:" + dataBus.getExceptionAdvice().exceptionToMessage(e));
+        }
+
+
     }
     
     private void handleReward(SessionData sessionData, List<String> shipIds, Reward reward) throws IdleGameException {
@@ -114,7 +111,7 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
         }
         
         if (reward.getResources() != null) {
-            dataBus.resourceMerge(sessionData, reward.getResources());
+            dataBus.resourceMerge(sessionData, reward.getResources(), 1);
         }
         if (reward.getExp() != 0) {
             dataBus.shipAddExp(sessionData, shipIds, reward.getExp());

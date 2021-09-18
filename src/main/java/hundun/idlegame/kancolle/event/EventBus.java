@@ -75,7 +75,7 @@ public class EventBus {
             Map<String, ResourceModel> resources) {
         log(sessionData.getId(), LogTag.EVENT, "ResourceEvent.amountChanged: +" + delta + " -> " + sessionData.getResources());
         for (IResourceEventListener listener : resourceEventListeners) {
-            //listener.amountChanged(sessionData, delta);
+            listener.onResourceChanged(sessionData, delta, resources);
         }
     }
 
