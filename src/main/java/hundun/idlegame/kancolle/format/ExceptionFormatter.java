@@ -1,7 +1,10 @@
 package hundun.idlegame.kancolle.format;
 
+import java.util.stream.Collectors;
+
 import hundun.idlegame.kancolle.base.BaseProtoype;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
+import hundun.idlegame.kancolle.exception.BadGachaCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.ModelNotFoundException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
@@ -13,9 +16,9 @@ import hundun.idlegame.kancolle.ship.ShipPrototype;
  * @author hundun
  * Created on 2021/09/13
  */
-public class SimpleExceptionFormatter {
+public class ExceptionFormatter {
     
-    public static final SimpleExceptionFormatter INSTANCE = new SimpleExceptionFormatter();
+    public static final ExceptionFormatter INSTANCE = new ExceptionFormatter();
     
     public String exceptionToMessage(IdleGameException exception) {
         if (exception instanceof PrototypeNotFoundException) {
@@ -26,6 +29,15 @@ public class SimpleExceptionFormatter {
             ModelNotFoundException childException = (ModelNotFoundException)exception;
             return String.format("你未拥有id为“%s”的%s", childException.getProtoypeId(), prototypeClassToName(childException.getProtoypeClass()));
         }
+        if (exception instanceof BadGachaCommandException) {
+            BadGachaCommandException childException = (BadGachaCommandException)exception;
+            if(childException.isInputAmoutTooSmall()) {
+                return String.format("投入的资源过少，无法建造。");
+            } else {
+                String names = childException.getNotEnoughPrototypes().stream().map(prototype -> prototype.getName()).collect(Collectors.joining("、"));
+                return String.format("拥有的资源不足，无法建造。不足的资源:%s", names);
+            }
+        }
         if (exception instanceof BadCreateExpeditionCommandException) {
             BadCreateExpeditionCommandException childException = (BadCreateExpeditionCommandException)exception;
             if (childException.isExpeditionPresent()) {
@@ -35,7 +47,7 @@ public class SimpleExceptionFormatter {
                 return String.format("包含已在工作中的舰娘");
             }
             if (childException.getRequirement() != null) {
-                return String.format("远征需求不满足:" + childException.getRequirement());
+                return String.format("远征需求不满足:%s", childException.getRequirement());
             }
             if (childException.getTargetBuildingId() != null) {
                 return String.format("只有入驻“%s”的船可以进行远征", childException.getTargetBuildingId());

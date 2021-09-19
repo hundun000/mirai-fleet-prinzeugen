@@ -6,19 +6,19 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.base.BaseManager;
+import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.format.DescriptionFormatter;
-import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
+import hundun.idlegame.kancolle.format.ExceptionFormatter;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.time.TimerManager;
 import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
-import hundun.idlegame.kancolle.world.SessionData;
 
 /**
  * @author hundun
@@ -100,7 +100,7 @@ public class ExpeditionManager extends BaseManager implements IClockEventListene
             sessionData.getExpeditions().removeAll(completedTasks);
             eventBus.log(sessionData.getId(), LogTag.EXPEDITION, "handle all completedTask done");
         } catch (IdleGameException e) {
-            eventBus.log(sessionData.getId(), LogTag.ERROR, "ExpeditionModel handleReward error:" + dataBus.getExceptionAdvice().exceptionToMessage(e));
+            eventBus.log(sessionData.getId(), LogTag.ERROR, "ExpeditionModel handleReward error:" + context.getExceptionFormatter().exceptionToMessage(e));
         }
 
 

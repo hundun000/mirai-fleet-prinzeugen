@@ -1,5 +1,6 @@
 package hundun.idlegame.kancolle.format;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
 import hundun.idlegame.kancolle.expedition.Reward;
@@ -17,8 +19,8 @@ import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.ship.ShipWorkStatus;
 import hundun.idlegame.kancolle.time.GameCalendar;
 import hundun.idlegame.kancolle.time.TimerManager;
+import hundun.idlegame.kancolle.world.DataBus.CreateShipResult;
 import hundun.idlegame.kancolle.world.GameWorld;
-import hundun.idlegame.kancolle.world.SessionData;
 
 /**
  * @author hundun
@@ -90,7 +92,7 @@ public class DescriptionFormatter {
     }
     
     public String desShipModel(ShipModel shipModel) {
-        return shipModel.getId() + "(lv" + shipModel.getLevel() + ")";
+        return shipModel.getId() + "(lv." + shipModel.getLevel() + ")";
     }
     
     public String desCalendar(GameCalendar calendar) {
@@ -102,13 +104,15 @@ public class DescriptionFormatter {
     public String desResourceModel(Map<String, ResourceModel> resources) {
         
         StringBuilder builder = new StringBuilder();
-        List<String> sortOrders = resourceFactory.getSortOrders();   
+        List<String> sortOrders = resourceFactory.getSortOrders();  
+        List<String> subtexts = new ArrayList<>();
         for (String id : sortOrders) {
             ResourceModel model = resources.get(id);
             if (model != null) {
-                builder.append(model.getPrototype().getName()).append(model.getAmount().toString()).append(",");
+                subtexts.add(model.getPrototype().getName() + model.getAmount().toString());
             }
         }
+        builder.append(subtexts.stream().collect(Collectors.joining(",")));
 
         if (builder.length() == 0) {
             builder.append("无");
@@ -131,26 +135,38 @@ public class DescriptionFormatter {
         builder.append("舰娘:\n");
         builder.append("空闲--");
         desShips = sessionData.getShips().stream().filter(ship -> ship.getWorkStatus() == ShipWorkStatus.IN_BUILDING).map(ship -> desShipModel(ship)).collect(Collectors.joining(",")) + "\n";
-        if (desShips.length() == 0) {
-            desShips = "无";
+        if (desShips.length() == 1) {
+            desShips = "无\n";
         }
         builder.append(desShips);
         
         builder.append("工作中--");
         desShips = sessionData.getShips().stream().filter(ship -> ship.getWorkStatus() == ShipWorkStatus.IN_EXPETITION).map(ship -> desShipModel(ship)).collect(Collectors.joining(",")) + "\n";
-        if (desShips.length() == 0) {
-            desShips = "无";
+        if (desShips.length() == 1) {
+            desShips = "无\n";
         }
         builder.append(desShips);
         
         builder.append("进行中远征:\n");
         String desExpeditions = sessionData.getExpeditions().stream().map(model -> desExpedition(model)).collect(Collectors.joining("\n"));
         if (desExpeditions.length() == 0) {
-            desExpeditions = "无";
+            desExpeditions = "无\n";
         }
         builder.append(desExpeditions);
         
         
         return builder.toString();
+    }
+
+
+    public String desCreateShipResult(CreateShipResult result) {
+        String text = "";
+        text += "当前最大可建造稀有度:" + result.getMaxGachaRarity() + "\n";
+        if (result.getGainModenizationPoint() > 0) {
+            text += "建造获得已拥有的船:" + result.getPrototype().getId() + ",将转为获得近代化改修点数:" + result.getGainModenizationPoint();
+        } else {
+            text += "建造获得新船:" + result.getPrototype().getId();
+        }
+        return text;
     }
 }

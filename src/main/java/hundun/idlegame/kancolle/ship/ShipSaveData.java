@@ -16,4 +16,5 @@ public class ShipSaveData {
     int level;
     int exp;
     ShipWorkStatus workStatus;
+    String workInBuildingId;
 }

@@ -1,6 +1,6 @@
 package hundun.idlegame.kancolle.exception;
 
-import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
+import hundun.idlegame.kancolle.format.ExceptionFormatter;
 
 /**
  * @author hundun
@@ -19,6 +19,6 @@ public class IdleGameException extends Exception {
     
     @Override
     public String getMessage() {
-        return SimpleExceptionFormatter.INSTANCE.exceptionToMessage(this);
+        return ExceptionFormatter.INSTANCE.exceptionToMessage(this);
     }
 }

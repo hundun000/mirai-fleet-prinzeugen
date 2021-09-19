@@ -1,8 +1,9 @@
 package hundun.idlegame.kancolle.ship;
 
+import java.util.function.Function;
+
 import hundun.idlegame.kancolle.base.BaseModel;
-import hundun.idlegame.kancolle.building.BaseBuilding;
-import hundun.idlegame.kancolle.helper.Functions;
+import hundun.idlegame.kancolle.building.BuildingModel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,15 +29,17 @@ public class ShipModel extends BaseModel<ShipPrototype>{
     @Setter
     String workInBuildingId;
     
+    static final Function<Integer, Integer> shipLevelUpNeedExpFuction = lv -> lv > 1 ? 100 * lv : 10;
+    
     public boolean setExpAndCheckLevelUp(int add) {
         exp += add;
-        int needExp = Functions.shipLevelUpNeedExpFuction.apply(level);
+        int needExp = shipLevelUpNeedExpFuction.apply(level);
         boolean levelUpHappen = false;
         while (exp >= needExp) {
             exp -= needExp;
             level++;
             levelUpHappen = true;
-            needExp = Functions.shipLevelUpNeedExpFuction.apply(level);
+            needExp = shipLevelUpNeedExpFuction.apply(level);
         }
         return levelUpHappen;
     }
@@ -50,8 +53,8 @@ public class ShipModel extends BaseModel<ShipPrototype>{
 
 
     public boolean canChangeWork(String buildingId) {
-        boolean inOtherBuilding = (!workInBuildingId.equals(BaseBuilding.NONE_ID) && workStatus == ShipWorkStatus.IN_BUILDING);
-        boolean noWork = workInBuildingId.equals(BaseBuilding.NONE_ID);
+        boolean inOtherBuilding = (!workInBuildingId.equals(BuildingModel.NONE_ID) && workStatus == ShipWorkStatus.IN_BUILDING);
+        boolean noWork = workInBuildingId.equals(BuildingModel.NONE_ID);
         return noWork || inOtherBuilding;
     }
 }

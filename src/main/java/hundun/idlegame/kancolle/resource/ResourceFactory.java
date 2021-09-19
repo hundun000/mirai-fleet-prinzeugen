@@ -35,4 +35,6 @@ public class ResourceFactory extends BaseFactory<ResourcePrototype, ResourceMode
         ResourceSaveData saveData = new ResourceSaveData(model.getPrototype().getId(), model.getAmount());
         return saveData;
     }
+
+
 }

@@ -1,5 +1,7 @@
-package hundun.idlegame.kancolle;
+package hundun.idlegame.kancolle.data.config;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,13 +14,12 @@ import hundun.idlegame.kancolle.resource.ResourcePrototype;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.ship.ShipPrototype;
-import hundun.idlegame.kancolle.world.WorldConfig;
 
 /**
  * @author hundun
  * Created on 2021/09/14
  */
-public class TestWorldConfig extends WorldConfig {
+public class UnittestWorldConfig extends WorldConfig {
     
     
     public final static String WRONG_EXPEDITION_ID = "WRONG_EXPEDITION_ID";
@@ -32,16 +33,32 @@ public class TestWorldConfig extends WorldConfig {
     public final static String HIGH_POWER_SHIP_ID = "HIGH_POWER_SHIP_ID";
     
     
-    public TestWorldConfig() {
+    public UnittestWorldConfig(WorldConfig worldConfig) {
         super();
         
-        startShips.add(WEAK_SHIP_ID);
-        startShips.add(HIGH_POWER_SHIP_ID);
+        this.startShips = worldConfig.getStartShips();
+        this.startResources = worldConfig.getStartResources();
+        
+        this.shipPrototypes = worldConfig.getShipPrototypes();
+        this.resourcePrototypes = worldConfig.getResourcePrototypes();
+        this.expeditionPrototypes = worldConfig.getExpeditionPrototypes();
+    
+        moreConfig();
     }
     
-    @Override
-    protected void registerShips(ShipFactory shipFactory) {
-        super.registerShips(shipFactory);
+    private void moreConfig() {
+        startShips.add(WEAK_SHIP_ID);
+        startShips.add(HIGH_POWER_SHIP_ID);
+        startResources.put(RESOURCE_FUEL_ID, 10000);
+        startResources.put(RESOURCE_AMMO_ID, 10000);
+        startResources.put(RESOURCE_STEEL_ID, 10000);
+        startResources.put(RESOURCE_BAUXITE_ID, 10000);
+        moreShips();
+        moreExpeditions();
+    }
+    
+    
+    protected void moreShips() {
         
         ShipPrototype prototype;
         
@@ -49,18 +66,16 @@ public class TestWorldConfig extends WorldConfig {
                 .id(WEAK_SHIP_ID)
                 .basePower(1)
                 .build();
-        shipFactory.register(prototype);
+        shipPrototypes.add(prototype);
         
         prototype = ShipPrototype.builder()
                 .id(HIGH_POWER_SHIP_ID)
                 .basePower(20000)
                 .build();
-        shipFactory.register(prototype);
+        shipPrototypes.add(prototype);
     }
     
-    @Override
-    protected void registerExpeditions(ExpeditionFactory expeditionFactory) {
-        super.registerExpeditions(expeditionFactory);
+    protected void moreExpeditions() {
         
         ExpeditionPrototype prototype;
         
@@ -70,27 +85,27 @@ public class TestWorldConfig extends WorldConfig {
                 .requirement(null)
                 .normalReward(new Reward(Map.of(RESOURCE_FUEL_ID, 200), null, 30))
                 .build();
-        expeditionFactory.register(prototype);
+        expeditionPrototypes.add(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id(EASY_EXPEDITION_ID_2)
                 .tick(2)
                 .requirement(null)
                 .build();
-        expeditionFactory.register(prototype);
+        expeditionPrototypes.add(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id(HIGH_LEVEL_REQUIREMENT_EXPEDITION_ID)
                 .tick(2)
                 .requirement(new Requirement(1, 10000))
                 .build();
-        expeditionFactory.register(prototype);
+        expeditionPrototypes.add(prototype);
         
         prototype = ExpeditionPrototype.builder()
                 .id(HIGH_POWER_REQUIREMENT_EXPEDITION_ID)
                 .tick(2)
                 .requirement(new Requirement(10000, 0))
                 .build();
-        expeditionFactory.register(prototype);
+        expeditionPrototypes.add(prototype);
     }
 }

@@ -26,11 +26,12 @@ public class ShipFactory extends BaseFactory<ShipPrototype, ShipModel, ShipSaveD
         model.setLevel(saveData.getLevel());
         model.setExpAndCheckLevelUp(saveData.getExp());
         model.setWorkStatus(saveData.getWorkStatus());
+        model.setWorkInBuildingId(saveData.getWorkInBuildingId());
         return model;
     }
     @Override
     public ShipSaveData modelToSaveData(ShipModel model) {
-        ShipSaveData saveData = new ShipSaveData(model.getPrototype().getId(), model.getLevel(), model.getExp(), model.getWorkStatus());
+        ShipSaveData saveData = new ShipSaveData(model.getPrototype().getId(), model.getLevel(), model.getExp(), model.getWorkStatus(), model.getWorkInBuildingId());
         return saveData;
     }
     

@@ -1,4 +1,4 @@
-package hundun.idlegame.kancolle.world;
+package hundun.idlegame.kancolle.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;

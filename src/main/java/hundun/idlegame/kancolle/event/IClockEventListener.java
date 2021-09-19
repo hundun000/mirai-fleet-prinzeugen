@@ -1,6 +1,6 @@
 package hundun.idlegame.kancolle.event;
 
-import hundun.idlegame.kancolle.world.SessionData;
+import hundun.idlegame.kancolle.data.SessionData;
 
 /**
  * @author hundun

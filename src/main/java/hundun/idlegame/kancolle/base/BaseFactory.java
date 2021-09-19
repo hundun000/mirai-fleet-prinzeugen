@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
+import hundun.idlegame.kancolle.resource.ResourcePrototype;
 import lombok.Getter;
 
 /**
@@ -41,6 +42,14 @@ public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL exte
             throw new PrototypeNotFoundException(id, prototypeClass);
         }
         return prototype;
+    }
+    
+    public List<T_PROTOTYPE> listIdToPrototype(List<String> ids) throws PrototypeNotFoundException {
+        List<T_PROTOTYPE> prototypes = new ArrayList<>(ids.size());
+        for (String id : ids) {
+            prototypes.add(getPrototype(id));
+        }
+        return prototypes;
     }
 
     public List<T_MODEL> listSaveDataToModel(List<T_SAVE> saveDatas) throws IdleGameException {
@@ -88,6 +97,12 @@ public abstract class BaseFactory<T_PROTOTYPE extends BaseProtoype, T_MODEL exte
         
         prototypes.put(prototype.getId(), prototype);
         sortOrders.add(prototype.getId());
+    }
+    
+    public void registerAll(List<T_PROTOTYPE> prototypes) {
+        for (T_PROTOTYPE prototype : prototypes) {
+            register(prototype);
+        }
     }
     
     public void clear() {

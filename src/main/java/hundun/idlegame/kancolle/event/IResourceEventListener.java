@@ -2,8 +2,8 @@ package hundun.idlegame.kancolle.event;
 
 import java.util.Map;
 
+import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.resource.ResourceModel;
-import hundun.idlegame.kancolle.world.SessionData;
 
 /**
  * @author hundun

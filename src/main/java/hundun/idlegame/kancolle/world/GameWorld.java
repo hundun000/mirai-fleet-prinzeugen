@@ -5,15 +5,28 @@ package hundun.idlegame.kancolle.world;
  */
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
-import hundun.idlegame.kancolle.building.BaseBuilding;
-import hundun.idlegame.kancolle.building.ExpeditionBuilding;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import hundun.idlegame.kancolle.building.BuildingModel;
+import hundun.idlegame.kancolle.building.instance.ExpeditionBuilding;
 import hundun.idlegame.kancolle.container.CommandResult;
 import hundun.idlegame.kancolle.container.GameSaveData;
 import hundun.idlegame.kancolle.container.IGameContainer;
+import hundun.idlegame.kancolle.data.SessionData;
+import hundun.idlegame.kancolle.data.config.HardCodeWorldConfig;
+import hundun.idlegame.kancolle.data.config.WorldConfig;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.LogTag;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
@@ -24,7 +37,7 @@ import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
 import hundun.idlegame.kancolle.expedition.ExpeditionManager;
 import hundun.idlegame.kancolle.expedition.ExpeditionPrototype;
 import hundun.idlegame.kancolle.format.DescriptionFormatter;
-import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
+import hundun.idlegame.kancolle.format.ExceptionFormatter;
 import hundun.idlegame.kancolle.resource.ResourceFactory;
 import hundun.idlegame.kancolle.resource.ResourceManager;
 import hundun.idlegame.kancolle.ship.ShipFactory;
@@ -32,13 +45,18 @@ import hundun.idlegame.kancolle.ship.ShipManager;
 import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.ship.ShipWorkStatus;
 import hundun.idlegame.kancolle.time.TimerManager;
+import hundun.idlegame.kancolle.world.DataBus.CreateShipResult;
 import lombok.Getter;
 
 public class GameWorld {
     
+    private static final ObjectMapper objectMapper;
+    static {
+        objectMapper = new ObjectMapper()
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                ;
+    }
 
-    @Getter
-    SimpleExceptionFormatter exceptionAdvice;
     //WorldConfig worldConfig;
     @Getter
     private ComponentContext context;
@@ -59,19 +77,21 @@ public class GameWorld {
         return sessionData;
     }
     
-    public GameWorld(IGameContainer container, WorldConfig worldConfig) {
+    public GameWorld(IGameContainer container) {
         this.container = container;
+        this.sessionDataMap = new HashMap<>();
+        this.worldConfig = container.provideWorldConfig();
+        
         this.context = new ComponentContext(worldConfig, container);
 
-        
-        this.sessionDataMap = new HashMap<>();
-        this.exceptionAdvice = new SimpleExceptionFormatter();
-        this.worldConfig = worldConfig;
-        
     }
     
 
-    
+    public static WorldConfig readWorldConfigFile(File file) throws IOException {
+
+        return objectMapper.readValue(file, WorldConfig.class);
+
+    }
 
 
     public CommandResult<Void> commandShowData(String sessionId) {
@@ -118,15 +138,26 @@ public class GameWorld {
     public CommandResult<GameSaveData> commandStartGame(String sessionId) throws IdleGameException {
         sessionDataMap.remove(sessionId);
         SessionData sessionData = this.getOrCreateSessionData(sessionId);
+        // handle start-data
         for (String startShipId : worldConfig.getStartShips()) {
             context.getDataBus().addNewShip(sessionData, startShipId);
         }
-        
+        context.getDataBus().resourceMerge(sessionData, worldConfig.getStartResources(), 1);
+       
         //commandCreateExpedition(sessionId, "A1", "吹雪");
         return commandSaveGame(sessionId);
     }
     
 
+    public CommandResult<Void> commandGachaShip(String sessionId, int[] inputResources) throws IdleGameException {
+        context.getEventBus().log(sessionId, LogTag.COMMAND, "GachaShip: {}", Arrays.toString(inputResources));
+        SessionData sessionData = this.getOrCreateSessionData(sessionId);
+
+        CreateShipResult result = context.getDataBus().createShip(sessionData, inputResources);
+        String text = context.getDescriptionFormatter().desCreateShipResult(result);
+        
+        return CommandResult.success(text);
+    }
     
     public CommandResult<Void> commandCreateExpedition(String sessionId, String expeditionId, String shipId) throws IdleGameException {
         context.getEventBus().log(sessionId, LogTag.COMMAND, "CreateExpedition: {}", expeditionId);

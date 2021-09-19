@@ -1,44 +1,52 @@
-package hundun.idlegame.kancolle.ship;
+package hundun.idlegame.kancolle.building.instance;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import hundun.idlegame.kancolle.building.BuildingModel;
+import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.exception.IdleGameException;
+import hundun.idlegame.kancolle.ship.ShipModel;
+import hundun.idlegame.kancolle.ship.ShipPrototype;
 import hundun.idlegame.kancolle.world.ComponentContext;
-import hundun.idlegame.kancolle.world.SessionData;
 import lombok.Data;
 
 /**
  * @author hundun
  * Created on 2021/09/18
  */
-public class GachaMachine {
+public class GachaBuilding extends BuildingModel {
     
     
     Random random = new Random();
     
-    ComponentContext context;
     
-    public GachaMachine(ComponentContext context) {
-        this.context = context;
+    public GachaBuilding(ComponentContext context) {
+        super(BuidingId.GACHA_BUILDING, context);
     }
     
-    public GachaResult gachaShip(int[] inputResources, int inputRarity) {
+    public GachaResult gachaShip(SessionData sessionData, int[] inputResources) {
+        List<ShipModel> workers = getWorkers(sessionData);
+        int maxGachaRarity = workers.size() + 1;
         Collection<ShipPrototype> prototypes = context.getShipFactory().getPrototypes();
         Map<ShipPrototype, Double> gachaWeights = new LinkedHashMap<>();
         double sumWeight = 0.0;
         for (ShipPrototype prototype : prototypes) {
             // filter phase
-            if (prototype.getGachaRarity() > inputRarity) {
+            if (prototype.getGachaRarity() > maxGachaRarity) {
                 continue;
             }
-            
             if (prototype.getStandardGachaResources() == null) {
+                continue;
+            }
+            boolean hasMinGachaResources = hasMinGachaResources(inputResources, prototype.getStandardGachaResources());
+            if (!hasMinGachaResources) {
                 continue;
             }
             
@@ -62,9 +70,20 @@ public class GachaMachine {
         result.setSumWeight(sumWeight);
         result.setGachaWeights(gachaWeights.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().getId(), entry -> entry.getValue())));
         result.setTargetPosition(targetPosition);
+        result.setMaxGachaRarity(maxGachaRarity);
         return result;
     }
     
+    private boolean hasMinGachaResources(int[] inputResources, int[] standardGachaResources) {
+        for (int i = 0; i < inputResources.length; i++) {
+            int limit = standardGachaResources[i];
+            if (inputResources[i] < limit) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private double distance(int[] a, int[] b) {
         double diff_square_sum = 0.0;
         for (int i = 0; i < a.length; i++) {
@@ -79,6 +98,7 @@ public class GachaMachine {
         Map<String, Double> gachaWeights;
         double sumWeight;
         double targetPosition;
+        int maxGachaRarity;
         
     }
 

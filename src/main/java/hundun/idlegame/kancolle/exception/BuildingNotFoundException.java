@@ -5,7 +5,7 @@ package hundun.idlegame.kancolle.exception;
  */
 
 import hundun.idlegame.kancolle.base.BaseProtoype;
-import hundun.idlegame.kancolle.building.BaseBuilding;
+import hundun.idlegame.kancolle.building.BuildingModel;
 import lombok.Getter;
 
 @SuppressWarnings("serial")

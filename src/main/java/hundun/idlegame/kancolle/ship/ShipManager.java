@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.base.BaseManager;
-import hundun.idlegame.kancolle.building.BaseBuilding;
+import hundun.idlegame.kancolle.building.BuildingModel;
+import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.ModelNotFoundException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.world.ComponentContext;
 import hundun.idlegame.kancolle.world.DataBus;
-import hundun.idlegame.kancolle.world.SessionData;
 
 /**
  * @author hundun
@@ -40,7 +40,18 @@ public class ShipManager extends BaseManager {
 //    }
     
 
-    
+    public boolean existShip(SessionData sessionData, String shipId) throws IdleGameException {
+        context.getShipFactory().checkPrototypeExist(shipId);
+        ShipModel target = null;
+        for (ShipModel ship : sessionData.getShips()) {
+            if (ship.getPrototype().getId().equals(shipId)) {
+                target = ship;
+                break;
+            }
+        }
+        
+        return target != null;
+    }
     
 
     public ShipModel findShip(SessionData sessionData, String shipId) throws IdleGameException {
@@ -65,7 +76,7 @@ public class ShipManager extends BaseManager {
         shipModel.setLevel(1);
         shipModel.setExpAndCheckLevelUp(0);
         shipModel.setWorkStatus(ShipWorkStatus.IN_BUILDING);
-        shipModel.setWorkInBuildingId(BaseBuilding.NONE_ID);
+        shipModel.setWorkInBuildingId(BuildingModel.NONE_ID);
         sessionData.getShips().add(shipModel);
         eventBus.sendShipAddNewEvent(sessionData, shipModel);
     }
@@ -89,7 +100,7 @@ public class ShipManager extends BaseManager {
     }
 
 
-    public void shipSetWork(SessionData sessionData, ShipModel ship, BaseBuilding building) {
+    public void shipSetWork(SessionData sessionData, ShipModel ship, BuildingModel building) {
         ship.workInBuildingId = building.getId();
     }
 

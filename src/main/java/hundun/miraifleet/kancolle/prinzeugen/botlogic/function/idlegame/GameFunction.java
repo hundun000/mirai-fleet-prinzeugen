@@ -1,5 +1,7 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -9,10 +11,12 @@ import java.util.concurrent.TimeUnit;
 import hundun.idlegame.kancolle.container.CommandResult;
 import hundun.idlegame.kancolle.container.GameSaveData;
 import hundun.idlegame.kancolle.container.IGameContainer;
+import hundun.idlegame.kancolle.data.config.HardCodeWorldConfig;
+import hundun.idlegame.kancolle.data.config.UnittestWorldConfig;
+import hundun.idlegame.kancolle.data.config.WorldConfig;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.format.SimpleExceptionFormatter;
+import hundun.idlegame.kancolle.format.ExceptionFormatter;
 import hundun.idlegame.kancolle.world.GameWorld;
-import hundun.idlegame.kancolle.world.WorldConfig;
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.core.function.AsCommand;
 import hundun.miraifleet.framework.core.function.BaseFunction;
@@ -31,7 +35,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     GameWorld gameWorld;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     GameFunctionSaveDataRepository gameFunctionSaveDataRepository;
-    SimpleExceptionFormatter gameExceptionFormatter = new SimpleExceptionFormatter();
+    ExceptionFormatter gameExceptionFormatter = new ExceptionFormatter();
     
     public GameFunction(
             BaseBotLogic botLogic,
@@ -112,7 +116,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     }
 
     private void initFunction() {
-        gameWorld = new GameWorld(this, new WorldConfig());
+        gameWorld = new GameWorld(this);
         loadAllGameSessions();
     }
     
@@ -141,7 +145,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             functionSaveData.setPlayer(new Player(sender));
             
             
-            String gameSessionId = UUID.randomUUID().toString();
+            String gameSessionId = functionSessionId;
 
             CommandResult<GameSaveData> result;
             try {
@@ -258,7 +262,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage("执行成功");
     }
     
-    @SubCommand("入驻设施")
+    @SubCommand("入驻建筑")
     public void commandShipMoveToBuilding(CommandSender sender, String buildingId, String shipId) {
         if (!checkCosPermission(sender)) {
             return;
@@ -300,6 +304,29 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
 
         sender.sendMessage(result.getAdviceMessage());
     }
+    
+    @SubCommand("造船")
+    public void commandCreateExpedition(CommandSender sender, int fuel, int ammo, int steel, int bauxite) {
+        if (!checkCosPermission(sender)) {
+            return;
+        }
+        String functionSessionId = getSessionId(sender);
+        GameFunctionSaveData functionSaveData = gameFunctionSaveDataRepository.findById(functionSessionId);
+        if (functionSaveData == null) {
+            sender.sendMessage(NO_GAME_DATA_REPLY);
+            return;
+        }
+        CommandResult<Void> result;
+        try {
+            int[] cost = new int[] {fuel, ammo, steel, bauxite};
+            result = gameWorld.commandGachaShip(functionSaveData.getData().getId(), cost);
+        } catch (IdleGameException e) {
+            printIdleGameExceptionAdvice(functionSaveData.getPlayer(), e);
+            return;
+        }
+
+        sender.sendMessage(result.getAdviceMessage());
+    }
 
     @Override
     public void handleLog(String sessionId, String msg) {
@@ -324,6 +351,18 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         } else {
             Group group = Bot.getInstance(player.getBotId()).getGroup(player.getGroupId());
             group.sendMessage(message);
+        }
+    }
+
+    @Override
+    public WorldConfig provideWorldConfig() {
+        try {
+            WorldConfig worldConfig = GameWorld.readWorldConfigFile(resolveFunctionDataFile("WorldConfig.json"));
+            UnittestWorldConfig unittestWorldConfig = new UnittestWorldConfig(worldConfig);
+            return unittestWorldConfig;
+        } catch (IOException e) {
+            log.error(e);
+            return new WorldConfig();
         }
     }
 }

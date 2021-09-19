@@ -3,17 +3,19 @@ package hundun.idlegame.kancolle.world;
 import java.util.HashMap;
 import java.util.Map;
 
-import hundun.idlegame.kancolle.building.BaseBuilding;
-import hundun.idlegame.kancolle.building.ExpeditionBuilding;
+import hundun.idlegame.kancolle.building.BuildingModel;
+import hundun.idlegame.kancolle.building.instance.ExpeditionBuilding;
+import hundun.idlegame.kancolle.building.instance.GachaBuilding;
 import hundun.idlegame.kancolle.container.IGameContainer;
+import hundun.idlegame.kancolle.data.config.WorldConfig;
 import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.exception.BuildingNotFoundException;
 import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
 import hundun.idlegame.kancolle.expedition.ExpeditionManager;
 import hundun.idlegame.kancolle.format.DescriptionFormatter;
+import hundun.idlegame.kancolle.format.ExceptionFormatter;
 import hundun.idlegame.kancolle.resource.ResourceFactory;
 import hundun.idlegame.kancolle.resource.ResourceManager;
-import hundun.idlegame.kancolle.ship.GachaMachine;
 import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipManager;
 import hundun.idlegame.kancolle.time.TimerManager;
@@ -42,20 +44,19 @@ public class ComponentContext {
     
     @Getter
     private ExpeditionFactory expeditionFactory;
-    
     @Getter
     private ResourceFactory resourceFactory;
-    
     @Getter
     private DescriptionFormatter descriptionFormatter;
-    
     @Getter
     private ExpeditionBuilding expeditionBuilding;
-    
     @Getter
-    private GachaMachine gachaMachine;
+    private GachaBuilding gachaBuilding;
+    @Getter
+    private ExceptionFormatter exceptionFormatter;
     
-    private Map<String, BaseBuilding> buildings = new HashMap<>();
+    
+    private Map<String, BuildingModel> buildings = new HashMap<>();
     
     public ComponentContext(WorldConfig worldConfig, IGameContainer container) {
         initBeforeDataBus(worldConfig);
@@ -77,14 +78,16 @@ public class ComponentContext {
      */
     private void initBeforeDataBus(WorldConfig worldConfig) {
         this.shipFactory = new ShipFactory();
-        worldConfig.registerShips(shipFactory);
         this.expeditionFactory = new ExpeditionFactory();
-        worldConfig.registerExpeditions(expeditionFactory);
         this.resourceFactory = new ResourceFactory();
-        worldConfig.registerResources(resourceFactory);
+
+        
+        shipFactory.registerAll(worldConfig.getShipPrototypes());
+        resourceFactory.registerAll(worldConfig.getResourcePrototypes());
+        expeditionFactory.registerAll(worldConfig.getExpeditionPrototypes());
         
         this.descriptionFormatter = new DescriptionFormatter(resourceFactory);
-        this.gachaMachine = new GachaMachine(this);
+        this.exceptionFormatter = new ExceptionFormatter();
     }
     
     /**
@@ -93,6 +96,8 @@ public class ComponentContext {
     private void initAfterDataBus() {
         this.expeditionBuilding = new ExpeditionBuilding(this);
         buildings.put(expeditionBuilding.getId(), expeditionBuilding);
+        this.gachaBuilding = new GachaBuilding(this);
+        buildings.put(gachaBuilding.getId(), gachaBuilding);
         
         this.expeditionManager = new ExpeditionManager(this);
         this.timerManager = new TimerManager(this);
@@ -100,7 +105,7 @@ public class ComponentContext {
         this.shipManager = new ShipManager(this);
     }
     
-    public BaseBuilding getBuilding(String id) throws BuildingNotFoundException {
+    public BuildingModel getBuilding(String id) throws BuildingNotFoundException {
         if (!buildings.containsKey(id)) {
             throw new BuildingNotFoundException(id);
         }

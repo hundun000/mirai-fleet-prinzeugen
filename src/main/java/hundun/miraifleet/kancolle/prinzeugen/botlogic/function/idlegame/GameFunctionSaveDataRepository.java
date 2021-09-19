@@ -21,6 +21,13 @@ public class GameFunctionSaveDataRepository extends MapDocumentRepository<GameFu
                 );
     }
     
+    @Override
+    public void delete(GameFunctionSaveData item) {
+        String id = item.getId();
+        item.setId("DELETED-" + item.getId());
+        saveAndWriteFile(item, false);
+        deleteById(id);
+    }
     
     public GameFunctionSaveData findOneByGameSessionId(String gameSessionId) {
         return findOneByFilter(document -> document.getData().getId(), gameSessionId);

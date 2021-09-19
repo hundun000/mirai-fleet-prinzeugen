@@ -2,9 +2,9 @@ package hundun.idlegame.kancolle.event;
 
 import java.util.List;
 
+import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
-import hundun.idlegame.kancolle.world.SessionData;
 
 /**
  * @author hundun
