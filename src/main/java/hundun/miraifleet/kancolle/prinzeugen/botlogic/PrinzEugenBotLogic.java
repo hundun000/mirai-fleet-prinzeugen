@@ -2,6 +2,7 @@ package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenChatFunction;
@@ -24,6 +25,7 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
     
     WeiboFunction weiboFunction;
     ReminderFunction reminderFunction;
+    DriveFunction driveFunction;
     
     AllCompositeCommandProxy allCompositeCommandProxy;
     
@@ -47,6 +49,8 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
         
 //        gameFunction = new GameFunction(this, plugin, characterName);
 //        functions.add(gameFunction);
+        driveFunction = new DriveFunction(this, plugin, characterName);
+        functions.add(driveFunction);
         
         allCompositeCommandProxy = new AllCompositeCommandProxy(this, plugin, characterName);
     }

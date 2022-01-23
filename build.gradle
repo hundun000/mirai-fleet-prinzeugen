@@ -59,7 +59,7 @@ dependencies {
     implementation 'io.github.openfeign:feign-jackson:11.1'
     implementation 'io.github.openfeign:feign-core:11.1'
     
-    implementation 'com.github.hundun000:mirai-fleet-framework:b99aff07bf'
+    implementation 'com.github.hundun000:mirai-fleet-framework:c1744f81a9'
     //implementation("net.mamoe.yamlkt:yamlkt:0.9.0")
     implementation 'org.yaml:snakeyaml:1.8'
     //implementation 'commons-io:commons-io:2.6'
