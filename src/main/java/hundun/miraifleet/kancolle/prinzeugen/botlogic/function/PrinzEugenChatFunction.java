@@ -13,6 +13,7 @@ import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.message.data.Audio;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.Voice;
@@ -86,7 +87,7 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
                 subject.sendMessage("你根本不是噗噗");
             }
         } else if (message.contains("咻咻咻") || message.contains("西姆咻")) {
-            Voice voice = subject.uploadVoice(xiuXiuXiuVoiceExternalResource);
+            Audio voice = subject.uploadVoice(xiuXiuXiuVoiceExternalResource);
             if (voice != null) {
                 subject.sendMessage(
                         new PlainText("")

@@ -45,8 +45,8 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
         reminderFunction = new ReminderFunction(this, plugin, characterName);
         functions.add(reminderFunction);
         
-        gameFunction = new GameFunction(this, plugin, characterName);
-        functions.add(gameFunction);
+//        gameFunction = new GameFunction(this, plugin, characterName);
+//        functions.add(gameFunction);
         
         allCompositeCommandProxy = new AllCompositeCommandProxy(this, plugin, characterName);
     }

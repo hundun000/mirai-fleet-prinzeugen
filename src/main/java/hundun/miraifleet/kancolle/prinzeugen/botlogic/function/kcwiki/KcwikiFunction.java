@@ -1,6 +1,7 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -272,6 +273,11 @@ public class KcwikiFunction extends BaseFunction<Void> {
             if (imageFile != null) {
                 ExternalResource externalResource = ExternalResource.create(imageFile);
                 Image image = subject.uploadImageAndClose(externalResource);
+                try {
+                    externalResource.close();
+                } catch (IOException e) {
+                    log.error(e);
+                }
                 if (image != null) {
                     chainBuilder.add(image);
                 } else {
