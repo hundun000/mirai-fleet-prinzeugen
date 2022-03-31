@@ -10,7 +10,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
-import hundun.miraifleet.framework.core.function.AsCommand;
 import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
@@ -25,6 +24,8 @@ import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.feign.Kcwi
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.QuestFileParser;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestData;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestDocument;
+import lombok.Getter;
+import net.mamoe.mirai.console.command.AbstractCommand;
 import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.event.EventHandler;
@@ -38,7 +39,6 @@ import net.mamoe.mirai.utils.ExternalResource;
  * @author hundun
  * Created on 2021/08/10
  */
-@AsCommand
 @AsListenerHost
 public class KcwikiFunction extends BaseFunction<Void> {
 
@@ -49,6 +49,9 @@ public class KcwikiFunction extends BaseFunction<Void> {
     private final MapDocumentRepository<OldKcwikiQuestData> kcwikiQuestDataRepository;
 
     private QuestFileParser questFileParser = new QuestFileParser();
+    
+    @Getter
+    private final CompositeCommandFunctionComponent commandComponent;
     
     public KcwikiFunction(
         BaseBotLogic botLogic,
@@ -79,134 +82,148 @@ public class KcwikiFunction extends BaseFunction<Void> {
             config.setMap(new HashMap<>());
         }
         shipFuzzyNameConfigRepository.saveSingleton(config);
+        this.commandComponent = new CompositeCommandFunctionComponent(plugin, characterName, functionName);
     }
     
-    @SubCommand("导入任务数据文件")
-    public void loadQuestFiles(CommandSender sender) {
-        File folder = plugin.resolveDataFile(functionName + File.separator + "quest_old");
-        List<OldKcwikiQuestData> datas = new ArrayList<>();
-        if (folder.exists() && folder.isDirectory()) {
-            for (File file : folder.listFiles()) {
-                try {
-                    OldKcwikiQuestDocument document = questFileParser.parseOldKcwikiQuestDocument(file);
-                    if (!kcwikiQuestDataRepository.existsById(document.getData().getId())) {
-                        datas.add(document.getData());
-                    }
-                } catch (Exception e) {
-                    log.warning("questFileParser.parse error: ", e);
-                }
-                
-            }
-        }
-        
-        kcwikiQuestDataRepository.saveAll(datas);
-        sender.sendMessage("导入" + folder.listFiles().length + "个文件，其中新增" + datas.size() + "个");
-    }
-    
-    @SubCommand("任务详情")
-    public void detailQuest(CommandSender sender, String id) {
-        if (!checkCosPermission(sender)) {
-            return;
-        }
-        
-        OldKcwikiQuestData questData = kcwikiQuestDataRepository.findById(id);
-        if (questData != null) {
-            sender.sendMessage(questData.getChinese_detail());
-        } else {
-            sender.sendMessage("未找到该任务");
-        }
-        
-    }
-    
-    @SubCommand("搜任务")
-    public void searchQuest(CommandSender sender, String questKeyword) {
-        if (!checkCosPermission(sender)) {
-            return;
-        }
-        searchQuest(new FunctionReplyReceiver(sender, plugin.getLogger()), questKeyword);
-    }
-    
-    private void searchQuest(FunctionReplyReceiver functionReplyReceiver, String questKeyword) {
-        List<OldKcwikiQuestData> questDatas = kcwikiQuestDataRepository.findAll();
-        StringBuilder builder = new StringBuilder();
-        int count = 0;
-        for (OldKcwikiQuestData questData : questDatas) {
-            if (questData.getChinese_title().contains(questKeyword) || questData.getChinese_detail().contains(questKeyword)) {
-                builder.append("id:").append(questData.getId()).append(" ").append(questData.getTitle()).append("\n");
-                count++;
-            }
-        }
-        
-        if (count <= 10) {
-            functionReplyReceiver.sendMessage("找到" + count + "个结果:\n" + builder.toString());
-        } else {
-            functionReplyReceiver.sendMessage("找到" + count + "个结果，结果数过多，请改为更明确的查询词");
-        }
-        
+    @Override
+    public AbstractCommand provideCommand() {
+        return commandComponent;
     }
 
-    @SubCommand("舰娘详情")
-    public void quickSearchShipFromCommand(CommandSender sender, String shipName) {
-        if (!checkCosPermission(sender)) {
-            return;
+    public class CompositeCommandFunctionComponent extends AbstractCompositeCommandFunctionComponent {
+        public CompositeCommandFunctionComponent(JvmPlugin plugin, String characterName, String functionName) {
+            super(plugin, characterName, functionName);
         }
-        searchShip(new FunctionReplyReceiver(sender, plugin.getLogger()), shipName);
-    }
-    
-    @SubCommand("查询舰娘别名")
-    public void listShipFuzzyName(CommandSender sender, String name) {
-        if (!checkCosPermission(sender)) {
-            return;
-        }
-        StringBuilder builder = new StringBuilder();
-        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
-        config.getMap().entrySet().forEach(entry -> {
-            if (entry.getKey().equals(name) || entry.getValue().equals(name)) {
-                builder.append(entry.getKey()).append("-->").append(entry.getValue()).append("\n");
-            }
-        });
-        if (builder.length() > 0) {
-            sender.sendMessage(builder.toString());
-        } else {
-            sender.sendMessage("“" +name + "”没有相关别名");
-        }
-    }
-    
-    @SubCommand("删除舰娘别名")
-    public void deleteShipFuzzyName(CommandSender sender, String fuzzyName) {
-        if (!checkCosPermission(sender)) {
-            return;
-        }
-        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
-        config.getMap().entrySet().removeIf(entry -> entry.getKey().equals(fuzzyName));
-    }
-    
-   
-    @SubCommand("添加舰娘别名")
-    public void addShipFuzzyName(CommandSender sender, String shipName, String fuzzyName) {
-        if (!checkCosPermission(sender)) {
-            return;
-        }
-        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
         
-        boolean isValidShipName = false;
-        if (config.getMap().values().contains(shipName)) {
-            isValidShipName = true;
-        } else {
-            KcwikiShipDetail shipDetail = kcwikiService.getShipDetail(shipName);
-            if (shipDetail != null && shipDetail.getChinese_name() != null) {
+        @SubCommand("导入任务数据文件")
+        public void loadQuestFiles(CommandSender sender) {
+            File folder = plugin.resolveDataFile(functionName + File.separator + "quest_old");
+            List<OldKcwikiQuestData> datas = new ArrayList<>();
+            if (folder.exists() && folder.isDirectory()) {
+                for (File file : folder.listFiles()) {
+                    try {
+                        OldKcwikiQuestDocument document = questFileParser.parseOldKcwikiQuestDocument(file);
+                        if (!kcwikiQuestDataRepository.existsById(document.getData().getId())) {
+                            datas.add(document.getData());
+                        }
+                    } catch (Exception e) {
+                        log.warning("questFileParser.parse error: ", e);
+                    }
+                    
+                }
+            }
+            
+            kcwikiQuestDataRepository.saveAll(datas);
+            sender.sendMessage("导入" + folder.listFiles().length + "个文件，其中新增" + datas.size() + "个");
+        }
+        
+        @SubCommand("任务详情")
+        public void detailQuest(CommandSender sender, String id) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            
+            OldKcwikiQuestData questData = kcwikiQuestDataRepository.findById(id);
+            if (questData != null) {
+                sender.sendMessage(questData.getChinese_detail());
+            } else {
+                sender.sendMessage("未找到该任务");
+            }
+            
+        }
+        
+        @SubCommand("搜任务")
+        public void searchQuest(CommandSender sender, String questKeyword) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            searchQuest(new FunctionReplyReceiver(sender, plugin.getLogger()), questKeyword);
+        }
+        
+        private void searchQuest(FunctionReplyReceiver functionReplyReceiver, String questKeyword) {
+            List<OldKcwikiQuestData> questDatas = kcwikiQuestDataRepository.findAll();
+            StringBuilder builder = new StringBuilder();
+            int count = 0;
+            for (OldKcwikiQuestData questData : questDatas) {
+                if (questData.getChinese_title().contains(questKeyword) || questData.getChinese_detail().contains(questKeyword)) {
+                    builder.append("id:").append(questData.getId()).append(" ").append(questData.getTitle()).append("\n");
+                    count++;
+                }
+            }
+            
+            if (count <= 10) {
+                functionReplyReceiver.sendMessage("找到" + count + "个结果:\n" + builder.toString());
+            } else {
+                functionReplyReceiver.sendMessage("找到" + count + "个结果，结果数过多，请改为更明确的查询词");
+            }
+            
+        }
+
+        @SubCommand("舰娘详情")
+        public void quickSearchShipFromCommand(CommandSender sender, String shipName) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            searchShip(new FunctionReplyReceiver(sender, plugin.getLogger()), shipName);
+        }
+        
+        @SubCommand("查询舰娘别名")
+        public void listShipFuzzyName(CommandSender sender, String name) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            StringBuilder builder = new StringBuilder();
+            ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+            config.getMap().entrySet().forEach(entry -> {
+                if (entry.getKey().equals(name) || entry.getValue().equals(name)) {
+                    builder.append(entry.getKey()).append("-->").append(entry.getValue()).append("\n");
+                }
+            });
+            if (builder.length() > 0) {
+                sender.sendMessage(builder.toString());
+            } else {
+                sender.sendMessage("“" +name + "”没有相关别名");
+            }
+        }
+        
+        @SubCommand("删除舰娘别名")
+        public void deleteShipFuzzyName(CommandSender sender, String fuzzyName) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+            config.getMap().entrySet().removeIf(entry -> entry.getKey().equals(fuzzyName));
+        }
+        
+       
+        @SubCommand("添加舰娘别名")
+        public void addShipFuzzyName(CommandSender sender, String shipName, String fuzzyName) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
+            
+            boolean isValidShipName = false;
+            if (config.getMap().values().contains(shipName)) {
                 isValidShipName = true;
+            } else {
+                KcwikiShipDetail shipDetail = kcwikiService.getShipDetail(shipName);
+                if (shipDetail != null && shipDetail.getChinese_name() != null) {
+                    isValidShipName = true;
+                }
+            }
+            
+            if (isValidShipName) {
+                config.getMap().put(fuzzyName, shipName);
+                shipFuzzyNameConfigRepository.saveSingleton(config);
+                sender.sendMessage("已添加");
+            } else {
+                sender.sendMessage("“" +shipName + "”不是标准的舰娘名，无法添加别名");
             }
         }
-        
-        if (isValidShipName) {
-            config.getMap().put(fuzzyName, shipName);
-            shipFuzzyNameConfigRepository.saveSingleton(config);
-            sender.sendMessage("已添加");
-        } else {
-            sender.sendMessage("“" +shipName + "”不是标准的舰娘名，无法添加别名");
-        }
     }
+    
+
     
     
     @EventHandler

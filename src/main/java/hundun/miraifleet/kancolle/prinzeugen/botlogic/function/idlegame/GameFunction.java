@@ -18,9 +18,9 @@ import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.format.ExceptionFormatter;
 import hundun.idlegame.kancolle.world.GameWorld;
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
-import hundun.miraifleet.framework.core.function.AsCommand;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.console.command.AbstractCommand;
 import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.contact.Group;
@@ -29,7 +29,6 @@ import net.mamoe.mirai.contact.Group;
  * @author hundun
  * Created on 2021/09/03
  */
-@AsCommand
 public class GameFunction extends BaseFunction<Void> implements IGameContainer {
     
     GameWorld gameWorld;
@@ -132,7 +131,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         }
     }
     
-    @SubCommand("创建存档")
+    //@SubCommand("创建存档")
     public void commandCreateGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
@@ -164,7 +163,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         }
     }
     
-    @SubCommand("保存存档")
+    //@SubCommand("保存存档")
     public void commandSaveGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
@@ -185,7 +184,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage(result.getAdviceMessage());
     }
     
-    @SubCommand("读取存档")
+    //@SubCommand("读取存档")
     public void commandLoadGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
@@ -212,7 +211,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage(result.getAdviceMessage());
     }
     
-    @SubCommand("删除存档")
+    //@SubCommand("删除存档")
     public void commandDeleteGameData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
@@ -227,7 +226,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage("删档成功");
     }
     
-    @SubCommand("一览")
+    //@SubCommand("一览")
     public void commandShowData(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
@@ -247,7 +246,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
 
     }
     
-    @SubCommand("debug跳过tick")
+    //@SubCommand("debug跳过tick")
     public void debugCommandTick(CommandSender sender) {
         if (!checkCosPermission(sender)) {
             return;
@@ -262,7 +261,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage("执行成功");
     }
     
-    @SubCommand("入驻建筑")
+    //@SubCommand("入驻建筑")
     public void commandShipMoveToBuilding(CommandSender sender, String buildingId, String shipId) {
         if (!checkCosPermission(sender)) {
             return;
@@ -283,7 +282,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage(result.getAdviceMessage());
     }
     
-    @SubCommand("派出远征")
+    //@SubCommand("派出远征")
     public void commandCreateExpedition(CommandSender sender, String expeditionId, String shipId) {
         if (!checkCosPermission(sender)) {
             return;
@@ -305,7 +304,7 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
         sender.sendMessage(result.getAdviceMessage());
     }
     
-    @SubCommand("造船")
+    //@SubCommand("造船")
     public void commandCreateExpedition(CommandSender sender, int fuel, int ammo, int steel, int bauxite) {
         if (!checkCosPermission(sender)) {
             return;
@@ -364,5 +363,11 @@ public class GameFunction extends BaseFunction<Void> implements IGameContainer {
             log.error(e);
             return new WorldConfig();
         }
+    }
+
+    @Override
+    public AbstractCommand provideCommand() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

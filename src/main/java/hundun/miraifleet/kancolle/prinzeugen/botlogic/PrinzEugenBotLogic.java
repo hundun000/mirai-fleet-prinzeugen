@@ -1,14 +1,17 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
+import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenChatFunction;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenImageFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame.GameFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.KcwikiFunction;
 import net.mamoe.mirai.console.command.CommandManager;
+import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 
 /**
@@ -18,22 +21,24 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 public class PrinzEugenBotLogic extends BaseBotLogic {
 
     PrinzEugenChatFunction prinzEugenChatFunction;
+    PrinzEugenImageFunction prinzEugenImageFunction;
     KcwikiFunction kcwikiFunction;
     GameFunction gameFunction;
     
     RepeatFunction repeatFunction;
-    
     WeiboFunction weiboFunction;
     ReminderFunction reminderFunction;
     DriveFunction driveFunction;
+    CharacterHelpFunction characterHelpFunction;
     
-    AllCompositeCommandProxy allCompositeCommandProxy;
-    
-    public PrinzEugenBotLogic(JvmPlugin plugin) {
+    public PrinzEugenBotLogic(JavaPlugin plugin) {
         super(plugin, "欧根");
         
         prinzEugenChatFunction = new PrinzEugenChatFunction(this, plugin, characterName);
         functions.add(prinzEugenChatFunction);
+        
+        prinzEugenImageFunction = new PrinzEugenImageFunction(this, plugin, characterName);
+        functions.add(prinzEugenImageFunction);
         
         kcwikiFunction = new KcwikiFunction(this, plugin, characterName);
         functions.add(kcwikiFunction);
@@ -41,10 +46,10 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
         repeatFunction = new RepeatFunction(this, plugin, characterName);
         functions.add(repeatFunction);
         
-        weiboFunction = new WeiboFunction(this, plugin, characterName);
+        weiboFunction = new WeiboFunction(this, plugin, characterName, null);
         functions.add(weiboFunction);
         
-        reminderFunction = new ReminderFunction(this, plugin, characterName);
+        reminderFunction = new ReminderFunction(this, plugin, characterName, null, null);
         functions.add(reminderFunction);
         
 //        gameFunction = new GameFunction(this, plugin, characterName);
@@ -52,15 +57,10 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
         driveFunction = new DriveFunction(this, plugin, characterName);
         functions.add(driveFunction);
         
+        characterHelpFunction = new CharacterHelpFunction(this, plugin, characterName);
+        functions.add(characterHelpFunction);
+        
         allCompositeCommandProxy = new AllCompositeCommandProxy(this, plugin, characterName);
     }
-    
-    @Override
-    public void onBotLogicEnable() {
-        super.onBotLogicEnable();
-        
-        CommandManager.INSTANCE.registerCommand(allCompositeCommandProxy, false);
-    }
-    
 
 }

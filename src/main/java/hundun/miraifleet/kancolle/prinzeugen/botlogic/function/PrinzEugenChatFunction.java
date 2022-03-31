@@ -4,14 +4,15 @@ import java.io.File;
 import org.jetbrains.annotations.NotNull;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
-import hundun.miraifleet.framework.core.function.AsCommand;
 import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
+import net.mamoe.mirai.console.command.AbstractCommand;
 import net.mamoe.mirai.console.command.CommandSender;
 
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.event.EventHandler;
+import net.mamoe.mirai.event.events.AbstractMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Audio;
 import net.mamoe.mirai.message.data.Image;
@@ -23,7 +24,6 @@ import net.mamoe.mirai.utils.ExternalResource;
  * @author hundun
  * Created on 2021/08/09
  */
-@AsCommand
 @AsListenerHost
 public class PrinzEugenChatFunction extends BaseFunction<Void> {
 
@@ -51,26 +51,17 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
             pupuExternalResource = ExternalResource.create(plugin.resolveDataFile(functionName + File.separator + "噗噗.jpg"));
             xiuXiuXiuVoiceExternalResource = ExternalResource.create(plugin.resolveDataFile(functionName + File.separator + "咻咻咻.amr"));
         } catch (Exception e) {
-            plugin.getLogger().error("open cannotRelaxImage error: " + e.getMessage());
+            plugin.getLogger().error("initExternalResource error: " + e.getMessage());
         }
-    }
-    
-    
-    @SubCommand("测试闲聊")
-    public void chatFromCommand(CommandSender sender, String testText) {
-        if (!checkCosPermission(sender)) {
-            return;
-        }
-        chat(new FunctionReplyReceiver(sender, plugin.getLogger()), testText);
     }
     
     
     @EventHandler
-    public void onMessage(@NotNull GroupMessageEvent event) throws Exception { 
+    public void onMessage(@NotNull AbstractMessageEvent event) throws Exception { 
         if (!checkCosPermission(event)) {
             return;
         }
-        chat(new FunctionReplyReceiver(event.getGroup(), plugin.getLogger()), event.getMessage().contentToString());
+        chat(new FunctionReplyReceiver(event.getSubject(), plugin.getLogger()), event.getMessage().contentToString());
         
     }
     
@@ -97,6 +88,12 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
                 subject.sendMessage("西姆咻咻咻");
             }
         }
+    }
+
+
+    @Override
+    public AbstractCommand provideCommand() {
+        return null;
     }
     
 
