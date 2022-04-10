@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 273
+  category: 2
+  type: 4
+  title: 新編「三川艦隊」ソロモン方面へ！
+  detail: 第一艦隊に編成した「三川艦隊」を南方海域に進出させ、同方面の敵艦隊を撃滅せよ！
+  reward: [480, 480, 0, 0]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 3
+    -
+      category: useitem
+      id: 4
+      amount: 3
+  prerequisite: [307]
+  wiki_id: B41
+  chinese_title: 新编「三川舰队」前往所罗门方面！
+  chinese_detail: 派出在第一舰队编成的「三川舰队」向南方海域前方(5-1)推进，消灭此方面的敌人！
+---

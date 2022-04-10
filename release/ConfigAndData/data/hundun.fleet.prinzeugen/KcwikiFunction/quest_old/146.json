@@ -1,0 +1,22 @@
+---
+layout: json
+data:
+  id: 146
+  category: 1
+  type: 4
+  title: 改修工廠を準備せよ！
+  detail: 第一艦隊の旗艦に工作艦「明石」を配備、改修工廠の準備を実施せよ！
+  reward: [100, 0, 100, 0]
+  reward2:
+    -
+      category: useitem
+      id: 4
+      amount: 5
+    -
+      category: other
+      item: 改修工廠開放
+  prerequisite: [116]
+  wiki_id: A45
+  chinese_title: 改修工厂准备！
+  chinese_detail: 在第一舰队旗舰配备工作舰「明石」，为改修工厂做准备！
+---

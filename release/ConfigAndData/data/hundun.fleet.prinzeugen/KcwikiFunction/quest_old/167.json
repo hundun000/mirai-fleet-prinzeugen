@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 167
+  category: 1
+  type: 4
+  title: 新航空戦隊を編成せよ！
+  detail: 改二改装を終えた翔鶴型航空母艦2隻と同護衛艦による新航空戦隊を新編成せよ！
+  reward: [0, 300, 300, 300]
+  reward2:
+    -
+      category: useitem
+      id: 59
+      amount: 1
+    -
+      category: useitem
+      id: 70
+      amount: 1
+  prerequisite: [632]
+  wiki_id: A62
+  chinese_title: “新航空战队”编成！
+  chinese_detail: 改二改装完成的两艘翔鹤型航空母舰及其护卫舰编成新的航空战队!
+---

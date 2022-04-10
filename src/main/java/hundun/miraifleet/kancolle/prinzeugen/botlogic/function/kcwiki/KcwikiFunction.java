@@ -95,10 +95,11 @@ public class KcwikiFunction extends BaseFunction<Void> {
             super(plugin, characterName, functionName);
         }
         
-        @SubCommand("导入任务数据文件")
+        @SubCommand("载入任务数据文件")
         public void loadQuestFiles(CommandSender sender) {
             File folder = plugin.resolveDataFile(functionName + File.separator + "quest_old");
             List<OldKcwikiQuestData> datas = new ArrayList<>();
+            kcwikiQuestDataRepository.deleteAll();
             if (folder.exists() && folder.isDirectory()) {
                 for (File file : folder.listFiles()) {
                     try {
@@ -112,9 +113,8 @@ public class KcwikiFunction extends BaseFunction<Void> {
                     
                 }
             }
-            
             kcwikiQuestDataRepository.saveAll(datas);
-            sender.sendMessage("导入" + folder.listFiles().length + "个文件，其中新增" + datas.size() + "个");
+            sender.sendMessage("导入" + folder.listFiles().length + "个文件");
         }
         
         @SubCommand("任务详情")
@@ -193,11 +193,12 @@ public class KcwikiFunction extends BaseFunction<Void> {
             }
             ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
             config.getMap().entrySet().removeIf(entry -> entry.getKey().equals(fuzzyName));
+            sender.sendMessage("已删除");
         }
         
        
         @SubCommand("添加舰娘别名")
-        public void addShipFuzzyName(CommandSender sender, String shipName, String fuzzyName) {
+        public void addShipFuzzyName(CommandSender sender, String fuzzyName, String shipName) {
             if (!checkCosPermission(sender)) {
                 return;
             }

@@ -74,6 +74,7 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
             Message image = receiver.uploadImageOrNotSupportPlaceholder(externalResource);
             receiver.sendMessage(image);
         }
+        
     }
 
 }

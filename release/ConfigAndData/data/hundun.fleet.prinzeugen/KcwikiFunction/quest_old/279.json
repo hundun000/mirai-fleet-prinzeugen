@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 279
+  category: 2
+  type: 4
+  title: 「第一水雷戦隊」北方ケ号作戦、再突入！
+  detail: 北方再突入準備の新編「一水戦」で北方キス島に再突入を敢行、同撤収作戦を完遂せよ！
+  reward: [0, 400, 0, 500]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 4
+    -
+      category: useitem
+      id: 4
+      amount: 4
+  prerequisite: [157, 309]
+  wiki_id: B47
+  chinese_title: 「第一水雷战队」北方KE号作战、再突入！
+  chinese_detail: 为北方再突入而准备的新编「一水战」毅然再突入北方基斯岛(3-2)！完成该撤退作战！
+---

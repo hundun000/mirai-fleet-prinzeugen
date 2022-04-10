@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 145
+  category: 1
+  type: 4
+  title: 戦艦を主力とした水上打撃部隊を編成せよ！
+  detail: 大和型・長門型・伊勢型・扶桑型のいずれか3隻と軽巡1隻他の水上打撃部隊を配備せよ！
+  reward: [300, 300, 0, 0]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 3
+  prerequisite: [258]
+  wiki_id: A43
+  chinese_title: 战舰为主力的水上打击部队编成！
+  chinese_detail: 从大和型，长门型，伊势型，扶桑型中选择3艘和1艘轻巡等配备水上打击部队！
+---

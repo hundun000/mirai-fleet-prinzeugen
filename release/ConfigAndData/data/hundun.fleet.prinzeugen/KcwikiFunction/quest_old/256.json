@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 256
+  category: 2
+  type: 3
+  title: 「潜水艦隊」出撃せよ！
+  detail: 潜水艦戦力を中核とした艦隊で中部海域哨戒線へ反復出撃、敵戦力を漸減せよ！
+  reward: [0, 600, 0, 0]
+  reward2:
+    -
+      category: useitem
+      id: 12
+      amount: 2
+    -
+      category: useitem
+      id: 59
+      amount: 1
+  prerequisite: [255]
+  wiki_id: Bm2
+  chinese_title: 「潜水舰队」出击！
+  chinese_detail: 派出以潜水舰战力为核心的舰队在中部海域哨戒战(6-1)反复出击，削弱敌方战力！
+---

@@ -31,6 +31,11 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
         botLogic.reminderFunction.getCommandComponent().listHourlyChatConfig(sender);
     }
     
+    @SubCommand("载入任务数据文件")
+    public void loadQuestFiles(CommandSender sender) {
+        botLogic.kcwikiFunction.getCommandComponent().loadQuestFiles(sender);
+    }
+    
     @SubCommand("任务详情")
     public void detailQuest(CommandSender sender, String id) {
         botLogic.kcwikiFunction.getCommandComponent().detailQuest(sender, id);
@@ -57,8 +62,8 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
     }
     
     @SubCommand("添加舰娘别名")
-    public void addShipFuzzyName(CommandSender sender, String shipName, String fuzzyName) {
-        botLogic.kcwikiFunction.getCommandComponent().addShipFuzzyName(sender, shipName, fuzzyName);
+    public void addShipFuzzyName(CommandSender sender, String fuzzyName, String shipName) {
+        botLogic.kcwikiFunction.getCommandComponent().addShipFuzzyName(sender, fuzzyName, shipName);
     }
     
     @SubCommand("微博订阅")

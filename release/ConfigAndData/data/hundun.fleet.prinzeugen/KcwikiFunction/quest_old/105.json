@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 105
+  category: 1
+  type: 4
+  title: 軽巡２隻を擁する隊を編成せよ！
+  detail: 軽巡洋艦２隻を擁する高速艦隊を編成せよ！
+  reward: [60, 60, 0, 0]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 1
+  prerequisite: [103]
+  wiki_id: A5
+  chinese_title: 编成拥有2艘轻巡的舰队！
+  chinese_detail: 编成拥有2艘轻巡洋舰的高速舰队
+---

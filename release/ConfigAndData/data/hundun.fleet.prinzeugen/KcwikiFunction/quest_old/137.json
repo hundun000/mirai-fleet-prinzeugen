@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 137
+  category: 1
+  type: 4
+  title: 「第五戦隊」を編成せよ！
+  detail: 「妙高」「那智」「羽黒」を基幹とした第五戦隊を編成せよ！
+  reward: [0, 0, 300, 0]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 5
+  prerequisite: [248]
+  wiki_id: A35
+  chinese_title: 「第五战队」编成！
+  chinese_detail: 以「妙高」「那智」「羽黑」为基干编成第五战队！
+---

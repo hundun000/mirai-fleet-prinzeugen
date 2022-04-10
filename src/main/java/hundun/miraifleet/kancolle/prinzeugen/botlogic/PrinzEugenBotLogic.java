@@ -23,7 +23,7 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
     PrinzEugenChatFunction prinzEugenChatFunction;
     PrinzEugenImageFunction prinzEugenImageFunction;
     KcwikiFunction kcwikiFunction;
-    GameFunction gameFunction;
+    //GameFunction gameFunction;
     
     RepeatFunction repeatFunction;
     WeiboFunction weiboFunction;
@@ -46,10 +46,13 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
         repeatFunction = new RepeatFunction(this, plugin, characterName);
         functions.add(repeatFunction);
         
-        weiboFunction = new WeiboFunction(this, plugin, characterName, null);
+        weiboFunction = new WeiboFunction(this, plugin, characterName, 
+                PrinzEugenDefaultConfigAndData.weiboConfigDefaultDataSupplier());
         functions.add(weiboFunction);
         
-        reminderFunction = new ReminderFunction(this, plugin, characterName, null, null);
+        reminderFunction = new ReminderFunction(this, plugin, characterName, 
+                null, 
+                PrinzEugenDefaultConfigAndData.hourlyChatConfigDefaultDataSupplier());
         functions.add(reminderFunction);
         
 //        gameFunction = new GameFunction(this, plugin, characterName);

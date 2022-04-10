@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 626
+  category: 6
+  type: 3
+  title: 精鋭「艦戦」隊の新編成
+  detail: 要熟練搭乗員：練度max「零戦21型」搭載「鳳翔」秘書艦で「零戦21型」x2「九六艦戦」x1廃棄！
+  reward: [0, 0, 0, 50]
+  reward2:
+    -
+      category: slotitem
+      id: 96
+      amount: 1
+  prerequisite: [114, 264]
+  wiki_id: F22
+  chinese_title: 精锐“舰战”队新编成
+  chinese_detail: 要熟练搭乘员：以凤翔为秘书舰，搭载熟练度max的“零战21型”时废弃“零战21型”x2“九六舰战”x1!
+---

@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 205
+  category: 2
+  type: 4
+  title: 接近する「敵前衛艦隊」を迎撃せよ！
+  detail: 南西諸島沖に接近する「敵前衛艦隊」を捕捉、これを撃滅せよ！
+  reward: [50, 0, 50, 0]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 1
+    -
+      category: ship
+      id: 11
+      amount: 1
+  prerequisite: [204]
+  wiki_id: B5
+  chinese_title: 迎击接近的「敌前卫舰队」！
+  chinese_detail: 捕捉南西群岛近海(1-2)的「敌前卫舰队」，消灭他们！
+---

@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 141
+  category: 1
+  type: 4
+  title: 再編成「第二航空戦隊」を強化せよ！
+  detail: 「蒼龍改二」(※旗艦)及び「飛龍改二」を基幹とした二航戦(要駆逐艦2隻)を編成せよ！
+  reward: [0, 0, 0, 450]
+  reward2:
+    -
+      category: useitem
+      id: 2
+      amount: 2
+    -
+      category: useitem
+      id: 3
+      amount: 2
+  prerequisite: [250]
+  wiki_id: A39
+  chinese_title: 再编成 强化「第二航空战队」！
+  chinese_detail: 以「苍龙改二」(※旗舰)和「飞龙改二」为基干编成二航战（需要驱逐舰2艘）！
+---

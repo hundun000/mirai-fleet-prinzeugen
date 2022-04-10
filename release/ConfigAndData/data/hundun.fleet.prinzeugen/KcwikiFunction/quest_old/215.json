@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 215
+  category: 2
+  type: 4
+  title: 第２艦隊、出撃せよ！
+  detail: 新たに編成した「第２艦隊」を出撃させよ！
+  reward: [0, 0, 200, 200]
+  reward2:
+    -
+      category: useitem
+      id: 3
+      amount: 1
+  prerequisite: [115]
+  wiki_id: B3
+  chinese_title: 第二舰队出击！
+  chinese_detail: 派出新编成的第二舰队出击！
+---

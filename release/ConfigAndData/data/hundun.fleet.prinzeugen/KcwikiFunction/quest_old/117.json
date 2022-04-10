@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 117
+  category: 1
+  type: 4
+  title: 第２艦隊で空母機動部隊を編成せよ！
+  detail: 第２艦隊に空母を配備して、空母機動部隊を編成せよ！
+  reward: [100, 0, 0, 100]
+  reward2:
+    -
+      category: useitem
+      id: 2
+      amount: 2
+  prerequisite: [215]
+  wiki_id: A11
+  chinese_title: 在第二舰队编成空母机动部队！
+  chinese_detail: 在第二舰队配备空母，编成空母机动部队！
+---

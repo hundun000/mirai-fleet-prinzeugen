@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 204
+  category: 2
+  type: 4
+  title: 南西諸島沖に出撃せよ！
+  detail: 南西諸島沖に艦隊を出撃させ、敵艦隊と交戦せよ！
+  reward: [40, 40, 0, 0]
+  reward2:
+    -
+      category: useitem
+      id: 1
+      amount: 1
+  prerequisite: [203]
+  wiki_id: B4
+  chinese_title: 出击南西诸岛沖！
+  chinese_detail: 在南西群岛近海(1-2)派出舰队出击，与敌舰队交战！
+---

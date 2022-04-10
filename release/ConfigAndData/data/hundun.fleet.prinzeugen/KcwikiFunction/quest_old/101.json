@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 101
+  category: 1
+  type: 4
+  title: はじめての「編成」！
+  detail: ２隻以上の艦で構成される「艦隊」を編成せよ！
+  reward: [20, 20, 0, 0]
+  reward2:
+    -
+      category: ship
+      id: 10
+      amount: 1
+  prerequisite: []
+  wiki_id: A1
+  chinese_title: 初次的「编成」！
+  chinese_detail: 以两艘以上的阵容编成「舰队」！
+---

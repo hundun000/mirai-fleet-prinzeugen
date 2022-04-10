@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 816
+  category: 8
+  type: 4
+  title: 艦隊、三周年！
+  detail: 三周年を記念しバシー島沖及び東部オリョール海に出撃、同海域の敵艦隊を撃滅せよ！
+  reward: [1000, 1000, 1000, 0]
+  reward2:
+    -
+      category: furniture
+      id: 286
+      amount: 1
+  prerequisite: [105, 206]
+  wiki_id: B67
+  chinese_title: 舰队、三周年！
+  chinese_detail: 三周年纪念，出击巴士岛近海(2-2)以及东部奥廖尔海(2-3)，歼灭同海域的敌军舰队！
+---

@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 837
+  category: 8
+  type: 4
+  title: 輸送作戦を成功させ、帰還せよ！
+  detail: 「鬼怒改二」を旗艦、僚艦に「浦波改」他駆逐艦3隻の計5隻の艦隊で<br>バシー島沖における柳輸送作戦を実施、同輸送作戦を完全成功させ、帰還せよ！
+  reward: [1000, 0, 1000, 3000]
+  reward2:
+    -
+      category: useitem
+      id: 4
+      amount: 5
+    -
+      category: useitem
+      id: 67
+      amount: 1
+  prerequisite: [827, 836]
+  wiki_id: B86
+  chinese_title: 顺利执行输送作战，并返航！
+  chinese_detail: 以“鬼怒改二”为旗舰，“浦波改”为僚舰，加上其他驱逐舰三支，组成包含五支驱逐舰的舰队。出击巴士岛近海(2-2)实施柳输送作战，确保输送作战的完全成功，并返航！
+---

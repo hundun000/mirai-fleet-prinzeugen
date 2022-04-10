@@ -1,0 +1,23 @@
+---
+layout: json
+data:
+  id: 257
+  category: 2
+  type: 3
+  title: 「水雷戦隊」南西へ！
+  detail: 軽巡旗艦の水雷戦隊(軽巡最大3隻他駆逐艦)を急派、南西諸島防衛線で敵を撃滅せよ！
+  reward: [500, 0, 0, 300]
+  reward2:
+    -
+      category: useitem
+      id: 4
+      amount: 3
+    -
+      category: useitem
+      id: 59
+      amount: 1
+  prerequisite: [221]
+  wiki_id: Bm3
+  chinese_title: 「水雷战队」前往南西！
+  chinese_detail: 紧急派遣以轻巡为旗舰的水雷战队（轻巡最大3艘其他为驱逐舰），消灭南西群岛防卫线(1-4)的敌人！
+---

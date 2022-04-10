@@ -1,0 +1,18 @@
+---
+layout: json
+data:
+  id: 104
+  category: 1
+  type: 4
+  title: ６隻編成の艦隊を編成せよ！
+  detail: 全6隻で構成される主力艦隊を編成せよ！
+  reward: [50, 0, 50, 0]
+  reward2:
+    -
+      category: other
+      item: 第2艦隊開放
+  prerequisite: [103]
+  wiki_id: A4
+  chinese_title: 编成6艘规模的舰队！
+  chinese_detail: 编成全部6艘规模的主力舰队
+---

@@ -1,0 +1,30 @@
+---
+layout: json
+data:
+  id: 839
+  category: 8
+  type: 4
+  title: 戦艦戦隊、出撃せよ！
+  detail: 戦艦2隻を中核戦力とする戦艦旗艦の艦隊を北方海域アルフォンシーノ方面に進出させ、<br>同海域の敵艦隊を撃滅、北方海域の制海権確保に努めよ！
+  reward: [0, 800, 0, 200]
+  reward2:
+    -
+      category: useitem
+      id: 4
+      amount: 2
+    -
+      select: 1
+      list:
+        -
+          category: slotitem
+          id: 165
+          amount: 1
+        -
+          category: slotitem
+          id: 178
+          amount: 1
+  prerequisite: [838]
+  wiki_id: B88
+  chinese_title: 战舰战队，出击！
+  chinese_detail: 派出以2只战舰为核心力量并以战舰为旗舰的部队，向北方海域阿尔锋西诺方向(3-3)推进，消灭本海域的敌方战舰，努力确保北方海域的制海权！
+---

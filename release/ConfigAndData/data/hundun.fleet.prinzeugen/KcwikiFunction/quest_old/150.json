@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 150
+  category: 1
+  type: 4
+  title: 「第二一駆逐隊」を編成せよ！
+  detail: 「初春」「子日」「若葉」「初霜」4隻による第二一駆逐隊を編成せよ！
+  reward: [210, 210, 0, 0]
+  reward2:
+    -
+      category: useitem
+      id: 1
+      amount: 3
+  prerequisite: [267]
+  wiki_id: A48
+  chinese_title: 「第二一驱逐队」编成！
+  chinese_detail: 以「初春」「子日」「若叶」「初霜」4艘编成「第二一驱逐队」！
+---

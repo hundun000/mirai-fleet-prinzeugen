@@ -19,7 +19,7 @@ public static final PrinzEugenPlugin INSTANCE = new PrinzEugenPlugin();
     public PrinzEugenPlugin() {
         super(new JvmPluginDescriptionBuilder(
                 "hundun.fleet.prinzeugen",
-                "0.1.0"
+                "0.3.0"
             )
             .build());
     }

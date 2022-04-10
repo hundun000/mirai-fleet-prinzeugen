@@ -1,0 +1,19 @@
+---
+layout: json
+data:
+  id: 115
+  category: 1
+  type: 4
+  title: 第２艦隊を編成せよ！
+  detail: 二つ目の艦隊、第２艦隊の旗艦を指定して、第２艦隊を編成せよ！
+  reward: [50, 50, 100, 0]
+  reward2:
+    -
+      category: useitem
+      id: 2
+      amount: 1
+  prerequisite: [104]
+  wiki_id: A6
+  chinese_title: 第二舰队编成！
+  chinese_detail: 第二个舰队，即在第2舰队指定旗舰，编成第2舰队！
+---
