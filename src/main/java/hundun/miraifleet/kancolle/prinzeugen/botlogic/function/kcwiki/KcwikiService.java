@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import hundun.miraifleet.framework.core.helper.file.CacheableFileHelper;
 import hundun.miraifleet.framework.core.helper.file.FileOperationDelegate;
 import hundun.miraifleet.framework.core.helper.file.IFileOperationDelegator;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiInitEquip;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * Created on 2021/05/20
  */
 @Slf4j
-public class KcwikiService implements IFileOperationDelegator {
+public class KcwikiService {
 
     String cpServiceName = "KcwikiService";
     
@@ -27,11 +28,13 @@ public class KcwikiService implements IFileOperationDelegator {
 
     public static String kancolleGameDataSubFolder =  "GameData";
     
-    FileOperationDelegate fileOperationDelegate;
+    CacheableFileHelper cacheableFileHelper;
     
-    public KcwikiService(KcwikiApiFeignClient apiFeignClient) {
+    public KcwikiService(KcwikiApiFeignClient apiFeignClient,
+            CacheableFileHelper cacheableFileHelper
+            ) {
         this.apiFeignClient = apiFeignClient;
-        this.fileOperationDelegate = new FileOperationDelegate(this);
+        this.cacheableFileHelper = cacheableFileHelper;
     }
     
     public String getStandardName(String fuzzyName) {
@@ -70,8 +73,7 @@ public class KcwikiService implements IFileOperationDelegator {
         return upgradeLink;
     }
     
-    @Override
-    public InputStream downloadOrFromLocal(String shipId, File rawDataFolder) {
+    private InputStream fromLocal(String shipId, File rawDataFolder) {
 
         File gameDataImage = findGameDataImage(shipId, rawDataFolder);
         if (gameDataImage != null) {
@@ -106,12 +108,10 @@ public class KcwikiService implements IFileOperationDelegator {
         }
         return null;
     }
-    
 
-
-    @Override
-    public File fromCacheOrDownloadOrFromLocal(String fileId, File cacheFolder, File rawDataFolder) {
-        return fileOperationDelegate.fromCacheOrDownloadOrFromLocal(fileId, cacheFolder, rawDataFolder);
+    public File fromCacheOrDownloadOrFromLocal(String shipId, File rawDataFolder) {
+        return cacheableFileHelper.fromCacheOrProvider(shipId, it -> fromLocal(shipId, rawDataFolder));
     }
+
 
 }

@@ -1,11 +1,13 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
+import hundun.miraifleet.framework.core.botlogic.BaseJavaBotLogic;
 import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
+import hundun.miraifleet.image.share.function.SharedPetFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenChatFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenImageFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame.GameFunction;
@@ -18,7 +20,7 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
  * @author hundun
  * Created on 2021/08/09
  */
-public class PrinzEugenBotLogic extends BaseBotLogic {
+public class PrinzEugenBotLogic extends BaseJavaBotLogic {
 
     PrinzEugenChatFunction prinzEugenChatFunction;
     PrinzEugenImageFunction prinzEugenImageFunction;
@@ -34,10 +36,13 @@ public class PrinzEugenBotLogic extends BaseBotLogic {
     public PrinzEugenBotLogic(JavaPlugin plugin) {
         super(plugin, "欧根");
         
+        SharedPetFunction sharedPetFunction = new SharedPetFunction(this, plugin, characterName);
+        
         prinzEugenChatFunction = new PrinzEugenChatFunction(this, plugin, characterName);
         functions.add(prinzEugenChatFunction);
         
         prinzEugenImageFunction = new PrinzEugenImageFunction(this, plugin, characterName);
+        prinzEugenImageFunction.lazyInitSharedFunction(sharedPetFunction);
         functions.add(prinzEugenImageFunction);
         
         kcwikiFunction = new KcwikiFunction(this, plugin, characterName);

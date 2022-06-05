@@ -14,9 +14,7 @@ public class PrinzEugenPluginTest {
     public static void main(String[] args) throws InterruptedException {
         MiraiConsoleTerminalLoader.INSTANCE.startAsDaemon(new MiraiConsoleImplementationTerminal());
         
-        PluginManager.INSTANCE.loadPlugin(SkikoMirai.INSTANCE);
         PluginManager.INSTANCE.loadPlugin(PrinzEugenPlugin.INSTANCE);
-        PluginManager.INSTANCE.enablePlugin(SkikoMirai.INSTANCE);
         PluginManager.INSTANCE.enablePlugin(PrinzEugenPlugin.INSTANCE);
     }
 }

@@ -97,8 +97,18 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
     }
     
     @SubCommand("北方指人")
-    public void lianyebing(CommandSender sender, String bottomText) {
-        botLogic.prinzEugenImageFunction.getCommandComponent().lianyebing(sender, bottomText);
+    public void lianyebing(CommandSender sender, String text) {
+        botLogic.prinzEugenImageFunction.getCommandComponent().lianyebing(sender, text);
+    }
+    
+    @SubCommand("94")
+    public void jiusi(CommandSender sender, User target, String text) {
+        botLogic.prinzEugenImageFunction.getCommandComponent().jiusi(sender, target, text);
+    }
+    
+    @SubCommand("摸")
+    public void patpat(CommandSender sender, User target) {
+        botLogic.prinzEugenImageFunction.getCommandComponent().patpat(sender, target);
     }
 
 }

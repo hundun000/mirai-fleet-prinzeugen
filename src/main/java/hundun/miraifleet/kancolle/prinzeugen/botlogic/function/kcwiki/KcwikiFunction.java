@@ -13,9 +13,10 @@ import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
-import hundun.miraifleet.framework.core.helper.feign.FeignClientFactory;
+import hundun.miraifleet.framework.core.helper.file.CacheableFileHelper;
 import hundun.miraifleet.framework.core.helper.repository.MapDocumentRepository;
 import hundun.miraifleet.framework.core.helper.repository.SingletonDocumentRepository;
+import hundun.miraifleet.framework.starter.helper.feign.FeignClientFactory;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.config.ShipFuzzyNameConfig;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiShipDetail;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
@@ -65,7 +66,10 @@ public class KcwikiFunction extends BaseFunction<Void> {
             "KcwikiFunction", 
             null
             );
-        this.kcwikiService = new KcwikiService(FeignClientFactory.get(KcwikiApiFeignClient.class, "http://api.kcwiki.moe", plugin.getLogger()));
+        this.kcwikiService = new KcwikiService(
+                FeignClientFactory.get(KcwikiApiFeignClient.class, "http://api.kcwiki.moe", plugin.getLogger()),
+                new CacheableFileHelper(resolveFunctionCacheFileFolder(), plugin.getLogger())
+                );
         this.shipFuzzyNameConfigRepository = new SingletonDocumentRepository<>(plugin, resolveFunctionConfigFile("ShipFuzzyNameConfig.json"), ShipFuzzyNameConfig.class);
         this.kcwikiQuestDataRepository = new MapDocumentRepository<>(
                 plugin, 
@@ -285,17 +289,11 @@ public class KcwikiFunction extends BaseFunction<Void> {
             int firstId = upgradeLink.getUpgradeLinkIds().get(0);
             ShipInfo firstDetail = upgradeLink.getShipDetails().get(firstId);
             String fileId = String.valueOf(firstDetail.getId());
-            File cacheFolder = resolveFunctionCacheFileFolder();
             File rawDataFolder = plugin.resolveDataFile(functionName + File.separator + KcwikiService.kancolleGameDataSubFolder);
-            File imageFile = kcwikiService.fromCacheOrDownloadOrFromLocal(fileId, cacheFolder, rawDataFolder);
+            File imageFile = kcwikiService.fromCacheOrDownloadOrFromLocal(fileId, rawDataFolder);
             if (imageFile != null) {
-                ExternalResource externalResource = ExternalResource.create(imageFile);
-                Image image = subject.uploadImageAndClose(externalResource);
-                try {
-                    externalResource.close();
-                } catch (IOException e) {
-                    log.error(e);
-                }
+                ExternalResource externalResource = ExternalResource.create(imageFile).toAutoCloseable();
+                Image image = subject.uploadImage(externalResource);
                 if (image != null) {
                     chainBuilder.add(image);
                 } else {

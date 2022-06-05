@@ -42,14 +42,14 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
         initExternalResource();
     }
     
-    ExternalResource pupuExternalResource;
-    ExternalResource xiuXiuXiuVoiceExternalResource;
+    File pupuExternalResource;
+    File xiuXiuXiuVoiceExternalResource;
     
     
     private void initExternalResource() {
         try {
-            pupuExternalResource = ExternalResource.create(plugin.resolveDataFile(functionName + File.separator + "噗噗.jpg"));
-            xiuXiuXiuVoiceExternalResource = ExternalResource.create(plugin.resolveDataFile(functionName + File.separator + "咻咻咻.amr"));
+            pupuExternalResource = plugin.resolveDataFile(functionName + File.separator + "噗噗.jpg");
+            xiuXiuXiuVoiceExternalResource = plugin.resolveDataFile(functionName + File.separator + "咻咻咻.amr");
         } catch (Exception e) {
             plugin.getLogger().error("initExternalResource error: " + e.getMessage());
         }
@@ -68,7 +68,7 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
     private void chat(FunctionReplyReceiver subject, String message) {
         
         if (message.contains("噗噗")) {
-            Image image = subject.uploadImage(pupuExternalResource);
+            Image image = subject.uploadImageAndClose(ExternalResource.create(pupuExternalResource));
             if (image != null) {
                 subject.sendMessage(
                         new PlainText("")
@@ -78,7 +78,7 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
                 subject.sendMessage("你根本不是噗噗");
             }
         } else if (message.contains("咻咻咻") || message.contains("西姆咻")) {
-            Audio voice = subject.uploadVoice(xiuXiuXiuVoiceExternalResource);
+            Audio voice = subject.uploadVoiceAndClose(ExternalResource.create(xiuXiuXiuVoiceExternalResource));
             if (voice != null) {
                 subject.sendMessage(
                         new PlainText("")

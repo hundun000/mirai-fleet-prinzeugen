@@ -15,8 +15,8 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32' 
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.32'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10' 
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
     id 'net.mamoe.mirai-console' version "${MIRAI_VERSION}"
 }
 
@@ -34,7 +34,8 @@ sourceCompatibility = '11'
 repositories {
     //removeIf { it is MavenArtifactRepository && it.url.host == "dl.bintray.com" }
     mavenCentral()
-    jcenter()
+    maven { url "https://maven.aliyun.com/repository/central"}
+    maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev"}
     maven { url 'https://jitpack.io' }
 }
 java {
@@ -64,8 +65,10 @@ dependencies {
     implementation 'io.github.openfeign:feign-jackson:11.1'
     implementation 'io.github.openfeign:feign-core:11.1'
     
-    implementation 'com.github.hundun000:mirai-fleet-framework:0.3'
-    implementation 'com.github.hundun000:mirai-fleet-image:0.3.2.1'
+    implementation 'com.github.hundun000.mirai-fleet-framework:framework-core:0.5.5'
+    implementation 'com.github.hundun000.mirai-fleet-framework:framework-starter:0.5.5'
+    implementation 'com.github.hundun000:mirai-fleet-image:7cc64b7057'
+    
     implementation 'org.yaml:snakeyaml:1.8'
     
     compileOnly 'org.projectlombok:lombok:1.18.4'
