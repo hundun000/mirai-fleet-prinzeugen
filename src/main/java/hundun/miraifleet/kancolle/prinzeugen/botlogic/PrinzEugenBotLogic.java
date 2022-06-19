@@ -21,52 +21,32 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
  * Created on 2021/08/09
  */
 public class PrinzEugenBotLogic extends BaseJavaBotLogic {
-
-    PrinzEugenChatFunction prinzEugenChatFunction;
-    PrinzEugenImageFunction prinzEugenImageFunction;
-    KcwikiFunction kcwikiFunction;
-    //GameFunction gameFunction;
-    
-    RepeatFunction repeatFunction;
-    WeiboFunction weiboFunction;
-    ReminderFunction reminderFunction;
-    DriveFunction driveFunction;
-    CharacterHelpFunction characterHelpFunction;
     
     public PrinzEugenBotLogic(JavaPlugin plugin) {
         super(plugin, "欧根");
         
         SharedPetFunction sharedPetFunction = new SharedPetFunction(this, plugin, characterName);
         
-        prinzEugenChatFunction = new PrinzEugenChatFunction(this, plugin, characterName);
-        functions.add(prinzEugenChatFunction);
+        registerFunction(new PrinzEugenChatFunction(this, plugin, characterName));
         
-        prinzEugenImageFunction = new PrinzEugenImageFunction(this, plugin, characterName);
-        prinzEugenImageFunction.lazyInitSharedFunction(sharedPetFunction);
-        functions.add(prinzEugenImageFunction);
+        registerFunction(new PrinzEugenImageFunction(this, plugin, characterName)
+                .lazyInitSharedFunction(sharedPetFunction));
         
-        kcwikiFunction = new KcwikiFunction(this, plugin, characterName);
-        functions.add(kcwikiFunction);
+        registerFunction(new KcwikiFunction(this, plugin, characterName));
         
-        repeatFunction = new RepeatFunction(this, plugin, characterName);
-        functions.add(repeatFunction);
+        registerFunction(new RepeatFunction(this, plugin, characterName));
         
-        weiboFunction = new WeiboFunction(this, plugin, characterName, 
-                PrinzEugenDefaultConfigAndData.weiboConfigDefaultDataSupplier());
-        functions.add(weiboFunction);
-        
-        reminderFunction = new ReminderFunction(this, plugin, characterName, 
+        registerFunction(new WeiboFunction(this, plugin, characterName, 
+                PrinzEugenDefaultConfigAndData.weiboConfigDefaultDataSupplier()));
+
+        registerFunction(new ReminderFunction(this, plugin, characterName, 
                 null, 
-                PrinzEugenDefaultConfigAndData.hourlyChatConfigDefaultDataSupplier());
-        functions.add(reminderFunction);
+                PrinzEugenDefaultConfigAndData.hourlyChatConfigDefaultDataSupplier()));
+
+        registerFunction(new DriveFunction(this, plugin, characterName));
+
+        registerFunction(new CharacterHelpFunction(this, plugin, characterName));
         
-//        gameFunction = new GameFunction(this, plugin, characterName);
-//        functions.add(gameFunction);
-        driveFunction = new DriveFunction(this, plugin, characterName);
-        functions.add(driveFunction);
-        
-        characterHelpFunction = new CharacterHelpFunction(this, plugin, characterName);
-        functions.add(characterHelpFunction);
         
         allCompositeCommandProxy = new AllCompositeCommandProxy(this, plugin, characterName);
     }

@@ -1,7 +1,7 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame;
 
 import java.io.File;
-import hundun.miraifleet.framework.core.helper.repository.MapDocumentRepository;
+import hundun.miraifleet.framework.helper.repository.MapDocumentRepository;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 
 /**

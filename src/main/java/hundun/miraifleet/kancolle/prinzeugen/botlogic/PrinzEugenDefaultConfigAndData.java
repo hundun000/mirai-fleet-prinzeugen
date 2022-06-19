@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import hundun.miraifleet.framework.core.helper.repository.SingletonDocumentRepository;
+import hundun.miraifleet.framework.helper.repository.SingletonDocumentRepository;
 import hundun.miraifleet.framework.starter.botlogic.function.reminder.config.HourlyChatConfig;
-import hundun.miraifleet.framework.starter.botlogic.function.reminder.domain.ReminderItem;
-import hundun.miraifleet.framework.starter.botlogic.function.reminder.domain.ReminderList;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.config.WeiboConfig;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.config.WeiboPushFilterFlag;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.config.WeiboViewFormat;
@@ -41,7 +39,7 @@ public class PrinzEugenDefaultConfigAndData {
         return mapOf(SingletonDocumentRepository.THE_SINGLETON_KEY, v);
     }
     
-    public static Supplier<Map<String, WeiboConfig>> weiboConfigDefaultDataSupplier() {
+    public static Supplier<WeiboConfig> weiboConfigDefaultDataSupplier() {
         return () -> {
             WeiboConfig weiboConfig = new WeiboConfig(
                     mapOf(
@@ -51,12 +49,11 @@ public class PrinzEugenDefaultConfigAndData {
                     mapOf(
                             "3297631372", Arrays.asList(WeiboPushFilterFlag.RETWEET))
                     );
-            Map<String, WeiboConfig> defaultData = mapOf(SingletonDocumentRepository.THE_SINGLETON_KEY, weiboConfig);
-            return defaultData;
+            return weiboConfig;
         };
     }
     
-    public static Supplier<Map<String, HourlyChatConfig>> hourlyChatConfigDefaultDataSupplier() {
+    public static Supplier<HourlyChatConfig> hourlyChatConfigDefaultDataSupplier() {
         return () -> {
             HourlyChatConfig hourlyChatConfig = new HourlyChatConfig();
             Map<String, String> chatTexts = new HashMap<>();
@@ -79,8 +76,7 @@ public class PrinzEugenDefaultConfigAndData {
             chatTexts.put("23", "二十三点到了。嗯~差不多我也该休息了……Gute Nacht……诶，不行……？");
             
             hourlyChatConfig.setChatTexts(chatTexts);
-            Map<String, HourlyChatConfig> defaultData = mapOf(SingletonDocumentRepository.THE_SINGLETON_KEY, hourlyChatConfig);
-            return defaultData;
+            return hourlyChatConfig;
         };
     }
 }

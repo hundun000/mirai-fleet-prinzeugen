@@ -13,9 +13,9 @@ import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
-import hundun.miraifleet.framework.core.helper.file.CacheableFileHelper;
-import hundun.miraifleet.framework.core.helper.repository.MapDocumentRepository;
-import hundun.miraifleet.framework.core.helper.repository.SingletonDocumentRepository;
+import hundun.miraifleet.framework.helper.file.CacheableFileHelper;
+import hundun.miraifleet.framework.helper.repository.MapDocumentRepository;
+import hundun.miraifleet.framework.helper.repository.SingletonDocumentRepository;
 import hundun.miraifleet.framework.starter.helper.feign.FeignClientFactory;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.config.ShipFuzzyNameConfig;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiShipDetail;
@@ -73,7 +73,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
         this.shipFuzzyNameConfigRepository = new SingletonDocumentRepository<>(plugin, resolveFunctionConfigFile("ShipFuzzyNameConfig.json"), ShipFuzzyNameConfig.class);
         this.kcwikiQuestDataRepository = new MapDocumentRepository<>(
                 plugin, 
-                resolveFunctionRepositoryFile("OldKcwikiQuestData.json"), 
+                resolveDataRepositoryFile("OldKcwikiQuestData.json"), 
                 OldKcwikiQuestData.class, 
                 (item -> item.getId()), 
                 ((item, id) -> item.setId(id))

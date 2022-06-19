@@ -65,9 +65,9 @@ dependencies {
     implementation 'io.github.openfeign:feign-jackson:11.1'
     implementation 'io.github.openfeign:feign-core:11.1'
     
-    implementation 'com.github.hundun000.mirai-fleet-framework:framework-core:0.5.5'
-    implementation 'com.github.hundun000.mirai-fleet-framework:framework-starter:0.5.5'
-    implementation 'com.github.hundun000:mirai-fleet-image:7cc64b7057'
+    implementation 'com.github.hundun000.mirai-fleet-framework:framework-core:0.5.7'
+    implementation 'com.github.hundun000.mirai-fleet-framework:framework-starter:0.5.7'
+    implementation 'com.github.hundun000:mirai-fleet-image:3cd508551f'
     
     implementation 'org.yaml:snakeyaml:1.8'
     

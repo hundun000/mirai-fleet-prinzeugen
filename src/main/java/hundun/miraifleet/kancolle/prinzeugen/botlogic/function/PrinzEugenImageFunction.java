@@ -11,6 +11,7 @@ import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
 import hundun.miraifleet.framework.core.function.BaseFunction.AbstractCompositeCommandFunctionComponent;
+import hundun.miraifleet.image.share.function.ImageStableFunction;
 import hundun.miraifleet.image.share.function.SharedPetFunction;
 import hundun.miraifleet.image.share.function.ImageStableFunction.CompositeCommandFunctionComponent;
 import lombok.Data;
@@ -52,8 +53,9 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
         this.commandComponent = new CompositeCommandFunctionComponent(plugin, characterName, functionName);
     }
 
-    public void lazyInitSharedFunction(SharedPetFunction petFunction) {
+    public PrinzEugenImageFunction lazyInitSharedFunction(SharedPetFunction petFunction) {
         this.petFunction = petFunction;
+        return this;
     }
 
     @Override
@@ -68,51 +70,12 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
         
         @SubCommand("北方指人")
         public void lianyebing(CommandSender sender, String text) {
-            imageGeneral(sender, null, "北方指人", textDataForLianyebing(text));
+            imageGeneral(sender, null, "北方指人", ImageStableFunction.textDataForLianyebing(text));
         }
         
-        private List<TextData> textDataForLianyebing(String text) {
-            int fullWidth = 392;
-            int board = 20;
-            int textWidth = fullWidth - board * 2;
-            int fontSizeByHeight = 40;
-            int fontSizeByWidth = (int) (textWidth * 1.0 / text.length());
-            int fontSize = Math.min(fontSizeByWidth, fontSizeByHeight);
-            int x = (fullWidth / 2) - (text.length() * fontSize / 2);
-            return Arrays.asList(new TextData(
-                    text,
-                    Arrays.asList(x, 300),
-                    null,
-                    null,
-                    fontSize
-            ));
-        }
-        
-        @SubCommand("94")
-        public void jiusi(CommandSender sender, User target, String text) {
-            imageGeneral(sender, target, "94", textDataForJiusi("请问你们看到" + text + "？"));
-        }
-        
-        private List<TextData> textDataForJiusi(String text) {
-            int fullWidth = 1080;
-            int board = 50;
-            int textWidth = fullWidth - board * 2;
-            int fontSizeByHeight = 150;
-            int fontSizeByWidth = (int) (textWidth * 1.0 / text.length());
-            int fontSize = Math.min(fontSizeByWidth, fontSizeByHeight);
-            int x = (fullWidth / 2) - (text.length() * fontSize / 2);
-            return Arrays.asList(new TextData(
-                    text,
-                    Arrays.asList(x, 50),
-                    null,
-                    null,
-                    fontSize
-            ));
-        }
-
         @SubCommand("摸")
-        public void patpat(CommandSender sender, User target) {
-            imageGeneral(sender, target, "patpat", null);
+        public void petpet(CommandSender sender, User target) {
+            imageGeneral(sender, target, "petpet", null);
         }
 
         private void imageGeneral(CommandSender sender, User target, String key, List<TextData> additionTextDatas) {

@@ -1,6 +1,12 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.function.AbstractAllCompositeCommandProxy;
+import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenImageFunction;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.KcwikiFunction;
 import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.command.CompositeCommand;
 import net.mamoe.mirai.console.command.descriptor.CommandArgumentContext;
@@ -28,87 +34,82 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
     
     @SubCommand("查询报时")
     public void listHourlyChatConfig(CommandSender sender) {
-        botLogic.reminderFunction.getCommandComponent().listHourlyChatConfig(sender);
+        botLogic.getFunction(ReminderFunction.class).getCommandComponent().listHourlyChatConfig(sender);
     }
     
     @SubCommand("载入任务数据文件")
     public void loadQuestFiles(CommandSender sender) {
-        botLogic.kcwikiFunction.getCommandComponent().loadQuestFiles(sender);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().loadQuestFiles(sender);
     }
     
     @SubCommand("任务详情")
     public void detailQuest(CommandSender sender, String id) {
-        botLogic.kcwikiFunction.getCommandComponent().detailQuest(sender, id);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().detailQuest(sender, id);
     }
     
     @SubCommand("搜任务")
     public void searchQuest(CommandSender sender, String questKeyword) {
-        botLogic.kcwikiFunction.getCommandComponent().searchQuest(sender, questKeyword);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().searchQuest(sender, questKeyword);
     }
     
     @SubCommand("舰娘详情")
     public void quickSearchShipFromCommand(CommandSender sender, String shipName) {
-        botLogic.kcwikiFunction.getCommandComponent().quickSearchShipFromCommand(sender, shipName);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().quickSearchShipFromCommand(sender, shipName);
     }
     
     @SubCommand("删除舰娘别名")
     public void deleteShipFuzzyName(CommandSender sender, String fuzzyName) {
-        botLogic.kcwikiFunction.getCommandComponent().deleteShipFuzzyName(sender, fuzzyName);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().deleteShipFuzzyName(sender, fuzzyName);
     }
     
     @SubCommand("查询舰娘别名")
     public void listShipFuzzyName(CommandSender sender, String name) {
-        botLogic.kcwikiFunction.getCommandComponent().listShipFuzzyName(sender, name);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().listShipFuzzyName(sender, name);
     }
     
     @SubCommand("添加舰娘别名")
     public void addShipFuzzyName(CommandSender sender, String fuzzyName, String shipName) {
-        botLogic.kcwikiFunction.getCommandComponent().addShipFuzzyName(sender, fuzzyName, shipName);
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().addShipFuzzyName(sender, fuzzyName, shipName);
     }
     
     @SubCommand("微博订阅")
     public void listListen(CommandSender sender) {
-        botLogic.weiboFunction.getCommandComponent().listListen(sender);
+        botLogic.getFunction(WeiboFunction.class).getCommandComponent().listListen(sender);
     }
     
     @SubCommand("最新微博")
     public void listTopSummary(CommandSender sender) {
-        botLogic.weiboFunction.getCommandComponent().listTopSummary(sender);
+        botLogic.getFunction(WeiboFunction.class).getCommandComponent().listTopSummary(sender);
     }
     
     @SubCommand("最新微博")
     public void listTopForUid(CommandSender sender, String name) {
-        botLogic.weiboFunction.getCommandComponent().listTopForUid(sender, name);
+        botLogic.getFunction(WeiboFunction.class).getCommandComponent().listTopForUid(sender, name);
     }
 
     @SubCommand("立刻私聊")
     public void chat(CommandSender sender, User target, String messageCode) {
-        botLogic.driveFunction.getCommandComponent().chat(sender, target, messageCode);
+        botLogic.getFunction(DriveFunction.class).getCommandComponent().chat(sender, target, messageCode);
     }
     
     @SubCommand("立刻群聊")
     public void chat(CommandSender sender, Group target, String messageCode) {
-        botLogic.driveFunction.getCommandComponent().chat(sender, target, messageCode);
+        botLogic.getFunction(DriveFunction.class).getCommandComponent().chat(sender, target, messageCode);
     }
     
     @SubCommand("help")
     public void help(CommandSender sender) {
-        botLogic.characterHelpFunction.getCommandComponent().help(sender);
+        botLogic.getFunction(CharacterHelpFunction.class).getCommandComponent().help(sender);
     }
     
     @SubCommand("北方指人")
     public void lianyebing(CommandSender sender, String text) {
-        botLogic.prinzEugenImageFunction.getCommandComponent().lianyebing(sender, text);
-    }
-    
-    @SubCommand("94")
-    public void jiusi(CommandSender sender, User target, String text) {
-        botLogic.prinzEugenImageFunction.getCommandComponent().jiusi(sender, target, text);
+        botLogic.getFunction(PrinzEugenImageFunction.class).getCommandComponent().lianyebing(sender, text);
     }
     
     @SubCommand("摸")
     public void patpat(CommandSender sender, User target) {
-        botLogic.prinzEugenImageFunction.getCommandComponent().patpat(sender, target);
+        botLogic.getFunction(PrinzEugenImageFunction.class).getCommandComponent().petpet(sender, target);
     }
 
 }
