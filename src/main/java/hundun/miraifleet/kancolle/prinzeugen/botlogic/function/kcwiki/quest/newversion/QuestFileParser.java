@@ -52,9 +52,7 @@ public class QuestFileParser {
     }
 
     public OldKcwikiQuestDocument parseOldKcwikiQuestDocument(File file) throws IOException {
-        InputStream inputStream;
-
-        inputStream = new FileInputStream(file);
+        InputStream inputStream = new FileInputStream(file);
         Yaml yaml = new Yaml();
         Iterable<Object> objs = yaml.loadAll(inputStream);
         for (Object obj : objs) {

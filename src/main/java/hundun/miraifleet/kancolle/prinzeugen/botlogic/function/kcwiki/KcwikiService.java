@@ -20,11 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KcwikiService {
 
-    String cpServiceName = "KcwikiService";
     
-    KcwikiApiFeignClient apiFeignClient;
+    private KcwikiApiFeignClient apiFeignClient;
 
-    public static String kancolleGameDataSubFolder =  "GameData";
+    
     
     CacheableFileHelper cacheableFileHelper;
     

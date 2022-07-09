@@ -2,6 +2,7 @@ package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.core.botlogic.BaseJavaBotLogic;
+import hundun.miraifleet.framework.starter.botlogic.function.CharacterAdminHelperFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
@@ -25,6 +26,11 @@ public class PrinzEugenBotLogic extends BaseJavaBotLogic {
     public PrinzEugenBotLogic(JavaPlugin plugin) {
         super(plugin, "欧根");
         
+        
+    }
+
+    @Override
+    protected void onFunctionsEnable() {
         SharedPetFunction sharedPetFunction = new SharedPetFunction(this, plugin, characterName);
         
         registerFunction(new PrinzEugenChatFunction(this, plugin, characterName));
@@ -47,8 +53,10 @@ public class PrinzEugenBotLogic extends BaseJavaBotLogic {
 
         registerFunction(new CharacterHelpFunction(this, plugin, characterName));
         
+        registerFunction(new CharacterAdminHelperFunction(this, plugin, characterName));
         
         allCompositeCommandProxy = new AllCompositeCommandProxy(this, plugin, characterName);
+        
     }
 
 }

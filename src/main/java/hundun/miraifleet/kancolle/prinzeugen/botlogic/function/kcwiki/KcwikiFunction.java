@@ -7,6 +7,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+
 import org.jetbrains.annotations.NotNull;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
@@ -19,6 +21,7 @@ import hundun.miraifleet.framework.helper.repository.SingletonDocumentRepository
 import hundun.miraifleet.framework.starter.helper.feign.FeignClientFactory;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.config.ShipFuzzyNameConfig;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiShipDetail;
+import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.WhoCallsTheFleetItem;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipUpgradeLink;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.feign.KcwikiApiFeignClient;
@@ -42,14 +45,17 @@ import net.mamoe.mirai.utils.ExternalResource;
  */
 @AsListenerHost
 public class KcwikiFunction extends BaseFunction<Void> {
-
-    final KcwikiService kcwikiService;
+    public static String kancolleGameDataSubFolder =  "GameData";
+    public static String questSubFolder =  "quest_old";
+    public static String itemFile = "WhoCallsTheFleet-DB/items.nedb";
+    
+    private final KcwikiService kcwikiService;
+    private final KcwikiOldQuestService kcwikiOldQuestService;
+    private final WhoCallsTheFleetService whoCallsTheFleetService;
     
     private final SingletonDocumentRepository<ShipFuzzyNameConfig> shipFuzzyNameConfigRepository;
     
-    private final MapDocumentRepository<OldKcwikiQuestData> kcwikiQuestDataRepository;
-
-    private QuestFileParser questFileParser = new QuestFileParser();
+    
     
     @Getter
     private final CompositeCommandFunctionComponent commandComponent;
@@ -70,23 +76,35 @@ public class KcwikiFunction extends BaseFunction<Void> {
                 FeignClientFactory.get(KcwikiApiFeignClient.class, "http://api.kcwiki.moe", plugin.getLogger()),
                 new CacheableFileHelper(resolveFunctionCacheFileFolder(), plugin.getLogger())
                 );
-        this.shipFuzzyNameConfigRepository = new SingletonDocumentRepository<>(plugin, resolveFunctionConfigFile("ShipFuzzyNameConfig.json"), ShipFuzzyNameConfig.class);
-        this.kcwikiQuestDataRepository = new MapDocumentRepository<>(
+        this.shipFuzzyNameConfigRepository = new SingletonDocumentRepository<>(
                 plugin, 
-                resolveDataRepositoryFile("OldKcwikiQuestData.json"), 
-                OldKcwikiQuestData.class, 
-                (item -> item.getId()), 
-                ((item, id) -> item.setId(id))
+                resolveFunctionConfigFile("ShipFuzzyNameConfig.json"), 
+                ShipFuzzyNameConfig.class,
+                () -> ShipFuzzyNameConfig.builder()
+                        .map(new HashMap<>())
+                        .build()
                 );
-        
-        // check config
-        ShipFuzzyNameConfig config = shipFuzzyNameConfigRepository.findSingleton();
-        if (config == null) {
-            config = new ShipFuzzyNameConfig();
-            config.setMap(new HashMap<>());
-        }
-        shipFuzzyNameConfigRepository.saveSingleton(config);
-        this.commandComponent = new CompositeCommandFunctionComponent(plugin, characterName, functionName);
+        this.kcwikiOldQuestService = new KcwikiOldQuestService(
+                new MapDocumentRepository<>(
+                        plugin, 
+                        resolveDataRepositoryFile("OldKcwikiQuestData.json"), 
+                        OldKcwikiQuestData.class, 
+                        (item -> item.getId()), 
+                        ((item, id) -> item.setId(id))
+                        ),
+                plugin.getLogger()
+                );
+        this.whoCallsTheFleetService = new WhoCallsTheFleetService(
+                new MapDocumentRepository<>(
+                        plugin, 
+                        resolveDataRepositoryFile("WhoCallsTheFleetItemData.json"), 
+                        WhoCallsTheFleetItem.class, 
+                        (item -> String.valueOf(item.getId())), 
+                        ((item, id) -> item.setId(Integer.valueOf(id)))
+                        ),
+                plugin.getLogger()
+                );
+        this.commandComponent = new CompositeCommandFunctionComponent();
     }
     
     @Override
@@ -95,30 +113,28 @@ public class KcwikiFunction extends BaseFunction<Void> {
     }
 
     public class CompositeCommandFunctionComponent extends AbstractCompositeCommandFunctionComponent {
-        public CompositeCommandFunctionComponent(JvmPlugin plugin, String characterName, String functionName) {
-            super(plugin, characterName, functionName);
+        public CompositeCommandFunctionComponent() {
+            super(plugin, botLogic, characterName, functionName);
         }
         
         @SubCommand("载入任务数据文件")
         public void loadQuestFiles(CommandSender sender) {
-            File folder = plugin.resolveDataFile(functionName + File.separator + "quest_old");
-            List<OldKcwikiQuestData> datas = new ArrayList<>();
-            kcwikiQuestDataRepository.deleteAll();
-            if (folder.exists() && folder.isDirectory()) {
-                for (File file : folder.listFiles()) {
-                    try {
-                        OldKcwikiQuestDocument document = questFileParser.parseOldKcwikiQuestDocument(file);
-                        if (!kcwikiQuestDataRepository.existsById(document.getData().getId())) {
-                            datas.add(document.getData());
-                        }
-                    } catch (Exception e) {
-                        log.warning("questFileParser.parse error: ", e);
-                    }
-                    
-                }
+            if (!checkCosPermission(sender)) {
+                return;
             }
-            kcwikiQuestDataRepository.saveAll(datas);
-            sender.sendMessage("导入" + folder.listFiles().length + "个文件");
+            File folder = plugin.resolveDataFile(functionName + File.separator + questSubFolder);
+            String result = kcwikiOldQuestService.loadQuestFiles(folder);
+            sender.sendMessage(result);
+        }
+        
+        @SubCommand("载入装备数据文件")
+        public void loadItemFiles(CommandSender sender) {
+            if (!checkCosPermission(sender)) {
+                return;
+            }
+            File file = plugin.resolveDataFile(functionName + File.separator + itemFile);
+            String result = whoCallsTheFleetService.loadItemFiles(file);
+            sender.sendMessage(result);
         }
         
         @SubCommand("任务详情")
@@ -127,7 +143,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
                 return;
             }
             
-            OldKcwikiQuestData questData = kcwikiQuestDataRepository.findById(id);
+            OldKcwikiQuestData questData = kcwikiOldQuestService.findById(id);
             if (questData != null) {
                 sender.sendMessage(questData.getChinese_detail());
             } else {
@@ -141,27 +157,11 @@ public class KcwikiFunction extends BaseFunction<Void> {
             if (!checkCosPermission(sender)) {
                 return;
             }
-            searchQuest(new FunctionReplyReceiver(sender, plugin.getLogger()), questKeyword);
+            var functionReplyReceiver = new FunctionReplyReceiver(sender, plugin.getLogger());
+            String result = kcwikiOldQuestService.searchQuest(questKeyword);
+            functionReplyReceiver.sendMessage(result);
         }
-        
-        private void searchQuest(FunctionReplyReceiver functionReplyReceiver, String questKeyword) {
-            List<OldKcwikiQuestData> questDatas = kcwikiQuestDataRepository.findAll();
-            StringBuilder builder = new StringBuilder();
-            int count = 0;
-            for (OldKcwikiQuestData questData : questDatas) {
-                if (questData.getChinese_title().contains(questKeyword) || questData.getChinese_detail().contains(questKeyword)) {
-                    builder.append("id:").append(questData.getId()).append(" ").append(questData.getTitle()).append("\n");
-                    count++;
-                }
-            }
-            
-            if (count <= 10) {
-                functionReplyReceiver.sendMessage("找到" + count + "个结果:\n" + builder.toString());
-            } else {
-                functionReplyReceiver.sendMessage("找到" + count + "个结果，结果数过多，请改为更明确的查询词");
-            }
-            
-        }
+
 
         @SubCommand("舰娘详情")
         public void quickSearchShipFromCommand(CommandSender sender, String shipName) {
@@ -251,7 +251,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
         MessageChainBuilder chainBuilder = new MessageChainBuilder();
         ShipUpgradeLink upgradeLink = kcwikiService.getShipUpgradeLine(shipName);
         if (upgradeLink != null && !upgradeLink.getUpgradeLinkIds().isEmpty()) {
-            chainBuilder.add(new PlainText("\n\n"));
+            //chainBuilder.add(new PlainText("\n\n"));
             
             StringBuilder urls = new StringBuilder();
             {
@@ -277,6 +277,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
             for (int i = 0; i < upgradeLink.getUpgradeLinkIds().size(); i++) {
                 int id = upgradeLink.getUpgradeLinkIds().get(i);
                 ShipInfo detail = upgradeLink.getShipDetails().get(id);
+                whoCallsTheFleetService.tryFillInitItem(detail);
                 nameLink.append(detail.toSimpleText()).append("\n");
                 boolean hasNext = detail.getAfterLv() > 0 && i != upgradeLink.getUpgradeLinkIds().size() - 1;
                 if (hasNext) {
@@ -289,11 +290,11 @@ public class KcwikiFunction extends BaseFunction<Void> {
             int firstId = upgradeLink.getUpgradeLinkIds().get(0);
             ShipInfo firstDetail = upgradeLink.getShipDetails().get(firstId);
             String fileId = String.valueOf(firstDetail.getId());
-            File rawDataFolder = plugin.resolveDataFile(functionName + File.separator + KcwikiService.kancolleGameDataSubFolder);
+            File rawDataFolder = plugin.resolveDataFile(functionName + File.separator + kancolleGameDataSubFolder);
             File imageFile = kcwikiService.fromCacheOrDownloadOrFromLocal(fileId, rawDataFolder);
             if (imageFile != null) {
                 ExternalResource externalResource = ExternalResource.create(imageFile).toAutoCloseable();
-                Image image = subject.uploadImage(externalResource);
+                Image image = subject.uploadImageAndClose(externalResource);
                 if (image != null) {
                     chainBuilder.add(image);
                 } else {

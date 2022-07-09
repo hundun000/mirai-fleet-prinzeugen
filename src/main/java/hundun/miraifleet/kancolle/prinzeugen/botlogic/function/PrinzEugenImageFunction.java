@@ -50,7 +50,7 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
                 "PrinzEugenImageFunction",
                 null
         );
-        this.commandComponent = new CompositeCommandFunctionComponent(plugin, characterName, functionName);
+        this.commandComponent = new CompositeCommandFunctionComponent();
     }
 
     public PrinzEugenImageFunction lazyInitSharedFunction(SharedPetFunction petFunction) {
@@ -64,8 +64,8 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
     }
 
     public class CompositeCommandFunctionComponent extends AbstractCompositeCommandFunctionComponent {
-        public CompositeCommandFunctionComponent(JvmPlugin plugin, String characterName, String functionName) {
-            super(plugin, characterName, functionName, functionName);
+        public CompositeCommandFunctionComponent() {
+            super(plugin, botLogic, characterName, functionName);
         }
         
         @SubCommand("北方指人")

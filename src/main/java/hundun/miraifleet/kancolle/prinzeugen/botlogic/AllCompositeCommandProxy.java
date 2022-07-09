@@ -42,6 +42,11 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
         botLogic.getFunction(KcwikiFunction.class).getCommandComponent().loadQuestFiles(sender);
     }
     
+    @SubCommand("载入装备数据文件")
+    public void loadItemFiles(CommandSender sender) {
+        botLogic.getFunction(KcwikiFunction.class).getCommandComponent().loadItemFiles(sender);
+    }
+    
     @SubCommand("任务详情")
     public void detailQuest(CommandSender sender, String id) {
         botLogic.getFunction(KcwikiFunction.class).getCommandComponent().detailQuest(sender, id);
