@@ -1,11 +1,5 @@
 package hundun.idlegame.kancolle.exception;
 
-import java.util.List;
-
-import javax.xml.crypto.dsig.spec.ExcC14NParameterSpec;
-
-import hundun.idlegame.kancolle.expedition.Requirement;
-import hundun.idlegame.kancolle.ship.ShipPrototype;
 import lombok.Getter;
 
 /**

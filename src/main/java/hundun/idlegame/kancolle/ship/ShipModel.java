@@ -4,10 +4,8 @@ import java.util.function.Function;
 
 import hundun.idlegame.kancolle.base.BaseModel;
 import hundun.idlegame.kancolle.building.BuildingModel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * @author hundun

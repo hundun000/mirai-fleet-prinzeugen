@@ -1,8 +1,6 @@
 package hundun.idlegame.kancolle.ship;
 
 import java.util.Collection;
-import java.util.List;
-
 import hundun.idlegame.kancolle.base.BaseFactory;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 

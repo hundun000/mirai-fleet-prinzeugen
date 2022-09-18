@@ -4,8 +4,6 @@ package hundun.idlegame.kancolle.exception;
  * Created on 2021/09/13
  */
 
-import hundun.idlegame.kancolle.base.BaseProtoype;
-import hundun.idlegame.kancolle.building.BuildingModel;
 import lombok.Getter;
 
 @SuppressWarnings("serial")

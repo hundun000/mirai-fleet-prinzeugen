@@ -9,7 +9,6 @@ import hundun.idlegame.kancolle.expedition.ExpeditionPrototype;
 import hundun.idlegame.kancolle.resource.ResourcePrototype;
 import hundun.idlegame.kancolle.ship.ShipPrototype;
 import lombok.Data;
-import lombok.Getter;
 
 /**
  * @author hundun

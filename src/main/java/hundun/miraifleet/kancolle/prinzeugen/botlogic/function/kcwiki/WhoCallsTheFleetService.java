@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +14,6 @@ import hundun.miraifleet.framework.helper.repository.MapDocumentRepository;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.KcwikiInitEquip;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto.WhoCallsTheFleetItem;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestData;
 import net.mamoe.mirai.utils.MiraiLogger;
 
 /**

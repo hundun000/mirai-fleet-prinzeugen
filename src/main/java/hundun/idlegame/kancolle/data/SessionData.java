@@ -2,11 +2,8 @@ package hundun.idlegame.kancolle.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import hundun.idlegame.kancolle.expedition.ExpeditionModel;
 import hundun.idlegame.kancolle.resource.ResourceModel;
 import hundun.idlegame.kancolle.ship.ShipModel;

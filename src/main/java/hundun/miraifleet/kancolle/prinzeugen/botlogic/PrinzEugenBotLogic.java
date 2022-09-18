@@ -1,21 +1,17 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
-import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
 import hundun.miraifleet.framework.core.botlogic.BaseJavaBotLogic;
 import hundun.miraifleet.framework.starter.botlogic.function.CharacterAdminHelperFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
-import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.image.share.function.SharedPetFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenChatFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenImageFunction;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.idlegame.GameFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.KcwikiFunction;
-import net.mamoe.mirai.console.command.CommandManager;
+import hundun.miraifleet.reminder.share.function.reminder.ReminderFunction;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
-import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 
 /**
  * @author hundun
@@ -46,8 +42,7 @@ public class PrinzEugenBotLogic extends BaseJavaBotLogic {
                 PrinzEugenDefaultConfigAndData.weiboConfigDefaultDataSupplier()));
 
         registerFunction(new ReminderFunction(this, plugin, characterName, 
-                null, 
-                PrinzEugenDefaultConfigAndData.hourlyChatConfigDefaultDataSupplier()));
+                PrinzEugenDefaultConfigAndData.reminderListDefaultDataSupplier()));
 
         registerFunction(new DriveFunction(this, plugin, characterName));
 

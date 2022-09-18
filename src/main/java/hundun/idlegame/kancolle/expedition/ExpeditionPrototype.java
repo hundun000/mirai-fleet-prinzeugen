@@ -5,7 +5,6 @@ package hundun.idlegame.kancolle.expedition;
  */
 
 import hundun.idlegame.kancolle.base.BaseProtoype;
-import hundun.idlegame.kancolle.ship.ShipPrototype;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

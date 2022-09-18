@@ -1,7 +1,5 @@
 package hundun.miraifleet.kancolle.prinzeugen;
 
-import org.laolittle.plugin.SkikoMirai;
-
 import hundun.miraifleet.kancolle.prinzeugen.PrinzEugenPlugin;
 import net.mamoe.mirai.console.plugin.PluginManager;
 import net.mamoe.mirai.console.terminal.MiraiConsoleImplementationTerminal;

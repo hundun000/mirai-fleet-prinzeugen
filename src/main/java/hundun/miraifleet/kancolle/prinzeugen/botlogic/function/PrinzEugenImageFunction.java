@@ -1,37 +1,23 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
-import java.util.TimerTask;
-
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
-import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
-import hundun.miraifleet.framework.core.function.BaseFunction.AbstractCompositeCommandFunctionComponent;
 import hundun.miraifleet.image.share.function.ImageStableFunction;
 import hundun.miraifleet.image.share.function.SharedPetFunction;
-import hundun.miraifleet.image.share.function.ImageStableFunction.CompositeCommandFunctionComponent;
-import lombok.Data;
 import lombok.Getter;
 import net.mamoe.mirai.console.command.AbstractCommand;
 import net.mamoe.mirai.console.command.CommandSender;
-import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.events.MessageEvent;
-import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.utils.ExternalResource;
 import xmmt.dituon.share.ImageSynthesis;
 import xmmt.dituon.share.TextData;
 
-import org.jetbrains.annotations.NotNull;
-
-public class PrinzEugenImageFunction extends BaseFunction<Void>{
+public class PrinzEugenImageFunction extends BaseFunction {
 
     @Getter
     private final CompositeCommandFunctionComponent commandComponent;
@@ -47,8 +33,7 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
                 baseBotLogic,
                 plugin,
                 characterName,
-                "PrinzEugenImageFunction",
-                null
+                "PrinzEugenImageFunction"
         );
         this.commandComponent = new CompositeCommandFunctionComponent();
     }
@@ -65,7 +50,7 @@ public class PrinzEugenImageFunction extends BaseFunction<Void>{
 
     public class CompositeCommandFunctionComponent extends AbstractCompositeCommandFunctionComponent {
         public CompositeCommandFunctionComponent() {
-            super(plugin, botLogic, characterName, functionName);
+            super(plugin, botLogic, new UserLevelFunctionComponentConstructPack(characterName, functionName));
         }
         
         @SubCommand("北方指人")

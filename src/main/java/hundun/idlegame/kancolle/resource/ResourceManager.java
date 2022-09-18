@@ -7,26 +7,16 @@ package hundun.idlegame.kancolle.resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import hundun.idlegame.kancolle.base.BaseManager;
 import hundun.idlegame.kancolle.data.SessionData;
-import hundun.idlegame.kancolle.data.config.HardCodeWorldConfig;
-import hundun.idlegame.kancolle.event.EventBus;
-import hundun.idlegame.kancolle.event.IClockEventListener;
-import hundun.idlegame.kancolle.event.LogTag;
+import hundun.idlegame.kancolle.data.config.WorldConfig;
 import hundun.idlegame.kancolle.exception.BadGachaCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
-import hundun.idlegame.kancolle.format.DescriptionFormatter;
-import hundun.idlegame.kancolle.format.ExceptionFormatter;
 import hundun.idlegame.kancolle.world.ComponentContext;
-import hundun.idlegame.kancolle.world.DataBus;
-import lombok.Setter;
 
 public class ResourceManager extends BaseManager {
     
@@ -37,10 +27,10 @@ public class ResourceManager extends BaseManager {
         super(context);
 
         minuteAwardResources = new HashMap<>();
-        minuteAwardResources.put(HardCodeWorldConfig.RESOURCE_FUEL_ID, 3);
-        minuteAwardResources.put(HardCodeWorldConfig.RESOURCE_AMMO_ID, 3);
-        minuteAwardResources.put(HardCodeWorldConfig.RESOURCE_STEEL_ID, 3);
-        minuteAwardResources.put(HardCodeWorldConfig.RESOURCE_BAUXITE_ID, 1);
+        minuteAwardResources.put(WorldConfig.RESOURCE_FUEL_ID, 3);
+        minuteAwardResources.put(WorldConfig.RESOURCE_AMMO_ID, 3);
+        minuteAwardResources.put(WorldConfig.RESOURCE_STEEL_ID, 3);
+        minuteAwardResources.put(WorldConfig.RESOURCE_BAUXITE_ID, 1);
     }
     
     public void merge(SessionData sessionData, String id, Integer delta) throws IdleGameException {

@@ -1,3 +1,20 @@
+## v0.8.0
+
+开发者测试时使用的mirai-console版本：2.12.3（建议用户不要落后太多版本）
+
+### 新特性（对比0.6.0）
+
+- `报时功能`更新，支持配置语音和图片。不再支持指令创建自定义定时任务，不再区分自定义定时任务和整点报时任务，统一通过人工编辑配置文件来配置。详见对应文档，和从ConfigAndData获取默认配置所需语音文件。
+- 《功能基础说明》等文档描述优化，新增`Debug级指令`概念。本插件的某些模块也提供`Debug级指令`，详见各模块文档。
+
+### 不兼容注意事项
+
+- `报时功能`更新。不再使用`config\……\ReminderFunction\HourlyChatConfig.json`；`data\……\ReminderFunction\repositories\ReminderListRepository.json`里内容的数据结构改变，若报错可将其删除，待程序自动创建，之后可根据最新文档里的数据结构人工修改。
+
+### ConfigAndData变化：  
+
+- `报时功能`所需data新增：`data\……\ReminderFunction\audios`。
+
 ## v0.6.0
 
 开发者测试时使用的mirai-console版本：2.11.0（建议用户不要落后太多版本）

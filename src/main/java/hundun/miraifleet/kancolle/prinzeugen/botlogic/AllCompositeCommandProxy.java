@@ -3,13 +3,10 @@ package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 import hundun.miraifleet.framework.core.function.AbstractAllCompositeCommandProxy;
 import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
-import hundun.miraifleet.framework.starter.botlogic.function.reminder.ReminderFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenImageFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.KcwikiFunction;
 import net.mamoe.mirai.console.command.CommandSender;
-import net.mamoe.mirai.console.command.CompositeCommand;
-import net.mamoe.mirai.console.command.descriptor.CommandArgumentContext;
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
@@ -30,11 +27,6 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
             String characterName
             ) {
         super(botLogic, plugin, characterName);
-    }
-    
-    @SubCommand("查询报时")
-    public void listHourlyChatConfig(CommandSender sender) {
-        botLogic.getFunction(ReminderFunction.class).getCommandComponent().listHourlyChatConfig(sender);
     }
     
     @SubCommand("载入任务数据文件")
@@ -73,7 +65,9 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
     }
     
     @SubCommand("添加舰娘别名")
-    public void addShipFuzzyName(CommandSender sender, String fuzzyName, String shipName) {
+    public void addShipFuzzyName(CommandSender sender, 
+            @Name("fuzzyName") String fuzzyName, 
+            @Name("shipName") String shipName) {
         botLogic.getFunction(KcwikiFunction.class).getCommandComponent().addShipFuzzyName(sender, fuzzyName, shipName);
     }
     
@@ -88,8 +82,9 @@ public class AllCompositeCommandProxy extends AbstractAllCompositeCommandProxy<P
     }
     
     @SubCommand("最新微博")
-    public void listTopForUid(CommandSender sender, String name) {
-        botLogic.getFunction(WeiboFunction.class).getCommandComponent().listTopForUid(sender, name);
+    public void listTopForName(CommandSender sender, 
+            @Name("name") String name) {
+        botLogic.getFunction(WeiboFunction.class).getCommandComponent().listTopForName(sender, name);
     }
 
     @SubCommand("立刻私聊")

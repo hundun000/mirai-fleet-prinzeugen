@@ -178,6 +178,7 @@ public class Translator {
     /**
      * reqstr.js#parseShipClass()
      */
+    @SuppressWarnings("unused")
     private String parseShipClass(JsonNode node) {
         
         if (node.isArray()) {

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import hundun.idlegame.kancolle.building.BuildingModel;
 import hundun.idlegame.kancolle.building.instance.GachaBuilding.GachaResult;
 import hundun.idlegame.kancolle.data.SessionData;
-import hundun.idlegame.kancolle.data.config.HardCodeWorldConfig;
 import hundun.idlegame.kancolle.data.config.WorldConfig;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
 import hundun.idlegame.kancolle.exception.BadGachaCommandException;

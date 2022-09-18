@@ -3,8 +3,6 @@ package hundun.idlegame.kancolle.building;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import hundun.idlegame.kancolle.base.BaseModel;
-import hundun.idlegame.kancolle.base.BaseProtoype;
 import hundun.idlegame.kancolle.building.instance.BuidingId;
 import hundun.idlegame.kancolle.data.SessionData;
 import hundun.idlegame.kancolle.event.EventBus;

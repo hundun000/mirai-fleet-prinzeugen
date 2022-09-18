@@ -1,11 +1,8 @@
 package hundun.idlegame.kancolle.format;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.data.SessionData;

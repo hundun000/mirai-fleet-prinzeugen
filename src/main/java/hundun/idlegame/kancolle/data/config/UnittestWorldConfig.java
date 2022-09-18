@@ -1,18 +1,10 @@
 package hundun.idlegame.kancolle.data.config;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import hundun.idlegame.kancolle.expedition.ExpeditionFactory;
 import hundun.idlegame.kancolle.expedition.ExpeditionPrototype;
 import hundun.idlegame.kancolle.expedition.Requirement;
 import hundun.idlegame.kancolle.expedition.Reward;
-import hundun.idlegame.kancolle.resource.ResourceFactory;
-import hundun.idlegame.kancolle.resource.ResourcePrototype;
-import hundun.idlegame.kancolle.ship.ShipFactory;
-import hundun.idlegame.kancolle.ship.ShipModel;
 import hundun.idlegame.kancolle.ship.ShipPrototype;
 
 /**

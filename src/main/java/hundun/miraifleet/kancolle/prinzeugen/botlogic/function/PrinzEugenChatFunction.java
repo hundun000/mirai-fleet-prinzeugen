@@ -8,16 +8,12 @@ import hundun.miraifleet.framework.core.function.AsListenerHost;
 import hundun.miraifleet.framework.core.function.BaseFunction;
 import hundun.miraifleet.framework.core.function.FunctionReplyReceiver;
 import net.mamoe.mirai.console.command.AbstractCommand;
-import net.mamoe.mirai.console.command.CommandSender;
-
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.events.AbstractMessageEvent;
-import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Audio;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.PlainText;
-import net.mamoe.mirai.message.data.Voice;
 import net.mamoe.mirai.utils.ExternalResource;
 
 /**
@@ -25,7 +21,7 @@ import net.mamoe.mirai.utils.ExternalResource;
  * Created on 2021/08/09
  */
 @AsListenerHost
-public class PrinzEugenChatFunction extends BaseFunction<Void> {
+public class PrinzEugenChatFunction extends BaseFunction {
 
     public PrinzEugenChatFunction(
             BaseBotLogic botLogic,
@@ -36,8 +32,7 @@ public class PrinzEugenChatFunction extends BaseFunction<Void> {
                 botLogic,
                 plugin, 
                 characterName, 
-                "PrinzEugenChatFunction", 
-                null
+                "PrinzEugenChatFunction"
                 );
         initExternalResource();
     }

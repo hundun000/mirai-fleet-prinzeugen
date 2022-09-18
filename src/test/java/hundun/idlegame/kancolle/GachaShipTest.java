@@ -2,8 +2,6 @@ package hundun.idlegame.kancolle;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 import org.junit.Assert;
@@ -11,14 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import hundun.idlegame.kancolle.building.instance.BuidingId;
-import hundun.idlegame.kancolle.building.instance.GachaBuilding;
-import hundun.idlegame.kancolle.building.instance.GachaBuilding.GachaResult;
 import hundun.idlegame.kancolle.container.CommandResult;
 import hundun.idlegame.kancolle.container.DemoGameContainer;
 import hundun.idlegame.kancolle.data.config.UnittestWorldConfig;
 import hundun.idlegame.kancolle.exception.BadGachaCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
 import hundun.idlegame.kancolle.world.GameWorld;
 
 /**

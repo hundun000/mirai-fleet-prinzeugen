@@ -1,14 +1,9 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.function.Function;
-
 import org.jetbrains.annotations.NotNull;
 
 import hundun.miraifleet.framework.core.botlogic.BaseBotLogic;
@@ -25,9 +20,7 @@ import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.dto
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipInfo;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.domain.model.ShipUpgradeLink;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.feign.KcwikiApiFeignClient;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.newversion.QuestFileParser;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestData;
-import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.kcwiki.quest.oldversion.OldKcwikiQuestDocument;
 import lombok.Getter;
 import net.mamoe.mirai.console.command.AbstractCommand;
 import net.mamoe.mirai.console.command.CommandSender;
@@ -44,7 +37,7 @@ import net.mamoe.mirai.utils.ExternalResource;
  * Created on 2021/08/10
  */
 @AsListenerHost
-public class KcwikiFunction extends BaseFunction<Void> {
+public class KcwikiFunction extends BaseFunction {
     public static String kancolleGameDataSubFolder =  "GameData";
     public static String questSubFolder =  "quest_old";
     public static String itemFile = "WhoCallsTheFleet-DB/items.nedb";
@@ -69,8 +62,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
             botLogic,
             plugin, 
             characterName, 
-            "KcwikiFunction", 
-            null
+            "KcwikiFunction"
             );
         this.kcwikiService = new KcwikiService(
                 FeignClientFactory.get(KcwikiApiFeignClient.class, "http://api.kcwiki.moe", plugin.getLogger()),
@@ -114,7 +106,7 @@ public class KcwikiFunction extends BaseFunction<Void> {
 
     public class CompositeCommandFunctionComponent extends AbstractCompositeCommandFunctionComponent {
         public CompositeCommandFunctionComponent() {
-            super(plugin, botLogic, characterName, functionName);
+            super(plugin, botLogic, new UserLevelFunctionComponentConstructPack(characterName, functionName));
         }
         
         @SubCommand("载入任务数据文件")
@@ -202,7 +194,9 @@ public class KcwikiFunction extends BaseFunction<Void> {
         
        
         @SubCommand("添加舰娘别名")
-        public void addShipFuzzyName(CommandSender sender, String fuzzyName, String shipName) {
+        public void addShipFuzzyName(CommandSender sender, 
+                @Name("fuzzyName") String fuzzyName, 
+                @Name("shipName") String shipName) {
             if (!checkCosPermission(sender)) {
                 return;
             }

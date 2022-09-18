@@ -2,23 +2,14 @@ package hundun.idlegame.kancolle.expedition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import hundun.idlegame.kancolle.base.BaseManager;
 import hundun.idlegame.kancolle.data.SessionData;
-import hundun.idlegame.kancolle.event.EventBus;
 import hundun.idlegame.kancolle.event.IClockEventListener;
 import hundun.idlegame.kancolle.event.LogTag;
 import hundun.idlegame.kancolle.exception.BadCreateExpeditionCommandException;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.format.DescriptionFormatter;
-import hundun.idlegame.kancolle.format.ExceptionFormatter;
-import hundun.idlegame.kancolle.ship.ShipFactory;
 import hundun.idlegame.kancolle.ship.ShipModel;
-import hundun.idlegame.kancolle.time.TimerManager;
 import hundun.idlegame.kancolle.world.ComponentContext;
-import hundun.idlegame.kancolle.world.DataBus;
 
 /**
  * @author hundun

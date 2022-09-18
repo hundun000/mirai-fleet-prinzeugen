@@ -1,14 +1,8 @@
 package hundun.idlegame.kancolle.expedition;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import hundun.idlegame.kancolle.base.BaseFactory;
 import hundun.idlegame.kancolle.exception.IdleGameException;
-import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
-import hundun.idlegame.kancolle.ship.ShipFactory;
 
 /**
  * @author hundun

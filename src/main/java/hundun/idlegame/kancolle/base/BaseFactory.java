@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import hundun.idlegame.kancolle.exception.IdleGameException;
 import hundun.idlegame.kancolle.exception.PrototypeNotFoundException;
-import hundun.idlegame.kancolle.resource.ResourcePrototype;
 import lombok.Getter;
 
 /**
