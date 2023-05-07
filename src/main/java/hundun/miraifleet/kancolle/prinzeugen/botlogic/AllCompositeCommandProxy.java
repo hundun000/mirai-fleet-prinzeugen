@@ -1,7 +1,7 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.function.AbstractAllCompositeCommandProxy;
-import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.character.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.kancolle.prinzeugen.botlogic.function.PrinzEugenImageFunction;

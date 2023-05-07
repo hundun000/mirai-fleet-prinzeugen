@@ -1,9 +1,9 @@
 package hundun.miraifleet.kancolle.prinzeugen.botlogic;
 
 import hundun.miraifleet.framework.core.botlogic.BaseJavaBotLogic;
-import hundun.miraifleet.framework.starter.botlogic.function.CharacterAdminHelperFunction;
-import hundun.miraifleet.framework.starter.botlogic.function.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.RepeatFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.character.CharacterAdminHelperFunction;
+import hundun.miraifleet.framework.starter.botlogic.function.character.CharacterHelpFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.drive.DriveFunction;
 import hundun.miraifleet.framework.starter.botlogic.function.weibo.WeiboFunction;
 import hundun.miraifleet.image.share.function.SharedPetFunction;
